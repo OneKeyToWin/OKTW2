@@ -1,7 +1,3 @@
-C:\Users\Sebby\Documents\GitHub\OKTW2\leaguesharp_common-master\obj\Debug\LeagueSharp.Common.csprojAssemblyReference.cache
-C:\Users\Sebby\Documents\GitHub\OKTW2\leaguesharp_common-master\obj\Debug\LeagueSharp.Common.Properties.Resources.resources
-C:\Users\Sebby\Documents\GitHub\OKTW2\leaguesharp_common-master\obj\Debug\LeagueSharp.Common.csproj.GenerateResource.cache
-C:\Users\Sebby\Documents\GitHub\OKTW2\leaguesharp_common-master\obj\Debug\LeagueSharp.Common.csproj.CoreCompileInputs.cache
 C:\Users\Sebby\Documents\GitHub\OKTW2\leaguesharp_common-master\bin\Release\LeagueSharp.Common.dll
 C:\Users\Sebby\Documents\GitHub\OKTW2\leaguesharp_common-master\bin\Release\LeagueSharp.Common.pdb
 C:\Users\Sebby\Documents\GitHub\OKTW2\leaguesharp_common-master\bin\Release\clipper_library.dll
@@ -11,6 +7,10 @@ C:\Users\Sebby\Documents\GitHub\OKTW2\leaguesharp_common-master\bin\Release\Leag
 C:\Users\Sebby\Documents\GitHub\OKTW2\leaguesharp_common-master\bin\Release\Newtonsoft.Json.dll
 C:\Users\Sebby\Documents\GitHub\OKTW2\leaguesharp_common-master\bin\Release\SharpDX.Direct3D9.dll
 C:\Users\Sebby\Documents\GitHub\OKTW2\leaguesharp_common-master\bin\Release\SharpDX.dll
+C:\Users\Sebby\Documents\GitHub\OKTW2\leaguesharp_common-master\obj\Debug\LeagueSharp.Common.csprojAssemblyReference.cache
+C:\Users\Sebby\Documents\GitHub\OKTW2\leaguesharp_common-master\obj\Debug\LeagueSharp.Common.Properties.Resources.resources
+C:\Users\Sebby\Documents\GitHub\OKTW2\leaguesharp_common-master\obj\Debug\LeagueSharp.Common.csproj.GenerateResource.cache
+C:\Users\Sebby\Documents\GitHub\OKTW2\leaguesharp_common-master\obj\Debug\LeagueSharp.Common.csproj.CoreCompileInputs.cache
 C:\Users\Sebby\Documents\GitHub\OKTW2\leaguesharp_common-master\obj\Debug\LeagueSharp.Common.csproj.CopyComplete
 C:\Users\Sebby\Documents\GitHub\OKTW2\leaguesharp_common-master\obj\Debug\LeagueSharp.Common.dll
 C:\Users\Sebby\Documents\GitHub\OKTW2\leaguesharp_common-master\obj\Debug\LeagueSharp.Common.pdb

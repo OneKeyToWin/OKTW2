@@ -1146,22 +1146,11 @@ namespace LeagueSharp.Common
 
             #region Public Properties
             
-            /// <summary>
-            ///     Gets a value indicating whether the orbwalker is orbwalking by checking the missiles.
-            /// </summary>
-            /// <value><c>true</c> if the orbwalker is orbwalking by checking the missiles; otherwise, <c>false</c>.</value>
             public static bool MissileCheck
             {
-                get
-                {
-                    return _config.Item("MissileCheck").GetValue<bool>();
-                }
+                get  { return _config.Item("MissileCheck").GetValue<bool>(); }
             }
 
-            /// <summary>
-            ///     Gets or sets the active mode.
-            /// </summary>
-            /// <value>The active mode.</value>
             public OrbwalkingMode ActiveMode
             {
                 get
@@ -1219,10 +1208,6 @@ namespace LeagueSharp.Common
 
             #region Properties
 
-            /// <summary>
-            ///     Gets the farm delay.
-            /// </summary>
-            /// <value>The farm delay.</value>
             private int FarmDelay
             {
                 get
@@ -1235,9 +1220,7 @@ namespace LeagueSharp.Common
 
             #region Public Methods and Operators
 
-            /// <summary>
-            ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-            /// </summary>
+
             public void Dispose()
             {
                 Menu.Remove(_config);
@@ -1246,26 +1229,17 @@ namespace LeagueSharp.Common
                 Instances.Remove(this);
             }
 
-            /// <summary>
-            ///     Forces the orbwalker to attack the set target if valid and in range.
-            /// </summary>
-            /// <param name="target">The target.</param>
             public void ForceTarget(Obj_AI_Base target)
             {
                 this._forcedTarget = target;
             }
 
-            /// <summary>
-            ///     Gets the target.
-            /// </summary>
-            /// <returns>AttackableUnit.</returns>
             public virtual AttackableUnit GetTarget()
             {
                 AttackableUnit result = null;
                 var mode = this.ActiveMode;
 
-                if ((mode == OrbwalkingMode.Mixed || mode == OrbwalkingMode.LaneClear)
-                    && !_config.Item("PriorizeFarm").GetValue<bool>())
+                if ((mode == OrbwalkingMode.Mixed || mode == OrbwalkingMode.LaneClear) && !_config.Item("PriorizeFarm").GetValue<bool>())
                 {
                     var target = TargetSelector.GetTarget(-1, TargetSelector.DamageType.Physical);
                     if (target != null && this.InAutoAttackRange(target))
@@ -1281,9 +1255,7 @@ namespace LeagueSharp.Common
                         || (mode == OrbwalkingMode.LaneClear || mode == OrbwalkingMode.Mixed
                             || mode == OrbwalkingMode.LastHit || mode == OrbwalkingMode.Freeze)))
                 {
-                    var enemyGangPlank =
-                        HeroManager.Enemies.FirstOrDefault(
-                            e => e.ChampionName.Equals("gangplank", StringComparison.InvariantCultureIgnoreCase));
+                    var enemyGangPlank = HeroManager.Enemies.FirstOrDefault( e => e.ChampionName.Equals("gangplank", StringComparison.InvariantCultureIgnoreCase));
 
                     if (enemyGangPlank != null)
                     {
@@ -1313,11 +1285,8 @@ namespace LeagueSharp.Common
 
                             if (barrelBuff != null && barrel.Health <= 2f)
                             {
-                                var healthDecayRate = enemyGangPlank.Level >= 13
-                                                          ? 0.5f
-                                                          : (enemyGangPlank.Level >= 7 ? 1f : 2f);
-                                var nextHealthDecayTime = Game.Time < barrelBuff.StartTime + healthDecayRate
-                                                              ? barrelBuff.StartTime + healthDecayRate
+                                var healthDecayRate = enemyGangPlank.Level >= 13 ? 0.5f  : (enemyGangPlank.Level >= 7 ? 1f : 2f);
+                                var nextHealthDecayTime = Game.Time < barrelBuff.StartTime + healthDecayRate  ? barrelBuff.StartTime + healthDecayRate
                                                               : barrelBuff.StartTime + healthDecayRate * 2;
 
                                 if (nextHealthDecayTime <= Game.Time + t / 1000f)
@@ -1328,9 +1297,7 @@ namespace LeagueSharp.Common
                         }
 
                         if (barrels.Any())
-                        {
                             return null;
-                        }
                     }
                 }
 
@@ -1775,10 +1742,6 @@ namespace LeagueSharp.Common
 
             #region Methods
 
-            /// <summary>
-            ///     Fired when the game is drawn.
-            /// </summary>
-            /// <param name="args">The <see cref="EventArgs" /> instance containing the event data.</param>
             private void DrawingOnOnDraw(EventArgs args)
             {
                 if (_config.Item("AACircle").GetValue<Circle>().Active)
@@ -1829,10 +1792,6 @@ namespace LeagueSharp.Common
                 }
             }
 
-            /// <summary>
-            ///     Fired when the game is updated.
-            /// </summary>
-            /// <param name="args">The <see cref="EventArgs" /> instance containing the event data.</param>
             private void GameOnOnGameUpdate(EventArgs args)
             {
                 try
@@ -1861,23 +1820,13 @@ namespace LeagueSharp.Common
                 }
             }
 
-            /// <summary>
-            ///     Returns if a minion should be attacked
-            /// </summary>
-            /// <param name="minion">The <see cref="Obj_AI_Minion" /></param>
-            /// <param name="includeBarrel">Include Gangplank Barrel</param>
-            /// <returns><c>true</c> if the minion should be attacked; otherwise, <c>false</c>.</returns>
             private bool ShouldAttackMinion(Obj_AI_Minion minion)
             {
                 if (minion.Name == "WardCorpse" || minion.CharData.BaseSkinName == "jarvanivstandard")
-                {
                     return false;
-                }
 
                 if (MinionManager.IsWard(minion))
-                {
                     return _config.Item("AttackWards").IsActive();
-                }
 
                 return (_config.Item("AttackPetsnTraps").GetValue<bool>() || MinionManager.IsMinion(minion))
                        && minion.CharData.BaseSkinName != "gangplankbarrel";
