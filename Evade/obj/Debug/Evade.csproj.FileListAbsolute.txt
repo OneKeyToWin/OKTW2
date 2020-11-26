@@ -1,0 +1,16 @@
+C:\Users\Sebby\Documents\GitHub\OKTW2\Evade\obj\Debug\Evade.csprojAssemblyReference.cache
+C:\Users\Sebby\Documents\GitHub\OKTW2\Evade\obj\Debug\Evade.csproj.CoreCompileInputs.cache
+C:\Users\Sebby\Documents\GitHub\OKTW2\Evade\bin\Release\Evade.exe.config
+C:\Users\Sebby\Documents\GitHub\OKTW2\Evade\bin\Release\Evade.exe
+C:\Users\Sebby\Documents\GitHub\OKTW2\Evade\bin\Release\Evade.pdb
+C:\Users\Sebby\Documents\GitHub\OKTW2\Evade\bin\Release\clipper_library.dll
+C:\Users\Sebby\Documents\GitHub\OKTW2\Evade\bin\Release\LeagueSharp.Common.dll
+C:\Users\Sebby\Documents\GitHub\OKTW2\Evade\bin\Release\LeagueSharp.Data.dll
+C:\Users\Sebby\Documents\GitHub\OKTW2\Evade\bin\Release\LeagueSharp.dll
+C:\Users\Sebby\Documents\GitHub\OKTW2\Evade\bin\Release\LeagueSharp.Sandbox.dll
+C:\Users\Sebby\Documents\GitHub\OKTW2\Evade\bin\Release\Newtonsoft.Json.dll
+C:\Users\Sebby\Documents\GitHub\OKTW2\Evade\bin\Release\SharpDX.Direct3D9.dll
+C:\Users\Sebby\Documents\GitHub\OKTW2\Evade\bin\Release\SharpDX.dll
+C:\Users\Sebby\Documents\GitHub\OKTW2\Evade\obj\Debug\Evade.csproj.CopyComplete
+C:\Users\Sebby\Documents\GitHub\OKTW2\Evade\obj\Debug\Evade.exe
+C:\Users\Sebby\Documents\GitHub\OKTW2\Evade\obj\Debug\Evade.pdb

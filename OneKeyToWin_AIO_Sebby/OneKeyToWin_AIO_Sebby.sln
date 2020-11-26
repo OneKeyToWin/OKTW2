@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30717.126
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneKeyToWin_AIO_Sebby_2", "OneKeyToWin_AIO_Sebby\OneKeyToWin_AIO_Sebby_2.csproj", "{F9F553C0-D151-44D2-97FB-417ED6F655E4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F9F553C0-D151-44D2-97FB-417ED6F655E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9F553C0-D151-44D2-97FB-417ED6F655E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9F553C0-D151-44D2-97FB-417ED6F655E4}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F9F553C0-D151-44D2-97FB-417ED6F655E4}.Debug|x86.Build.0 = Debug|Any CPU
+		{F9F553C0-D151-44D2-97FB-417ED6F655E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9F553C0-D151-44D2-97FB-417ED6F655E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9F553C0-D151-44D2-97FB-417ED6F655E4}.Release|x86.ActiveCfg = Release|Any CPU
+		{F9F553C0-D151-44D2-97FB-417ED6F655E4}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8790B3A4-E26F-4856-A248-B9E2E40FBE22}
+	EndGlobalSection
+EndGlobal
