@@ -313,7 +313,7 @@ namespace LeagueSharp.Common
                     if (Player.ChampionName == "Caitlyn")
                     {
                         if (aiBase.HasBuff("caitlynyordletrapinternal"))
-                            result += 650;
+                            result += 600;
                     }
 
                     if (Player.ChampionName == "Aphelios")
