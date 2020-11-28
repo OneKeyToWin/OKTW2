@@ -208,8 +208,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetDir)$(TargetFileName)" "%25appdata%25\external\csharplibs\LeagueSharp.Common.dll"
-copy "$(TargetDir)$(TargetFileName)" "$(SolutionDir)compileDotNet\LeagueSharp.Common.dll"</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -3,38 +3,17 @@ namespace LeagueSharp.Common
     using System;
     using System.Collections.Generic;
     using System.Linq;
-
     using SharpDX;
-
     using Color = System.Drawing.Color;
 
-    /// <summary>
-    ///     This class offers everything related to auto-attacks and orbwalking.
-    /// </summary>
     public static class Orbwalking
     {
-        #region Static Fields
-
-        /// <summary>
-        /// An array of the last 3 targets as NetworkIDs, useful for 3-hit passives or thunderlord
-        /// </summary>
         public static int[] LastTargets = new int[] {0,0,0};
-        /// <summary>
-        ///     <c>true</c> if the orbwalker will attack.
-        /// </summary>
         public static bool Attack = true;
-
-        /// <summary>
-        ///     <c>true</c> if the orbwalker will skip the next attack.
-        /// </summary>
         public static bool DisableNextAttack;
-
         private static int _ApheliosChakramAATick;
         private static int _LastAATick;
 
-        /// <summary>
-        ///     The last auto attack tick
-        /// </summary>
         public static int LastAATick 
         {
             get
@@ -42,9 +21,7 @@ namespace LeagueSharp.Common
                if (Player.ChampionName == "Aphelios")
                {
                    if (Player.HasBuff("ApheliosCrescendumManager"))
-                   {
                        return _ApheliosChakramAATick;
-                   }
                }
 
                 return _LastAATick;
@@ -59,12 +36,9 @@ namespace LeagueSharp.Common
                         _ApheliosChakramAATick = value;
                 
                         if (_ApheliosChakramAATick == 0)
-                        {
                             return;
-                        }
                     }
                 }
-
                 _LastAATick = value;
             }
         }
@@ -84,40 +58,12 @@ namespace LeagueSharp.Common
             }            
         }
 
-
-        /// <summary>
-        ///     The tick the most recent attack command was sent.
-        /// </summary>
         public static int LastAttackCommandT;
-
-        /// <summary>
-        ///     The last move command position
-        /// </summary>
         public static Vector3 LastMoveCommandPosition = Vector3.Zero;
-
-        /// <summary>
-        ///     The tick the most recent move command was sent.
-        /// </summary>
         public static int LastMoveCommandT;
-
-        /// <summary>
-        ///     <c>true</c> if the orbwalker will move.
-        /// </summary>
         public static bool Move = true;
-
-        /// <summary>
-        ///     The champion name
-        /// </summary>
         private static readonly string _championName;
-
-        /// <summary>
-        ///     The random
-        /// </summary>
         private static readonly Random _random = new Random(DateTime.Now.Millisecond);
-
-        /// <summary>
-        ///     Spells that reset the attack timer.
-        /// </summary>
         private static readonly string[] AttackResets =
             {
                 "dariusnoxiantacticsonh", "fiorae", "garenq", "gravesmove",
@@ -134,9 +80,6 @@ namespace LeagueSharp.Common
                 "asheq", "camilleq", "camilleq2"
             };
 
-        /// <summary>
-        ///     Spells that are attacks even if they dont have the "attack" word in their name.
-        /// </summary>
         private static readonly string[] Attacks =
             {
                 "caitlynheadshotmissile", "frostarrow", "garenslash2",
@@ -147,9 +90,6 @@ namespace LeagueSharp.Common
                 "lucianpassiveshot"
             };
 
-        /// <summary>
-        ///     Spells that are not attacks even if they have the "attack" word in their name.
-        /// </summary>
         private static readonly string[] NoAttacks =
             {
                 "volleyattack", "volleyattackwithsound",
@@ -167,45 +107,14 @@ namespace LeagueSharp.Common
                 "kindredwolfbasicattack", "gravesautoattackrecoil"
             };
 
-        /// <summary>
-        ///     Champs whose auto attacks can't be cancelled
-        /// </summary>
         private static readonly string[] NoCancelChamps = { "Kalista" };
-
-        /// <summary>
-        ///     The player
-        /// </summary>
         private static readonly Obj_AI_Hero Player;
-
         private static int _autoattackCounter;
-
-        /// <summary>
-        ///     The delay
-        /// </summary>
         private static int _delay;
-
-        /// <summary>
-        ///     The last target
-        /// </summary>
         private static AttackableUnit _lastTarget;
-
-        /// <summary>
-        ///     The minimum distance
-        /// </summary>
         private static float _minDistance = 400;
-
-        /// <summary>
-        ///     <c>true</c> if the auto attack missile was launched from the player.
-        /// </summary>
         private static bool _missileLaunched;
 
-        #endregion
-
-        #region Constructors and Destructors
-
-        /// <summary>
-        ///     Initializes static members of the <see cref="Orbwalking" /> class.
-        /// </summary>
         static Orbwalking()
         {
             Player = ObjectManager.Player;
@@ -245,159 +154,52 @@ namespace LeagueSharp.Common
             if (missile != null && missile.Name == "ApheliosCrescendumAttackMisIn")
             {
                 if (missile.SpellCaster != null && missile.SpellCaster.IsMe)
-                {
                     ResetAutoAttackTimer();
-                }
             }
         }
 
-        #endregion
-
-        #region Delegates
-
-        /// <summary>
-        ///     Delegate AfterAttackEvenH
-        /// </summary>
-        /// <param name="unit">The unit.</param>
-        /// <param name="target">The target.</param>
         public delegate void AfterAttackEvenH(AttackableUnit unit, AttackableUnit target);
-
-        /// <summary>
-        ///     Delegate BeforeAttackEvenH
-        /// </summary>
-        /// <param name="args">The <see cref="BeforeAttackEventArgs" /> instance containing the event data.</param>
         public delegate void BeforeAttackEvenH(BeforeAttackEventArgs args);
-
-        /// <summary>
-        ///     Delegate OnAttackEvenH
-        /// </summary>
-        /// <param name="unit">The unit.</param>
-        /// <param name="target">The target.</param>
         public delegate void OnAttackEvenH(AttackableUnit unit, AttackableUnit target);
-
-        /// <summary>
-        ///     Delegate OnNonKillableMinionH
-        /// </summary>
-        /// <param name="minion">The minion.</param>
         public delegate void OnNonKillableMinionH(AttackableUnit minion);
-
-        /// <summary>
-        ///     Delegate OnTargetChangeH
-        /// </summary>
-        /// <param name="oldTarget">The old target.</param>
-        /// <param name="newTarget">The new target.</param>
         public delegate void OnTargetChangeH(AttackableUnit oldTarget, AttackableUnit newTarget);
 
-        #endregion
-
-        #region Public Events
-
-        /// <summary>
-        ///     This event is fired after a unit finishes auto-attacking another unit (Only works with player for now).
-        /// </summary>
         public static event AfterAttackEvenH AfterAttack;
-
-        /// <summary>
-        ///     This event is fired before the player auto attacks.
-        /// </summary>
         public static event BeforeAttackEvenH BeforeAttack;
-
-        /// <summary>
-        ///     This event is fired when a unit is about to auto-attack another unit.
-        /// </summary>
         public static event OnAttackEvenH OnAttack;
-
-        /// <summary>
-        ///     Occurs when a minion is not killable by an auto attack.
-        /// </summary>
         public static event OnNonKillableMinionH OnNonKillableMinion;
-
-        /// <summary>
-        ///     Gets called on target changes
-        /// </summary>
         public static event OnTargetChangeH OnTargetChange;
 
-        #endregion
-
-        #region Enums
-
-        /// <summary>
-        ///     The orbwalking mode.
-        /// </summary>
         public enum OrbwalkingMode
         {
-            /// <summary>
-            ///     The orbwalker will only last hit minions.
-            /// </summary>
             LastHit,
-
-            /// <summary>
-            ///     The orbwalker will alternate between last hitting and auto attacking champions.
-            /// </summary>
             Mixed,
-
-            /// <summary>
-            ///     The orbwalker will clear the lane of minions as fast as possible while attempting to get the last hit.
-            /// </summary>
             LaneClear,
-
-            /// <summary>
-            ///     The orbwalker will only attack the target.
-            /// </summary>
             Combo,
-
-            /// <summary>
-            ///     The orbwalker will only last hit minions as late as possible.
-            /// </summary>
             Freeze,
-
-            /// <summary>
-            ///     The orbwalker will only move.
-            /// </summary>
             CustomMode,
-
-            /// <summary>
-            ///     The orbwalker does nothing.
-            /// </summary>
             None
         }
 
-        #endregion
-
-        #region Public Methods and Operators
-
-        /// <summary>
-        ///     Returns if the player's auto-attack is ready.
-        /// </summary>
-        /// <returns><c>true</c> if this instance can attack; otherwise, <c>false</c>.</returns>
         public static bool CanAttack()
         {
             if (Player.IsCastingInterruptableSpell())
-            {
                 return false;
-            }
-
+            
             if (!Player.CanAttack)
             {
                 if (_championName == "Aphelios" || Player.Spellbook.IsChanneling)
-                {
                     return false;
-                }
             }
 
             foreach (var buff in Player.Buffs)
             {
-                if (buff.Type == BuffType.Disarm ||
-                    buff.Type == BuffType.Blind && Player.CharData.BaseSkinName != "Kalista")
-                {
+                if (buff.Type == BuffType.Disarm ||  buff.Type == BuffType.Blind && Player.CharData.BaseSkinName != "Kalista")
                     return false;
-                }
 
                 if (_championName == "Kayle" && buff.Name == "KayleR")
-                {
                     return false;
-                }
-
+                
                 if (_championName == "Samira")
                 {
                     switch (buff.Name)
@@ -420,11 +222,8 @@ namespace LeagueSharp.Common
             if (Player.ChampionName == "Graves")
             {
                 var attackDelay = 1.0740296828d * 1000 * Player.AttackDelay - 716.2381256175d;
-                if (Utils.GameTimeTickCount + Game.Ping / 2 + 25 >= LastAATick + attackDelay
-                    && Player.HasBuff("GravesBasicAttackAmmo1"))
-                {
+                if (Utils.GameTimeTickCount + Game.Ping / 2 + 25 >= LastAATick + attackDelay && Player.HasBuff("GravesBasicAttackAmmo1"))
                     return true;
-                }
 
                 return false;
             }
@@ -432,62 +231,35 @@ namespace LeagueSharp.Common
             return Utils.GameTimeTickCount + Game.Ping / 2 + 25 >= LastAATick + Player.AttackDelay * 1000;
         }
 
-        /// <summary>
-        ///     Returns true if moving won't cancel the auto-attack.
-        /// </summary>
-        /// <param name="extraWindup">The extra windup.</param>
-        /// <returns><c>true</c> if this instance can move the specified extra windup; otherwise, <c>false</c>.</returns>
         public static bool CanMove(float extraWindup, bool disableMissileCheck = false)
         {
             if (_missileLaunched && Orbwalker.MissileCheck && !disableMissileCheck)
-            {
                 return true;
-            }
 
             var localExtraWindup = 0;
             if (_championName == "Rengar" && (Player.HasBuff("rengarqbase") || Player.HasBuff("rengarqemp")))
-            {
                 localExtraWindup = 200;
-            }
 
-            return NoCancelChamps.Contains(_championName)
-                   || (Utils.GameTimeTickCount + Game.Ping / 2
+            return NoCancelChamps.Contains(_championName) || (Utils.GameTimeTickCount + Game.Ping / 2
                        >= LastAATick + AttackCastDelay * 1000 + extraWindup + localExtraWindup);
         }
 
-        /// <summary>
-        ///     Returns the auto-attack range of the target.
-        /// </summary>
-        /// <param name="target">The target.</param>
-        /// <returns>System.Single.</returns>
         public static float GetAttackRange(Obj_AI_Hero target)
         {
             var result = target.AttackRange + target.BoundingRadius;
             return result;
         }
 
-        /// <summary>
-        ///     Gets the last move position.
-        /// </summary>
-        /// <returns>Vector3.</returns>
         public static Vector3 GetLastMovePosition()
         {
             return LastMoveCommandPosition;
         }
 
-        /// <summary>
-        ///     Gets the last move time.
-        /// </summary>
-        /// <returns>System.Single.</returns>
         public static float GetLastMoveTime()
         {
             return LastMoveCommandT;
         }
 
-        /// <summary>
-        ///     Returns player auto-attack missile speed.
-        /// </summary>
-        /// <returns>System.Single.</returns>
         public static float GetMyProjectileSpeed()
         {
             if (_championName == "Aphelios")
@@ -519,9 +291,7 @@ namespace LeagueSharp.Common
             if (_championName == "Kayle")
             {
                 if (Player.AttackRange < 525)
-                {
                     return float.MaxValue;
-                }
 
                 return 2250;
             }
@@ -532,11 +302,6 @@ namespace LeagueSharp.Common
                        : Player.BasicAttack.MissileSpeed;
         }
 
-        /// <summary>
-        ///     Returns the auto-attack range of local player with respect to the target.
-        /// </summary>
-        /// <param name="target">The target.</param>
-        /// <returns>System.Single.</returns>
         public static float GetRealAutoAttackRange(AttackableUnit target)
         {
             var result = Player.AttackRange + Player.BoundingRadius;
@@ -546,36 +311,24 @@ namespace LeagueSharp.Common
                 if (aiBase != null && Player.ChampionName == "Caitlyn")
                 {
                     if (aiBase.HasBuff("caitlynyordletrapinternal"))
-                    {
                         result += 650;
-                    }
                 }
 
                 if (aiBase != null && Player.ChampionName == "Aphelios")
                 {
                     if (aiBase.HasBuff("aphelioscalibrumbonusrangedebuff"))
-                    {
                         return 1800;
-                    }
                 }
-
                 return result + target.BoundingRadius;
             }
-
             return result;
         }
 
-        /// <summary>
-        ///     Returns true if the target is in auto-attack range.
-        /// </summary>
-        /// <param name="target">The target.</param>
-        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
         public static bool InAutoAttackRange(AttackableUnit target)
         {
             if (!target.IsValidTarget())
-            {
                 return false;
-            }
+            
             var myRange = GetRealAutoAttackRange(target);
             return
                 Vector2.DistanceSquared(
@@ -583,51 +336,22 @@ namespace LeagueSharp.Common
                     Player.ServerPosition.To2D()) <= myRange * myRange;
         }
 
-        /// <summary>
-        ///     Returns true if the spellname is an auto-attack.
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <returns><c>true</c> if the name is an auto attack; otherwise, <c>false</c>.</returns>
         public static bool IsAutoAttack(string name)
         {
-            return (name.ToLower().Contains("attack") && !NoAttacks.Contains(name.ToLower()))
-                   || Attacks.Contains(name.ToLower());
+            return (name.ToLower().Contains("attack") && !NoAttacks.Contains(name.ToLower())) || Attacks.Contains(name.ToLower());
         }
 
-        /// <summary>
-        ///     Returns true if the spellname resets the attack timer.
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <returns><c>true</c> if the specified name is an auto attack reset; otherwise, <c>false</c>.</returns>
         public static bool IsAutoAttackReset(string name)
         {
             return AttackResets.Contains(name.ToLower());
         }
 
-        /// <summary>
-        ///     Returns true if the unit is melee
-        /// </summary>
-        /// <param name="unit">The unit.</param>
-        /// <returns><c>true</c> if the specified unit is melee; otherwise, <c>false</c>.</returns>
         public static bool IsMelee(this Obj_AI_Base unit)
         {
             return unit.CombatType == GameObjectCombatType.Melee;
         }
 
-        /// <summary>
-        ///     Moves to the position.
-        /// </summary>
-        /// <param name="position">The position.</param>
-        /// <param name="holdAreaRadius">The hold area radius.</param>
-        /// <param name="overrideTimer">if set to <c>true</c> [override timer].</param>
-        /// <param name="useFixedDistance">if set to <c>true</c> [use fixed distance].</param>
-        /// <param name="randomizeMinDistance">if set to <c>true</c> [randomize minimum distance].</param>
-        public static void MoveTo(
-            Vector3 position,
-            float holdAreaRadius = 0,
-            bool overrideTimer = false,
-            bool useFixedDistance = true,
-            bool randomizeMinDistance = true)
+        public static void MoveTo(Vector3 position, float holdAreaRadius = 0, bool overrideTimer = false, bool useFixedDistance = true, bool randomizeMinDistance = true)
         {
             var playerPosition = Player.ServerPosition;
 
@@ -670,38 +394,18 @@ namespace LeagueSharp.Common
                 }
             }
 
-            if (Utils.GameTimeTickCount - LastMoveCommandT < 70 + Math.Min(60, Game.Ping) && !overrideTimer
-                && angle < 60)
-            {
+            if (Utils.GameTimeTickCount - LastMoveCommandT < 70 + Math.Min(60, Game.Ping) && !overrideTimer && angle < 60)
                 return;
-            }
 
             if (angle >= 60 && Utils.GameTimeTickCount - LastMoveCommandT < 60)
-            {
                 return;
-            }
 
             Player.ForceIssueOrder(GameObjectOrder.MoveTo, point);
             LastMoveCommandPosition = point;
             LastMoveCommandT = Utils.GameTimeTickCount;
         }
 
-        /// <summary>
-        ///     Orbwalks a target while moving to Position.
-        /// </summary>
-        /// <param name="target">The target.</param>
-        /// <param name="position">The position.</param>
-        /// <param name="extraWindup">The extra windup.</param>
-        /// <param name="holdAreaRadius">The hold area radius.</param>
-        /// <param name="useFixedDistance">if set to <c>true</c> [use fixed distance].</param>
-        /// <param name="randomizeMinDistance">if set to <c>true</c> [randomize minimum distance].</param>
-        public static void Orbwalk(
-            AttackableUnit target,
-            Vector3 position,
-            float extraWindup = 90,
-            float holdAreaRadius = 0,
-            bool useFixedDistance = true,
-            bool randomizeMinDistance = true)
+        public static void Orbwalk(AttackableUnit target, Vector3 position, float extraWindup = 90, float holdAreaRadius = 0, bool useFixedDistance = true, bool randomizeMinDistance = true)
         {
             if (Utils.GameTimeTickCount - LastAttackCommandT < 70 + Math.Min(60, Game.Ping))
             {
@@ -727,7 +431,6 @@ namespace LeagueSharp.Common
                             LastAttackCommandT = Utils.GameTimeTickCount;
                             _lastTarget = target;
                         }
-
                         return;
                     }
                 }
@@ -743,40 +446,21 @@ namespace LeagueSharp.Common
             }
         }
 
-        /// <summary>
-        ///     Resets the Auto-Attack timer.
-        /// </summary>
         public static void ResetAutoAttackTimer()
         {
             LastAATick = 0;
         }
 
-        /// <summary>
-        ///     Sets the minimum orbwalk distance.
-        /// </summary>
-        /// <param name="d">The d.</param>
         public static void SetMinimumOrbwalkDistance(float d)
         {
             _minDistance = d;
         }
 
-        /// <summary>
-        ///     Sets the movement delay.
-        /// </summary>
-        /// <param name="delay">The delay.</param>
         public static void SetMovementDelay(int delay)
         {
             _delay = delay;
         }
 
-        #endregion
-
-        #region Methods
-
-        /// <summary>
-        /// Pushes a target to the <see cref="LastTargets"/> list.
-        /// </summary>
-        /// <param name="networkId"></param>
         private static void PushLastTargets(int networkId)
         {
             LastTargets[2] = LastTargets[1];
@@ -784,11 +468,6 @@ namespace LeagueSharp.Common
             LastTargets[0] = networkId;
         }
 
-        /// <summary>
-        ///     Fires the after attack event.
-        /// </summary>
-        /// <param name="unit">The unit.</param>
-        /// <param name="target">The target.</param>
         private static void FireAfterAttack(AttackableUnit unit, AttackableUnit target)
         {
             if (AfterAttack != null && target.IsValidTarget())
@@ -797,10 +476,6 @@ namespace LeagueSharp.Common
             }
         }
 
-        /// <summary>
-        ///     Fires the before attack event.
-        /// </summary>
-        /// <param name="target">The target.</param>
         private static void FireBeforeAttack(AttackableUnit target)
         {
             if (BeforeAttack != null)
@@ -813,11 +488,6 @@ namespace LeagueSharp.Common
             }
         }
 
-        /// <summary>
-        ///     Fires the on attack event.
-        /// </summary>
-        /// <param name="unit">The unit.</param>
-        /// <param name="target">The target.</param>
         private static void FireOnAttack(AttackableUnit unit, AttackableUnit target)
         {
             if (OnAttack != null)
@@ -826,10 +496,6 @@ namespace LeagueSharp.Common
             }
         }
 
-        /// <summary>
-        ///     Fires the on non killable minion event.
-        /// </summary>
-        /// <param name="minion">The minion.</param>
         private static void FireOnNonKillableMinion(AttackableUnit minion)
         {
             if (OnNonKillableMinion != null)
@@ -838,10 +504,6 @@ namespace LeagueSharp.Common
             }
         }
 
-        /// <summary>
-        ///     Fires the on target switch event.
-        /// </summary>
-        /// <param name="newTarget">The new target.</param>
         private static void FireOnTargetSwitch(AttackableUnit newTarget)
         {
             if (OnTargetChange != null && (!_lastTarget.IsValidTarget() || _lastTarget != newTarget))
@@ -850,11 +512,6 @@ namespace LeagueSharp.Common
             }
         }
 
-        /// <summary>
-        ///     Fired when an auto attack is fired.
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="args">The <see cref="GameObjectProcessSpellCastEventArgs" /> instance containing the event data.</param>
         private static void Obj_AI_Base_OnDoCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
             if (sender.IsMe)
@@ -870,11 +527,6 @@ namespace LeagueSharp.Common
             }
         }
 
-        /// <summary>
-        ///     Fired 30ms after an auto attack is launched.
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="args">The <see cref="GameObjectProcessSpellCastEventArgs" /> instance containing the event data.</param>
         private static void Obj_AI_Base_OnDoCast_Delayed(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
             if (IsAutoAttackReset(args.SData.Name))
@@ -889,11 +541,6 @@ namespace LeagueSharp.Common
             }
         }
 
-        /// <summary>
-        ///     Handles the <see cref="E:ProcessSpell" /> event.
-        /// </summary>
-        /// <param name="unit">The unit.</param>
-        /// <param name="Spell">The <see cref="GameObjectProcessSpellCastEventArgs" /> instance containing the event data.</param>
         private static void OnProcessSpell(Obj_AI_Base unit, GameObjectProcessSpellCastEventArgs Spell)
         {
             try
@@ -941,11 +588,6 @@ namespace LeagueSharp.Common
             }
         }
 
-        /// <summary>
-        ///     Fired when the spellbook stops casting a spell.
-        /// </summary>
-        /// <param name="spellbook">The spellbook.</param>
-        /// <param name="args">The <see cref="SpellbookStopCastEventArgs" /> instance containing the event data.</param>
         private static void SpellbookOnStopCast(Spellbook spellbook, SpellbookStopCastEventArgs args)
         {
             if (spellbook.Owner.IsValid && spellbook.Owner.IsMe && args.DestroyMissile && args.StopAnimation)
@@ -954,38 +596,11 @@ namespace LeagueSharp.Common
             }
         }
 
-        #endregion
-
-        /// <summary>
-        ///     The before attack event arguments.
-        /// </summary>
         public class BeforeAttackEventArgs : EventArgs
         {
-            #region Fields
-
-            /// <summary>
-            ///     The target
-            /// </summary>
             public AttackableUnit Target;
-
-            /// <summary>
-            ///     The unit
-            /// </summary>
             public Obj_AI_Base Unit = ObjectManager.Player;
-
-            /// <summary>
-            ///     <c>true</c> if the orbwalker should continue with the attack.
-            /// </summary>
             private bool _process = true;
-
-            #endregion
-
-            #region Public Properties
-
-            /// <summary>
-            ///     Gets or sets a value indicating whether this <see cref="BeforeAttackEventArgs" /> should continue with the attack.
-            /// </summary>
-            /// <value><c>true</c> if the orbwalker should continue with the attack; otherwise, <c>false</c>.</value>
             public bool Process
             {
                 get
@@ -998,154 +613,66 @@ namespace LeagueSharp.Common
                     this._process = value;
                 }
             }
-
-            #endregion
         }
 
-        /// <summary>
-        ///     This class allows you to add an instance of "Orbwalker" to your assembly in order to control the orbwalking in an
-        ///     easy way.
-        /// </summary>
         public class Orbwalker : IDisposable
         {
-            #region Constants
-
-            /// <summary>
-            ///     The lane clear wait time modifier.
-            /// </summary>
             private const float LaneClearWaitTimeMod = 2f;
-
-            #endregion
-
-            #region Static Fields
-
-            /// <summary>
-            ///     The instances of the orbwalker.
-            /// </summary>
             public static List<Orbwalker> Instances = new List<Orbwalker>();
-
-            /// <summary>
-            ///     The configuration
-            /// </summary>
             private static Menu _config;
-
-            #endregion
-
-            #region Fields
-
-            /// <summary>
-            ///     The player
-            /// </summary>
             private readonly Obj_AI_Hero Player;
-
-            /// <summary>
-            ///     The forced target
-            /// </summary>
             private Obj_AI_Base _forcedTarget;
-
-            /// <summary>
-            ///     The orbalker mode
-            /// </summary>
             private OrbwalkingMode _mode = OrbwalkingMode.None;
-
-            /// <summary>
-            ///     The orbwalking point
-            /// </summary>
             private Vector3 _orbwalkingPoint;
-
-            /// <summary>
-            ///     The previous minion the orbwalker was targeting.
-            /// </summary>
             private Obj_AI_Minion _prevMinion;
-
-            /// <summary>
-            ///     The name of the CustomMode if it is set.
-            /// </summary>
             private string CustomModeName;
 
-            #endregion
-
-            #region Constructors and Destructors
-
-            /// <summary>
-            ///     Initializes a new instance of the <see cref="Orbwalker" /> class.
-            /// </summary>
-            /// <param name="attachToMenu">The menu the orbwalker should attach to.</param>
             public Orbwalker(Menu attachToMenu)
             {
                 _config = attachToMenu;
                 /* Drawings submenu */
                 var drawings = new Menu("Drawings", "drawings");
-                drawings.AddItem(
-                    new MenuItem("AACircle", "AACircle").SetShared()
-                        .SetValue(new Circle(true, Color.FromArgb(155, 255, 255, 0))));
-                drawings.AddItem(
-                    new MenuItem("AACircle2", "Enemy AA circle").SetShared()
-                        .SetValue(new Circle(false, Color.FromArgb(155, 255, 255, 0))));
-                drawings.AddItem(
-                    new MenuItem("HoldZone", "HoldZone").SetShared()
-                        .SetValue(new Circle(false, Color.FromArgb(155, 255, 255, 0))));
+                drawings.AddItem(new MenuItem("AACircle", "AACircle").SetShared().SetValue(new Circle(true, Color.FromArgb(155, 255, 255, 0))));
+                drawings.AddItem( new MenuItem("AACircle2", "Enemy AA circle").SetShared().SetValue(new Circle(false, Color.FromArgb(155, 255, 255, 0))));
+                drawings.AddItem( new MenuItem("HoldZone", "HoldZone").SetShared().SetValue(new Circle(false, Color.FromArgb(155, 255, 255, 0))));
                 drawings.AddItem(new MenuItem("AALineWidth", "Line Width")).SetShared().SetValue(new Slider(2, 1, 6));
                 drawings.AddItem(new MenuItem("LastHitHelper", "Last Hit Helper").SetShared().SetValue(false));
                 _config.AddSubMenu(drawings);
 
                 /* Misc options */
                 var misc = new Menu("Misc", "Misc");
-                misc.AddItem(
-                    new MenuItem("HoldPosRadius", "Hold Position Radius").SetShared().SetValue(new Slider(50, 50, 250)));
+                misc.AddItem(new MenuItem("HoldPosRadius", "Hold Position Radius").SetShared().SetValue(new Slider(50, 50, 250)));
                 misc.AddItem(new MenuItem("PriorizeFarm", "Prioritize farm over harass").SetShared().SetValue(true));
                 misc.AddItem(new MenuItem("PrioritizeCasters", "Attack caster minions first").SetShared().SetValue(false));
                 misc.AddItem(new MenuItem("AttackWards", "Auto attack wards").SetShared().SetValue(false));
                 misc.AddItem(new MenuItem("AttackPetsnTraps", "Auto attack pets & traps").SetShared().SetValue(true));
-                misc.AddItem(
-                    new MenuItem("AttackGPBarrel", "Auto attack gangplank barrel").SetShared()
-                        .SetValue(new StringList(new[] { "Combo and Farming", "Farming", "No" }, 1)));
+                misc.AddItem(new MenuItem("AttackGPBarrel", "Auto attack gangplank barrel").SetShared().SetValue(new StringList(new[] { "Combo and Farming", "Farming", "No" }, 1)));
                 misc.AddItem(new MenuItem("Smallminionsprio", "Jungle clear small first").SetShared().SetValue(false));
-                misc.AddItem(
-                    new MenuItem("FocusMinionsOverTurrets", "Focus minions over objectives").SetShared()
-                        .SetValue(new KeyBind('M', KeyBindType.Toggle)));
-
+                misc.AddItem(new MenuItem("FocusMinionsOverTurrets", "Focus minions over objectives").SetShared().SetValue(new KeyBind('M', KeyBindType.Toggle)));
                 _config.AddSubMenu(misc);
 
                 /* Missile check */
                 _config.AddItem(new MenuItem("MissileCheck", "Use Missile Check").SetShared().SetValue(true));
 
                 /* Delay sliders */
-                _config.AddItem(
-                    new MenuItem("ExtraWindup", "Extra windup time").SetShared().SetValue(new Slider(80, 0, 200)));
+                _config.AddItem(new MenuItem("ExtraWindup", "Extra windup time").SetShared().SetValue(new Slider(80, 0, 200)));
                 _config.AddItem(new MenuItem("FarmDelay", "Farm delay").SetShared().SetValue(new Slider(0, 0, 200)));
 
                 /*Load the menu*/
-                _config.AddItem(
-                    new MenuItem("LastHit", "Last hit").SetShared().SetValue(new KeyBind('X', KeyBindType.Press)));
-
+                _config.AddItem(new MenuItem("LastHit", "Last hit").SetShared().SetValue(new KeyBind('X', KeyBindType.Press)));
                 _config.AddItem(new MenuItem("Farm", "Mixed").SetShared().SetValue(new KeyBind('C', KeyBindType.Press)));
+                _config.AddItem(new MenuItem("Freeze", "Freeze").SetShared().SetValue(new KeyBind('N', KeyBindType.Press)));
+                _config.AddItem(new MenuItem("LaneClear", "LaneClear").SetShared().SetValue(new KeyBind('V', KeyBindType.Press)));
+                _config.AddItem(new MenuItem("Orbwalk", "Combo").SetShared().SetValue(new KeyBind(32, KeyBindType.Press)));
+                _config.AddItem( new MenuItem("StillCombo", "Combo without moving").SetShared().SetValue(new KeyBind('N', KeyBindType.Press)));
+                _config.Item("StillCombo").ValueChanged += (sender, args) => { Move = !args.GetNewValue<KeyBind>().Active; };
 
-                _config.AddItem(
-                    new MenuItem("Freeze", "Freeze").SetShared().SetValue(new KeyBind('N', KeyBindType.Press)));
-
-                _config.AddItem(
-                    new MenuItem("LaneClear", "LaneClear").SetShared().SetValue(new KeyBind('V', KeyBindType.Press)));
-
-                _config.AddItem(
-                    new MenuItem("Orbwalk", "Combo").SetShared().SetValue(new KeyBind(32, KeyBindType.Press)));
-
-                _config.AddItem(
-                    new MenuItem("StillCombo", "Combo without moving").SetShared()
-                        .SetValue(new KeyBind('N', KeyBindType.Press)));
-                _config.Item("StillCombo").ValueChanged +=
-                    (sender, args) => { Move = !args.GetNewValue<KeyBind>().Active; };
-
-                this.Player = ObjectManager.Player;
+                Player = ObjectManager.Player;
                 Game.OnUpdate += this.GameOnOnGameUpdate;
                 Drawing.OnDraw += this.DrawingOnOnDraw;
                 Instances.Add(this);
             }
-
-            #endregion
-
-            #region Public Properties
-            
+ 
             public static bool MissileCheck
             {
                 get  { return _config.Item("MissileCheck").GetValue<bool>(); }
@@ -1190,8 +717,7 @@ namespace LeagueSharp.Common
                         return OrbwalkingMode.LastHit;
                     }
 
-                    if (_config.Item(this.CustomModeName) != null
-                        && _config.Item(this.CustomModeName).GetValue<KeyBind>().Active)
+                    if (_config.Item(this.CustomModeName) != null && _config.Item(this.CustomModeName).GetValue<KeyBind>().Active)
                     {
                         return OrbwalkingMode.CustomMode;
                     }
@@ -1204,10 +730,6 @@ namespace LeagueSharp.Common
                 }
             }
 
-            #endregion
-
-            #region Properties
-
             private int FarmDelay
             {
                 get
@@ -1215,11 +737,6 @@ namespace LeagueSharp.Common
                     return _config.Item("FarmDelay").GetValue<Slider>().Value;
                 }
             }
-
-            #endregion
-
-            #region Public Methods and Operators
-
 
             public void Dispose()
             {
@@ -1239,19 +756,35 @@ namespace LeagueSharp.Common
                 AttackableUnit result = null;
                 var mode = this.ActiveMode;
 
-                if ((mode == OrbwalkingMode.Mixed || mode == OrbwalkingMode.LaneClear) && !_config.Item("PriorizeFarm").GetValue<bool>())
+                //Forced target
+                if (this._forcedTarget.IsValidTarget() && this.InAutoAttackRange(this._forcedTarget))
+                    return this._forcedTarget;
+
+                if (mode == OrbwalkingMode.Mixed || mode == OrbwalkingMode.LaneClear)
                 {
-                    var target = TargetSelector.GetTarget(-1, TargetSelector.DamageType.Physical);
-                    if (target != null && this.InAutoAttackRange(target))
+                    foreach (var nexus in ObjectManager.Get<Obj_HQ>().Where(t => t.IsValidTarget() && this.InAutoAttackRange(t)))
+                        return nexus;
+
+                    if (!_config.Item("PriorizeFarm").GetValue<bool>() && !Player.UnderTurret(true))
                     {
-                        return target;
+                        var target = TargetSelector.GetTarget(-1, TargetSelector.DamageType.Physical);
+                        if (target != null && this.InAutoAttackRange(target))
+                            return target;
+                    }
+
+                    if (_config.Item("AttackWards").IsActive())
+                    {
+                        var wardToAttack = ObjectManager.Get<Obj_AI_Minion>().Where(ward => ward.IsValidTarget() && ward.IsEnemy && MinionManager.IsWard(ward)
+                                  && ward.CharData.BaseSkinName != "gangplankbarrel" && ward.Name != "WardCorpse").FirstOrDefault();
+
+                        if (wardToAttack != null)
+                            return wardToAttack;
                     }
                 }
 
                 //GankPlank barrels
                 var attackGankPlankBarrels = _config.Item("AttackGPBarrel").GetValue<StringList>().SelectedIndex;
-                if (attackGankPlankBarrels != 2
-                    && (attackGankPlankBarrels == 0
+                if (attackGankPlankBarrels != 2 && (attackGankPlankBarrels == 0
                         || (mode == OrbwalkingMode.LaneClear || mode == OrbwalkingMode.Mixed
                             || mode == OrbwalkingMode.LastHit || mode == OrbwalkingMode.Freeze)))
                 {
@@ -1270,9 +803,7 @@ namespace LeagueSharp.Common
                         foreach (var barrel in barrels)
                         {
                             if (barrel.Health <= 1f)
-                            {
                                 return barrel;
-                            }
 
                             var t = (int)(AttackCastDelay * 1000) + Game.Ping / 2
                                     + 1000 * (int)Math.Max(0, this.Player.Distance(barrel) - this.Player.BoundingRadius)
@@ -1290,9 +821,7 @@ namespace LeagueSharp.Common
                                                               : barrelBuff.StartTime + healthDecayRate * 2;
 
                                 if (nextHealthDecayTime <= Game.Time + t / 1000f)
-                                {
                                     return barrel;
-                                }
                             }
                         }
 
@@ -1302,8 +831,7 @@ namespace LeagueSharp.Common
                 }
 
                 /*Killable Minion*/
-                if (mode == OrbwalkingMode.LaneClear || mode == OrbwalkingMode.Mixed || mode == OrbwalkingMode.LastHit
-                    || mode == OrbwalkingMode.Freeze)
+                if (mode == OrbwalkingMode.LaneClear || mode == OrbwalkingMode.Mixed || mode == OrbwalkingMode.LastHit || mode == OrbwalkingMode.Freeze)
                 {
                     var MinionList =
                         ObjectManager.Get<Obj_AI_Minion>()
@@ -1334,60 +862,31 @@ namespace LeagueSharp.Common
                             if (mode == OrbwalkingMode.Freeze)
                             {
                                 if (minion.Health < 50 || predHealth <= 50)
-                                {
                                     return minion;
-                                }
                             }
                             else
                             {
                                 if (predHealth <= 0)
-                                {
                                     FireOnNonKillableMinion(minion);
-                                }
 
                                 if (killable)
-                                {
                                     return minion;
-                                }
                             }
                         }
                     }
                 }
 
-                //Forced target
-                if (this._forcedTarget.IsValidTarget() && this.InAutoAttackRange(this._forcedTarget))
+
+                if (mode == OrbwalkingMode.LaneClear || mode == OrbwalkingMode.Mixed)
                 {
-                    return this._forcedTarget;
-                }
-
-                /* turrets / inhibitors / nexus */
-                if (mode == OrbwalkingMode.LaneClear
-                    && (!_config.Item("FocusMinionsOverTurrets").GetValue<KeyBind>().Active
-                        || !MinionManager.GetMinions(
-                            ObjectManager.Player.Position,
-                            GetRealAutoAttackRange(ObjectManager.Player)).Any()))
-                {
-                    /* turrets */
-                    foreach (var turret in
-                        ObjectManager.Get<Obj_AI_Turret>().Where(t => t.IsValidTarget() && this.InAutoAttackRange(t)))
+                    //if (!_config.Item("FocusMinionsOverTurrets").GetValue<KeyBind>().Active)
                     {
-                        return turret;
-                    }
+                        foreach (var turret in ObjectManager.Get<Obj_AI_Turret>().Where(t => t.IsValidTarget() && this.InAutoAttackRange(t)))
+                            return turret;
 
-                    /* inhibitor */
-                    foreach (var turret in
-                        ObjectManager.Get<Obj_BarracksDampener>()
-                            .Where(t => t.IsValidTarget() && this.InAutoAttackRange(t)))
-                    {
-                        return turret;
-                    }
-
-                    /* nexus */
-                    foreach (var nexus in
-                        ObjectManager.Get<Obj_HQ>().Where(t => t.IsValidTarget() && this.InAutoAttackRange(t)))
-                    {
-                        return nexus;
-                    }
+                        foreach (var inhi in ObjectManager.Get<Obj_BarracksDampener>().Where(t => t.IsValidTarget() && this.InAutoAttackRange(t)))
+                            return inhi;
+                    }  
                 }
 
                 /*Champions*/
@@ -1408,9 +907,7 @@ namespace LeagueSharp.Common
                 {
                     var jminions =
                         ObjectManager.Get<Obj_AI_Minion>()
-                            .Where(
-                                mob =>
-                                mob.IsValidTarget() && mob.Team == GameObjectTeam.Neutral && this.InAutoAttackRange(mob)
+                            .Where( mob => mob.IsValidTarget() && mob.Team == GameObjectTeam.Neutral && this.InAutoAttackRange(mob)
                                 && mob.CharData.BaseSkinName != "gangplankbarrel" && mob.Name != "WardCorpse");
 
                     result = _config.Item("Smallminionsprio").GetValue<bool>()
@@ -1418,14 +915,11 @@ namespace LeagueSharp.Common
                                  : jminions.MaxOrDefault(mob => mob.MaxHealth);
 
                     if (result != null)
-                    {
                         return result;
-                    }
                 }
 
                 /* UnderTurret Farming */
-                if (mode == OrbwalkingMode.LaneClear || mode == OrbwalkingMode.Mixed || mode == OrbwalkingMode.LastHit
-                    || mode == OrbwalkingMode.Freeze)
+                if (mode == OrbwalkingMode.LaneClear || mode == OrbwalkingMode.Mixed || mode == OrbwalkingMode.LastHit || mode == OrbwalkingMode.Freeze)
                 {
                     var closestTower =
                         ObjectManager.Get<Obj_AI_Turret>()
@@ -1667,22 +1161,11 @@ namespace LeagueSharp.Common
                 return result;
             }
 
-            /// <summary>
-            ///     Determines if a target is in auto attack range.
-            /// </summary>
-            /// <param name="target">The target.</param>
-            /// <returns><c>true</c> if a target is in auto attack range, <c>false</c> otherwise.</returns>
             public virtual bool InAutoAttackRange(AttackableUnit target)
             {
                 return Orbwalking.InAutoAttackRange(target);
             }
 
-            /// <summary>
-            ///     Registers the Custom Mode of the Orbwalker. Useful for adding a flee mode and such.
-            /// </summary>
-            /// <param name="name">The name of the mode Ex. "Myassembly.FleeMode" </param>
-            /// <param name="displayname">The name of the mode in the menu. Ex. Flee</param>
-            /// <param name="key">The default key for this mode.</param>
             public virtual void RegisterCustomMode(string name, string displayname, uint key)
             {
                 this.CustomModeName = name;
@@ -1693,37 +1176,22 @@ namespace LeagueSharp.Common
                 }
             }
 
-            /// <summary>
-            ///     Enables or disables the auto-attacks.
-            /// </summary>
-            /// <param name="b">if set to <c>true</c> the orbwalker will attack units.</param>
             public void SetAttack(bool b)
             {
                 Attack = b;
             }
 
-            /// <summary>
-            ///     Enables or disables the movement.
-            /// </summary>
-            /// <param name="b">if set to <c>true</c> the orbwalker will move.</param>
             public void SetMovement(bool b)
             {
                 Move = b;
             }
 
-            /// <summary>
-            ///     Forces the orbwalker to move to that point while orbwalking (Game.CursorPos by default).
-            /// </summary>
-            /// <param name="point">The point.</param>
+
             public void SetOrbwalkingPoint(Vector3 point)
             {
                 this._orbwalkingPoint = point;
             }
 
-            /// <summary>
-            ///     Determines if the orbwalker should wait before attacking a minion.
-            /// </summary>
-            /// <returns><c>true</c> if the orbwalker should wait before attacking a minion, <c>false</c> otherwise.</returns>
             public bool ShouldWait()
             {
                 return
@@ -1737,10 +1205,6 @@ namespace LeagueSharp.Common
                                 (int)(this.Player.AttackDelay * 1000 * LaneClearWaitTimeMod),
                                 this.FarmDelay) <= this.Player.GetAutoAttackDamage(minion));
             }
-
-            #endregion
-
-            #region Methods
 
             private void DrawingOnOnDraw(EventArgs args)
             {
@@ -1852,8 +1316,6 @@ namespace LeagueSharp.Common
                                           / this.Player.BasicAttack.MissileSpeed)),
                                 this.FarmDelay) <= this.Player.GetAutoAttackDamage(minion));
             }
-
-            #endregion
         }
     }
 }
