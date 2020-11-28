@@ -308,16 +308,28 @@ namespace LeagueSharp.Common
             if (target.IsValidTarget())
             {
                 var aiBase = target as Obj_AI_Base;
-                if (aiBase != null && Player.ChampionName == "Caitlyn")
+                if (aiBase != null)
                 {
-                    if (aiBase.HasBuff("caitlynyordletrapinternal"))
-                        result += 650;
-                }
+                    if (Player.ChampionName == "Caitlyn")
+                    {
+                        if (aiBase.HasBuff("caitlynyordletrapinternal"))
+                            result += 650;
+                    }
 
-                if (aiBase != null && Player.ChampionName == "Aphelios")
-                {
-                    if (aiBase.HasBuff("aphelioscalibrumbonusrangedebuff"))
-                        return 1800;
+                    if (Player.ChampionName == "Aphelios")
+                    {
+                        if (aiBase.HasBuff("aphelioscalibrumbonusrangedebuff"))
+                            return 1800;
+                    }
+
+                    result -= Math.Min(Game.Ping / 9f, 10f);
+                    if (Player.IsMoving && aiBase.IsMoving)
+                    {
+                        if (!aiBase.IsFacing(Player))
+                            result -= 10;
+                        if (Player.IsFacing(aiBase))
+                            result -= 5;
+                    }
                 }
                 return result + target.BoundingRadius;
             }
@@ -1186,7 +1198,6 @@ namespace LeagueSharp.Common
                 Move = b;
             }
 
-
             public void SetOrbwalkingPoint(Vector3 point)
             {
                 this._orbwalkingPoint = point;
@@ -1210,9 +1221,8 @@ namespace LeagueSharp.Common
             {
                 if (_config.Item("AACircle").GetValue<Circle>().Active)
                 {
-                    Render.Circle.DrawCircle(
-                        this.Player.Position,
-                        GetRealAutoAttackRange(null) + 65,
+                    Render.Circle.DrawCircle(this.Player.Position,
+                        GetRealAutoAttackRange(null),
                         _config.Item("AACircle").GetValue<Circle>().Color,
                         _config.Item("AALineWidth").GetValue<Slider>().Value);
                 }

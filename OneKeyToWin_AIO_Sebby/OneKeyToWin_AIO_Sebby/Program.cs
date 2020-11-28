@@ -4,7 +4,6 @@ using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
 using SebbyLib;
-using SharpDX.Direct3D9;
 
 namespace OneKeyToWin_AIO_Sebby
 {
@@ -27,24 +26,15 @@ namespace OneKeyToWin_AIO_Sebby
 
         public static AioMode AioModeSet = AioMode.All;
         public static Menu Config;
-
         public static Obj_AI_Hero Player { get { return ObjectManager.Player; } }
         public static Orbwalking.Orbwalker Orbwalker;
-
         public static Spell DrawSpell;
-
         public static float DrawSpellTime = 0;
-
         public static int HitChanceNum = 4, tickNum = 4, tickIndex = 0;
-
         public static SebbyLib.Prediction.PredictionOutput DrawSpellPos;
-
         public static bool SPredictionLoad = false;
-
         public static bool LaneClear = false, None = false, Harass = false, Combo = false, Farm = false;
-
         private static float dodgeTime = Game.Time;
-
         static void Main(string[] args) { CustomEvents.Game.OnGameLoad += GameOnOnGameLoad; }
 
         private static void GameOnOnGameLoad(EventArgs args)
@@ -221,9 +211,7 @@ namespace OneKeyToWin_AIO_Sebby
                 Config.SubMenu("Prediction MODE").AddItem(new MenuItem("EHitChance", "E Hit Chance", true).SetValue(new StringList(new[] { "Very High", "High", "Medium" }, 0)));
                 Config.SubMenu("Prediction MODE").AddItem(new MenuItem("Rpred", "R Prediction MODE", true).SetValue(new StringList(new[] { "Common prediction", "OKTW© PREDICTION", "SPediction press F5 if not loaded", "SDK" }, 1)));
                 Config.SubMenu("Prediction MODE").AddItem(new MenuItem("RHitChance", "R Hit Chance", true).SetValue(new StringList(new[] { "Very High", "High", "Medium" }, 0)));
-
                 Config.SubMenu("Prediction MODE").AddItem(new MenuItem("debugPred", "Draw Aiming OKTW© PREDICTION").SetValue(false));
-
                 Config.SubMenu("Prediction MODE").AddItem(new MenuItem("322", "SPREDICTION NOT LOADED"));
                 new Core.OktwTs();
             }
@@ -489,16 +477,12 @@ namespace OneKeyToWin_AIO_Sebby
             }
         }
 
-
         private static void OnDraw(EventArgs args)
         {
            
-                if (AioModeSet != AioMode.UtilityOnly && !SPredictionLoad && (int)Game.Time % 2 == 0 && (Config.Item("Qpred", true).GetValue<StringList>().SelectedIndex == 2 || Config.Item("Wpred", true).GetValue<StringList>().SelectedIndex == 2
-                || Config.Item("Epred", true).GetValue<StringList>().SelectedIndex == 2 || Config.Item("Rpred", true).GetValue<StringList>().SelectedIndex == 2))
-                drawText("PRESS F5 TO LOAD SPREDICTION", Player.Position, System.Drawing.Color.Yellow, -300);
-
-            
-
+            if (AioModeSet != AioMode.UtilityOnly && !SPredictionLoad && (int)Game.Time % 2 == 0 && (Config.Item("Qpred", true).GetValue<StringList>().SelectedIndex == 2 || Config.Item("Wpred", true).GetValue<StringList>().SelectedIndex == 2
+            || Config.Item("Epred", true).GetValue<StringList>().SelectedIndex == 2 || Config.Item("Rpred", true).GetValue<StringList>().SelectedIndex == 2))
+            drawText("PRESS F5 TO LOAD SPREDICTION", Player.Position, System.Drawing.Color.Yellow, -300);
         }
     }
 }
