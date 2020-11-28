@@ -920,13 +920,13 @@ namespace LeagueSharp.Common
                     var jminions =
                         ObjectManager.Get<Obj_AI_Minion>()
                             .Where( mob => mob.IsValidTarget() && mob.Team == GameObjectTeam.Neutral && this.InAutoAttackRange(mob)
-                                && mob.CharData.BaseSkinName != "gangplankbarrel" && mob.Name != "WardCorpse");
+                                && mob.CharData.BaseSkinName != "gangplankbarrel" && mob.Name != "WardCorpse" && mob.MaxHealth != 1);
 
                     result = _config.Item("Smallminionsprio").GetValue<bool>()
                                  ? jminions.MinOrDefault(mob => mob.MaxHealth)
                                  : jminions.MaxOrDefault(mob => mob.MaxHealth);
 
-                    if (result != null)
+                    if (result != null )
                         return result;
                 }
 
@@ -1141,7 +1141,7 @@ namespace LeagueSharp.Common
                                 .Where(
                                     minion =>
                                         minion.IsValidTarget() && this.InAutoAttackRange(minion)
-                                        && this.ShouldAttackMinion(minion))
+                                        && this.ShouldAttackMinion(minion) && minion.MaxHealth !=1 )
                             let predHealth =
                                 HealthPrediction.LaneClearHealthPrediction(
                                     minion,
