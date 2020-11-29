@@ -37,80 +37,29 @@ namespace SebbyLib.Prediction
 
     public class PredictionInput
     {
-
         private Vector3 _from;
         private Vector3 _rangeCheckFrom;
-
-        /// <summary>
-        ///     Set to true make the prediction hit as many enemy heroes as posible.
-        /// </summary>
         public bool Aoe = false;
-
-        /// <summary>
-        ///     Set to true if the unit collides with units.
-        /// </summary>
         public bool Collision = false;
-
-        /// <summary>
-        ///     Array that contains the unit types that the skillshot can collide with.
-        /// </summary>
         public CollisionableObjects[] CollisionObjects =
         {
             CollisionableObjects.Minions, CollisionableObjects.YasuoWall
         };
-
-        /// <summary>
-        ///     The skillshot delay in seconds.
-        /// </summary>
         public float Delay;
-
-        /// <summary>
-        ///     The skillshot width's radius or the angle in case of the cone skillshots.
-        /// </summary>
         public float Radius = 1f;
-
-        /// <summary>
-        ///     The skillshot range in units.
-        /// </summary>
         public float Range = float.MaxValue;
-
-        /// <summary>
-        ///     The skillshot speed in units per second.
-        /// </summary>
         public float Speed = float.MaxValue;
-
-        /// <summary>
-        ///     The skillshot type.
-        /// </summary>
         public SkillshotType Type = SkillshotType.SkillshotLine;
-
-        /// <summary>
-        ///     The unit that the prediction will made for.
-        /// </summary>
         public Obj_AI_Base Unit = ObjectManager.Player;
-
-        /// <summary>
-        ///     Source unit for the prediction 
-        /// </summary>
         public Obj_AI_Base Source = ObjectManager.Player;
-
-        /// <summary>
-        ///     Set to true to increase the prediction radius by the unit bounding radius.
-        /// </summary>
         public bool UseBoundingRadius = true;
 
-        /// <summary>
-        ///     The position from where the skillshot missile gets fired.
-        /// </summary>
         public Vector3 From
         {
             get { return _from.To2D().IsValid() ? _from : ObjectManager.Player.ServerPosition; }
             set { _from = value; }
         }
 
-        /// <summary>
-        ///     The position from where the range is checked.
-        /// </summary>
         public Vector3 RangeCheckFrom
         {
             get
@@ -133,27 +82,11 @@ namespace SebbyLib.Prediction
         internal int _aoeTargetsHitCount;
         private Vector3 _castPosition;
         private Vector3 _unitPosition;
-
-        /// <summary>
-        ///     The list of the targets that the spell will hit (only if aoe was enabled).
-        /// </summary>
         public List<Obj_AI_Hero> AoeTargetsHit = new List<Obj_AI_Hero>();
-
-        /// <summary>
-        ///     The list of the units that the skillshot will collide with.
-        /// </summary>
         public List<Obj_AI_Base> CollisionObjects = new List<Obj_AI_Base>();
-
-        /// <summary>
-        ///     Returns the hitchance.
-        /// </summary>
         public HitChance Hitchance = HitChance.Impossible;
-
         internal PredictionInput Input;
 
-        /// <summary>
-        ///     The position where the skillshot should be casted to increase the accuracy.
-        /// </summary>
         public Vector3 CastPosition
         {
             get
@@ -165,17 +98,11 @@ namespace SebbyLib.Prediction
             set { _castPosition = value; }
         }
 
-        /// <summary>
-        ///     The number of targets the skillshot will hit (only if aoe was enabled).
-        /// </summary>
         public int AoeTargetsHitCount
         {
             get { return Math.Max(_aoeTargetsHitCount, AoeTargetsHit.Count); }
         }
 
-        /// <summary>
-        ///     The position where the unit is going to be when the skillshot reaches his position.
-        /// </summary>
         public Vector3 UnitPosition
         {
             get { return _unitPosition.To2D().IsValid() ? _unitPosition.SetZ() : Input.Unit.ServerPosition; }
@@ -183,9 +110,6 @@ namespace SebbyLib.Prediction
         }
     }
 
-    /// <summary>
-    ///     Class used for calculating the position of the given unit after a delay.
-    /// </summary>
     public static class Prediction
     {
         public static PredictionOutput GetPrediction(Obj_AI_Base unit, float delay)
@@ -274,19 +198,19 @@ namespace SebbyLib.Prediction
                 result = GetPositionOnPath(input, input.Unit.GetWaypoints(), input.Unit.MoveSpeed);
             }
 
-            if (input.Unit is Obj_AI_Hero && input.Radius > 1 && result.Hitchance <= HitChance.VeryHigh)
-            {
-                var moveOutWall = input.Unit.BoundingRadius + input.Radius / 2 + 10;
-                if (input.Type == SkillshotType.SkillshotCircle)
-                    moveOutWall = input.Unit.BoundingRadius;
+            //if (input.Unit is Obj_AI_Hero && input.Radius > 1 && result.Hitchance <= HitChance.VeryHigh)
+            //{
+            //    var moveOutWall = input.Unit.BoundingRadius + input.Radius / 2 + 10;
+            //    if (input.Type == SkillshotType.SkillshotCircle)
+            //        moveOutWall = input.Unit.BoundingRadius;
 
-                var wallPoint = GetWallPoint(result.CastPosition, moveOutWall);
-                if (!wallPoint.IsZero)
-                {
-                    result.CastPosition = wallPoint.Extend(result.CastPosition, moveOutWall);
-                    OktwCommon.debug("PRED: Near WALL");
-                }
-            }
+            //    var wallPoint = GetWallPoint(result.CastPosition, moveOutWall);
+            //    if (!wallPoint.IsZero)
+            //    {
+            //        result.CastPosition = wallPoint.Extend(result.CastPosition, moveOutWall);
+            //        OktwCommon.debug("PRED: Near WALL");
+            //    }
+            //}
 
             //Check if the unit position is in range
             if (Math.Abs(input.Range - float.MaxValue) > float.Epsilon)
@@ -320,20 +244,20 @@ namespace SebbyLib.Prediction
                 }
             }
 
-
             //Set hit chance
             if (result.Hitchance == HitChance.High)
             {
-
                 result = WayPointAnalysis(result, input);
                 //.debug(input.Unit.BaseSkinName + result.Hitchance);
-
             }
 
             //Check for collision
             if (checkCollision && input.Collision && result.Hitchance > HitChance.Impossible)
             {
                 var positions = new List<Vector3> { result.CastPosition };
+                if (input.Delay > 0.3)
+                    positions.Add(input.Unit.Position);
+
                 var originalUnit = input.Unit;
                 if (Collision.GetCollision(positions, input))
                     result.Hitchance = HitChance.Collision;
@@ -357,6 +281,7 @@ namespace SebbyLib.Prediction
                 result.Hitchance = HitChance.VeryHigh;
                 return result;
             }
+
             // CAN'T MOVE SPELLS ///////////////////////////////////////////////////////////////////////////////////
 
             if (UnitTracker.GetSpecialSpellEndTime(input.Unit) > 100 || input.Unit.HasBuff("Recall") || (UnitTracker.GetLastStopMoveTime(input.Unit) < 100 && input.Unit.IsRooted))
@@ -378,10 +303,7 @@ namespace SebbyLib.Prediction
 
             // PREPARE MATH ///////////////////////////////////////////////////////////////////////////////////
             var path = input.Unit.GetWaypoints();
-
-
             var lastWaypiont = path.Last().To3D();
-
             var distanceUnitToWaypoint = lastWaypiont.Distance(input.Unit.ServerPosition);
             var distanceFromToUnit = input.From.Distance(input.Unit.ServerPosition);
             var distanceFromToWaypoint = lastWaypiont.Distance(input.From);
@@ -444,20 +366,20 @@ namespace SebbyLib.Prediction
 
                 if (points.Count() > 2)
                 {
-                    var runOutWall = true;
-                    foreach (var point in points)
-                    {
-                        if (input.Unit.Position.Distance(point) > lastWaypiont.Distance(point))
-                        {
-                            runOutWall = false;
-                        }
-                    }
-                    if (runOutWall)
-                    {
-                        OktwCommon.debug("PRED: RUN OUT WALL");
-                        result.Hitchance = HitChance.VeryHigh;
-                        return result;
-                    }
+                    //var runOutWall = true;
+                    //foreach (var point in points)
+                    //{
+                    //    if (input.Unit.Position.Distance(point) > lastWaypiont.Distance(point))
+                    //    {
+                    //        runOutWall = false;
+                    //    }
+                    //}
+                    //if (runOutWall)
+                    //{
+                    //    OktwCommon.debug("PRED: RUN OUT WALL");
+                    //    result.Hitchance = HitChance.VeryHigh;
+                    //    return result;
+                    //}
                 }
                 else if (UnitTracker.GetLastNewPathTime(input.Unit) > 250 && input.Delay < 0.3)
                 {
@@ -466,9 +388,7 @@ namespace SebbyLib.Prediction
                     result.Hitchance = HitChance.VeryHigh;
                     return result;
                 }
-            }
-
-          
+            }          
 
             if (input.Unit.GetWaypoints().Count == 1)
             {
@@ -525,8 +445,6 @@ namespace SebbyLib.Prediction
                 result.Hitchance = HitChance.VeryHigh;
                 return result;
             }
-
-            
 
             // LONG CLICK DETECTION ///////////////////////////////////////////////////////////////////////////////////
 
@@ -810,8 +728,6 @@ namespace SebbyLib.Prediction
                 Hitchance = HitChance.Medium
             };
         }
-
-
     }
 
     internal static class AoePrediction
@@ -1115,10 +1031,6 @@ namespace SebbyLib.Prediction
 
         }
 
-        /// <summary>
-        ///     Returns the list of the units that the skillshot will hit before reaching the set positions.
-        /// </summary>
-        /// 
         private static bool MinionIsDead(PredictionInput input, Obj_AI_Base minion, float distance)
         {
             float delay = (distance / input.Speed) + input.Delay;
@@ -1137,9 +1049,9 @@ namespace SebbyLib.Prediction
                 return false;
             }
         }
+
         public static bool GetCollision(List<Vector3> positions, PredictionInput input)
         {
-
             foreach (var position in positions)
             {
                 foreach (var objectType in input.CollisionObjects)
@@ -1364,13 +1276,10 @@ namespace SebbyLib.Prediction
             {
                 var C = TrackerUnit.PathBank[1].Position;
                 var A = TrackerUnit.PathBank[2].Position;
-
                 var B = unit.Position.To2D();
-
                 var AB = Math.Pow(A.X - B.X, 2) + Math.Pow(A.Y - B.Y, 2);
                 var BC = Math.Pow(B.X - C.X, 2) + Math.Pow(B.Y - C.Y, 2);
                 var AC = Math.Pow(A.X - C.X, 2) + Math.Pow(A.Y - C.Y, 2);
-
 
                 if (TrackerUnit.PathBank[1].Position.Distance(TrackerUnit.PathBank[2].Position) < 50)
                 {
@@ -1429,5 +1338,4 @@ namespace SebbyLib.Prediction
             return Utils.TickCount - TrackerUnit.StopMoveTick;
         }
     }
-
 }
