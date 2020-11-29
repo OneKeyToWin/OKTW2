@@ -309,7 +309,7 @@ namespace SebbyLib.Prediction
             var getAngle = pos1.AngleBetween(pos2);
 
             // NEW VISABLE ///////////////////////////////////////////////////////////////////////////////////
-            if (UnitTracker.GetLastVisableTime(input.Unit) < 100 || input.Unit.Path.Last().Distance(lastWaypiont) > 0)
+            if (UnitTracker.GetLastVisableTime(input.Unit) < 100 || input.Unit.Path.Count() == 0)
             {
                 OktwCommon.debug("PRED M: NEW VISABLE");
                 result.Hitchance = HitChance.Medium;
