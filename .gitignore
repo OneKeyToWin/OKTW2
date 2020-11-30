@@ -28,3 +28,6 @@ OneKeyToWin_AIO_Sebby/OneKeyToWin_AIO_Sebby/bin/Release/OneKeyToWin_AIO_Sebby.ex
 OneKeyToWin_AIO_Sebby/.vs/OneKeyToWin_AIO_Sebby/v15/.suo
 OneKeyToWin_AIO_Sebby/.vs/OneKeyToWin_AIO_Sebby/v15/.suo
 *.ide-shm
+*.config
+*.CopyComplete
+*.txt
