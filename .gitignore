@@ -1,6 +1,7 @@
 leaguesharp_common-master/.vs/
 OneKeyToWin_AIO_Sebby/.vs
 Evade/.vs
+Evade/obj
 *.ide
 *.dll
 *.pdb
