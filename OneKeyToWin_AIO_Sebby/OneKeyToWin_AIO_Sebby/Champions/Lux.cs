@@ -16,8 +16,8 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
         public Lux()
         {
-            Q = new Spell(SpellSlot.Q, 1300);
-            Q1 = new Spell(SpellSlot.Q, 1300);
+            Q = new Spell(SpellSlot.Q, 1175);
+            Q1 = new Spell(SpellSlot.Q, 1175);
             W = new Spell(SpellSlot.W, 1175);
             E = new Spell(SpellSlot.E, 1090);
             R = new Spell(SpellSlot.R, 3400);
@@ -27,6 +27,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             W.SetSkillshot(0.25f, 110f, 1200f, false, SkillshotType.SkillshotLine);
             E.SetSkillshot(0.5f, 150f, 1300f, false, SkillshotType.SkillshotCircle);
             R.SetSkillshot(1f, 100f, float.MaxValue, false, SkillshotType.SkillshotLine);
+
             Config.SubMenu(Player.ChampionName).SubMenu("Draw").AddItem(new MenuItem("noti", "Show notification", true).SetValue(true));
             Config.SubMenu(Player.ChampionName).SubMenu("Draw").AddItem(new MenuItem("qRange", "Q range", true).SetValue(false));
             Config.SubMenu(Player.ChampionName).SubMenu("Draw").AddItem(new MenuItem("wRange", "W range", true).SetValue(false));
@@ -96,8 +97,6 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             {
                 Epos = args.End;
             }
-
-            
         }
 
         private void Game_OnGameUpdate(EventArgs args)
