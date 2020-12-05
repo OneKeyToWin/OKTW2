@@ -46,10 +46,10 @@ namespace Evade
             return result;
         }
 
-        public static void SendMovePacket(this Obj_AI_Base v, Vector2 point)
+        public static void SendMovePacket(this Obj_AI_Base v, Vector2 point, bool triggerEvents = false)
         {
             if (ObjectManager.Player.CanMove)
-                ObjectManager.Player.ForceIssueOrder(GameObjectOrder.MoveTo, point.To3D(), false);
+                ObjectManager.Player.ForceIssueOrder(GameObjectOrder.MoveTo, point.To3D(), triggerEvents);
         }
 
         public static Obj_AI_Base Closest(List<Obj_AI_Base> targetList, Vector2 from)

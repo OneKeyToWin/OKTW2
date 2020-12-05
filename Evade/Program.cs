@@ -807,11 +807,8 @@ namespace Evade
                 {
                     if (Utils.TickCount - LastSentMovePacketT > 1000 / 3)
                     {
-                        if (!ObjectManager.Player.IsMoving || currentPath[currentPath.Count - 1].Distance(EvadePoint) > 10)
-                        {
-                            LastSentMovePacketT = Utils.TickCount;
-                            ObjectManager.Player.SendMovePacket(EvadePoint);
-                        }
+                        LastSentMovePacketT = Utils.TickCount;
+                        ObjectManager.Player.SendMovePacket(EvadePoint);
                     }
                     return;
                 }
@@ -843,17 +840,15 @@ namespace Evade
                         return;
                     }
 
-                    if (Utils.TickCount - LastSentMovePacketT2 > 1000 / 3 || !PathFollower.IsFollowing)
+                    if (Utils.TickCount - LastSentMovePacketT2 > 1000 / 15 || !PathFollower.IsFollowing)
                     {
-                        if (DetectedSkillshots.Count == 0 && Utils.TickCount - LastSentMovePacketT2 > 1000 / 4)
+                        LastSentMovePacketT2 = Utils.TickCount;
+
+                        if (DetectedSkillshots.Count == 0)
                         {
                             if (ObjectManager.Player.Distance(EvadeToPoint) > 75)
                             {
-                                if (!ObjectManager.Player.IsMoving || currentPath[currentPath.Count - 1].Distance(EvadeToPoint) > 10)
-                                {
-                                    LastSentMovePacketT2 = Utils.TickCount;
-                                    ObjectManager.Player.SendMovePacket(EvadeToPoint);
-                                }
+                                ObjectManager.Player.SendMovePacket(EvadeToPoint);
                             }
                             return;
                         }
@@ -861,15 +856,11 @@ namespace Evade
                         var path2 = ObjectManager.Player.GetPath(EvadeToPoint.To3D()).To2DList();
                         var safePath2 = IsSafePath(path2, 100);
 
-                        if (safePath2.IsSafe && safePath.IsSafe && Utils.TickCount - LastSentMovePacketT2 > 1000 / 3)
+                        if (safePath2.IsSafe)
                         {
                             if (ObjectManager.Player.Distance(EvadeToPoint) > 75)
                             {
-                                if (!ObjectManager.Player.IsMoving || currentPath[currentPath.Count - 1].Distance(EvadeToPoint) > 10)
-                                {
-                                    LastSentMovePacketT2 = Utils.TickCount;
-                                    ObjectManager.Player.SendMovePacket(EvadeToPoint);
-                                }
+                                ObjectManager.Player.SendMovePacket(EvadeToPoint);
                             }
                             return;
                         }
@@ -887,22 +878,16 @@ namespace Evade
                             {
                                 if (ObjectManager.Player.Distance(safePath.Intersection.Point) > 75)
                                 {
-                                    if (!ObjectManager.Player.IsMoving || currentPath[currentPath.Count - 1].Distance(safePath.Intersection.Point) > 10)
-                                    {
-                                        LastSentMovePacketT2 = Utils.TickCount;
-                                        ObjectManager.Player.SendMovePacket(safePath.Intersection.Point);
-                                        return;
-                                    }
+                                    ObjectManager.Player.SendMovePacket(safePath.Intersection.Point);
+                                    return;
                                 }
                             }
                         }
 
-                        if (!ObjectManager.Player.IsMoving || 
-                            (candidate.Count != 0 && currentPath[currentPath.Count - 1].Distance(candidate[candidate.Count - 1]) > 10))
-                        {
-                            PathFollower.Follow(candidate);
-                            PathFollower.KeepFollowingPath(new EventArgs());
-                        }
+                        PathFollower.Follow(candidate);
+
+                        PathFollower.KeepFollowingPath(new EventArgs());
+
                     }
                 }
             }
