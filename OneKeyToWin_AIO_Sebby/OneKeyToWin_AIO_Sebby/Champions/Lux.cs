@@ -211,25 +211,22 @@ namespace OneKeyToWin_AIO_Sebby.Champions
         {
             if (E.Instance.ToggleState >= 1)
             {
-                if (!Program.None)
+                int eBig = Epos.CountEnemiesInRange(350);
+                if (Config.Item("autoEslow", true).GetValue<bool>())
                 {
-                    int eBig = Epos.CountEnemiesInRange(350);
-                    if (Config.Item("autoEslow", true).GetValue<bool>())
-                    {
-                        int detonate = eBig - Epos.CountEnemiesInRange(160);
+                    int detonate = eBig - Epos.CountEnemiesInRange(160);
 
-                        if (detonate > 0 || eBig > 1)
-                            E.Cast();
-                    }
-                    else if (Config.Item("autoEdet", true).GetValue<bool>())
-                    {
-                        if (eBig > 0)
-                            E.Cast();
-                    }
-                    else
-                    {
+                    if (detonate > 0 || eBig > 1)
                         E.Cast();
-                    }
+                }
+                else if (Config.Item("autoEdet", true).GetValue<bool>())
+                {
+                    if (eBig > 0)
+                        E.Cast();
+                }
+                else
+                {
+                    E.Cast();
                 }
             }
             else if (E.Instance.ToggleState == 0)
