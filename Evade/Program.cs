@@ -939,6 +939,7 @@ namespace Evade
         /// 
         private static void ObjAiHeroOnOnIssueOrder(Obj_AI_Base sender, GameObjectIssueOrderEventArgs args)
         {
+
             if (!sender.IsMe)
             {
                 return;
@@ -989,9 +990,7 @@ namespace Evade
                 return;
             }
 
-            var myPath =
-                ObjectManager.Player.GetPath(
-                    new Vector3(args.TargetPosition.X, args.TargetPosition.Y, ObjectManager.Player.ServerPosition.Z)).To2DList();
+            var myPath = ObjectManager.Player.GetPath(new Vector3(args.TargetPosition.X, args.TargetPosition.Y, ObjectManager.Player.ServerPosition.Z)).To2DList();
             var safeResult = IsSafe(PlayerPosition);
 
 
@@ -999,17 +998,19 @@ namespace Evade
             if (Evading || !safeResult.IsSafe)
             {
                 var rcSafePath = IsSafePath(myPath, Config.EvadingRouteChangeTimeOffset);
-                if (args.Order == GameObjectOrder.MoveTo)
-                {
+                    if (args.Order == GameObjectOrder.MoveTo)
+                    {
+                    Console.WriteLine("Evading issue order " + Evading);
                     var willMove = false;
 
-                    if (Evading &&
-                        Utils.TickCount - Config.LastEvadePointChangeT > Config.EvadePointChangeInterval)
+                    if (Evading && Utils.TickCount - Config.LastEvadePointChangeT > Config.EvadePointChangeInterval)
                     {
+                        Console.WriteLine("update point first ");
                         //Update the evade point to the closest one:
                         var points = Evader.GetEvadePoints(-1, 0, false, true);
                         if (points.Count > 0)
                         {
+                            Console.WriteLine("update point");
                             var to = new Vector2(args.TargetPosition.X, args.TargetPosition.Y);
                             EvadePoint = to.Closest(points);
                             Evading = true;
@@ -1021,6 +1022,7 @@ namespace Evade
                     //If the path is safe let the user follow it.
                     if (rcSafePath.IsSafe && IsSafe(myPath[myPath.Count - 1]).IsSafe && args.Order == GameObjectOrder.MoveTo)
                     {
+                        Console.WriteLine("update path");
                         EvadePoint = myPath[myPath.Count - 1];
                         Evading = true;
                         willMove = true;
