@@ -168,7 +168,9 @@ namespace Evade
             }
         }
         private static void DetectedSkillshots_OnAdd(object sender, EventArgs e)
+
         {
+            Console.WriteLine("evading false3 ");
             Evading = false;
         }
 
@@ -1008,7 +1010,7 @@ namespace Evade
                     {
                         Console.WriteLine("update point first ");
                         //Update the evade point to the closest one:
-                        var points = Evader.GetEvadePoints(-1, 0, false, false);
+                        var points = Evader.GetEvadePoints(-1, 0, false, true);
                         if (points.Count > 0)
                         {
                             Console.WriteLine("update point");
@@ -1032,6 +1034,7 @@ namespace Evade
                     if (!willMove)
                     {
                         ForcePathFollowing = true;
+                        Console.WriteLine("ForcePathFollowing ");
                     }
                 }
 
@@ -1046,17 +1049,19 @@ namespace Evade
             //The path is not safe, stop in the intersection point.
             if (!safePath.IsSafe && args.Order != GameObjectOrder.AttackUnit)
             {
+                Console.WriteLine("block move");
                 if (safePath.Intersection.Valid)
                 {
                     if (ObjectManager.Player.Distance(safePath.Intersection.Point) > 75)
                     {
-                        ForcePathFollowing = true;
-                        //ObjectManager.Player.SendMovePacket(safePath.Intersection.Point);
+                        //ForcePathFollowing = true;
+                        ObjectManager.Player.SendMovePacket(safePath.Intersection.Point);
                     }
                 }
 
                 ForcePathFollowing = true;
                 args.Process = false;
+                return;
             }
 
             //AutoAttacks.
@@ -1075,6 +1080,7 @@ namespace Evade
                             ObjectManager.Player.SendMovePacket(safePath.Intersection.Point);
                         }
                         args.Process = false;
+                        return;
                     }
                 }
             }
