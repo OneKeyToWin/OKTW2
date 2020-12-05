@@ -42,11 +42,10 @@ namespace Evade
 
             var goodCandidates = new List<Vector2>();
             var badCandidates = new List<Vector2>();
-
             var polygonList = new List<Geometry.Polygon>();
 
             var takeClosestPath = false;
-
+            Console.WriteLine("skillshot: " + Program.DetectedSkillshots.Count);
             foreach (var skillshot in Program.DetectedSkillshots)
             {
                 if (skillshot.Evade())

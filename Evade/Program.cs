@@ -675,8 +675,7 @@ namespace Evade
             PlayerPosition = ObjectManager.Player.ServerPosition.To2D();
             
             //Set evading to false after blinking
-            if (PreviousTickPosition.IsValid() &&
-                PlayerPosition.Distance(PreviousTickPosition) > 200)
+            if (PreviousTickPosition.IsValid() &&  PlayerPosition.Distance(PreviousTickPosition) > 200)
             {
                 Evading = false;
                 EvadeToPoint = Vector2.Zero;
@@ -830,67 +829,67 @@ namespace Evade
                 }
             }
 
-            /*FOLLOWPATH*/
-            if (!NoSolutionFound && !Evading && EvadeToPoint.IsValid() && safeResult.IsSafe)
-            {
-                if (EvadeSpellDatabase.Spells.Any(evadeSpell => evadeSpell.Name == "Walking" && evadeSpell.Enabled))
-                {
-                    if (safePath.IsSafe && !ForcePathFollowing)
-                    {
-                        return;
-                    }
+            ///*FOLLOWPATH*/
+            //if (!NoSolutionFound && !Evading && EvadeToPoint.IsValid() && safeResult.IsSafe)
+            //{
+            //    if (EvadeSpellDatabase.Spells.Any(evadeSpell => evadeSpell.Name == "Walking" && evadeSpell.Enabled))
+            //    {
+            //        if (safePath.IsSafe && !ForcePathFollowing)
+            //        {
+            //            return;
+            //        }
 
-                    if (Utils.TickCount - LastSentMovePacketT2 > 1000 / 15 || !PathFollower.IsFollowing)
-                    {
-                        LastSentMovePacketT2 = Utils.TickCount;
+            //        if (Utils.TickCount - LastSentMovePacketT2 > 1000 / 15 || !PathFollower.IsFollowing)
+            //        {
+            //            LastSentMovePacketT2 = Utils.TickCount;
 
-                        if (DetectedSkillshots.Count == 0)
-                        {
-                            if (ObjectManager.Player.Distance(EvadeToPoint) > 75)
-                            {
-                                ObjectManager.Player.SendMovePacket(EvadeToPoint);
-                            }
-                            return;
-                        }
+            //            if (DetectedSkillshots.Count == 0)
+            //            {
+            //                if (ObjectManager.Player.Distance(EvadeToPoint) > 75)
+            //                {
+            //                    ObjectManager.Player.SendMovePacket(EvadeToPoint);
+            //                }
+            //                return;
+            //            }
 
-                        var path2 = ObjectManager.Player.GetPath(EvadeToPoint.To3D()).To2DList();
-                        var safePath2 = IsSafePath(path2, 100);
+            //            var path2 = ObjectManager.Player.GetPath(EvadeToPoint.To3D()).To2DList();
+            //            var safePath2 = IsSafePath(path2, 100);
 
-                        if (safePath2.IsSafe)
-                        {
-                            if (ObjectManager.Player.Distance(EvadeToPoint) > 75)
-                            {
-                                ObjectManager.Player.SendMovePacket(EvadeToPoint);
-                            }
-                            return;
-                        }
+            //            if (safePath2.IsSafe)
+            //            {
+            //                if (ObjectManager.Player.Distance(EvadeToPoint) > 75)
+            //                {
+            //                    ObjectManager.Player.SendMovePacket(EvadeToPoint);
+            //                }
+            //                return;
+            //            }
 
-                        var candidate = Pathfinding.Pathfinding.PathFind(PlayerPosition, EvadeToPoint);
+            //            var candidate = Pathfinding.Pathfinding.PathFind(PlayerPosition, EvadeToPoint);
 
-                        if (candidate.Count == 0)
-                        {
-                            if (!safePath.Intersection.Valid && currentPath.Count <= 1)
-                            {
-                                safePath = IsSafePath(path2, 100);
-                            }
+            //            if (candidate.Count == 0)
+            //            {
+            //                if (!safePath.Intersection.Valid && currentPath.Count <= 1)
+            //                {
+            //                    safePath = IsSafePath(path2, 100);
+            //                }
 
-                            if (safePath.Intersection.Valid)
-                            {
-                                if (ObjectManager.Player.Distance(safePath.Intersection.Point) > 75)
-                                {
-                                    ObjectManager.Player.SendMovePacket(safePath.Intersection.Point);
-                                    return;
-                                }
-                            }
-                        }
+            //                if (safePath.Intersection.Valid)
+            //                {
+            //                    if (ObjectManager.Player.Distance(safePath.Intersection.Point) > 75)
+            //                    {
+            //                        ObjectManager.Player.SendMovePacket(safePath.Intersection.Point);
+            //                        return;
+            //                    }
+            //                }
+            //            }
 
-                        PathFollower.Follow(candidate);
+            //            PathFollower.Follow(candidate);
 
-                        PathFollower.KeepFollowingPath(new EventArgs());
+            //            PathFollower.KeepFollowingPath(new EventArgs());
 
-                    }
-                }
-            }
+            //        }
+            //    }
+            //}
         }
 
         static void Spellbook_OnCastSpell(Spellbook sender, SpellbookCastSpellEventArgs args)
@@ -959,11 +958,12 @@ namespace Evade
             {
                 ForcePathFollowing = false;
             }
-            
+
 
             //Don't block the movement packets if cant find an evade point.
             if (NoSolutionFound)
             {
+                Console.WriteLine("NoSolutionFound");
                 return;
             }
 
@@ -989,21 +989,15 @@ namespace Evade
                 return;
             }
 
-            bool foundWall;
-            var endPositon = new Vector2(args.TargetPosition.X, args.TargetPosition.Y).CutVectorWall(PlayerPosition, out foundWall).To3D();
-
-            var myPath = ObjectManager.Player.GetPath(endPositon).To2DList();
+            var myPath =
+                ObjectManager.Player.GetPath(
+                    new Vector3(args.TargetPosition.X, args.TargetPosition.Y, ObjectManager.Player.ServerPosition.Z)).To2DList();
             var safeResult = IsSafe(PlayerPosition);
+
 
             //If we are evading:
             if (Evading || !safeResult.IsSafe)
             {
-                if (foundWall)
-                {
-                    args.Process = false;
-                    return;
-                }
-
                 var rcSafePath = IsSafePath(myPath, Config.EvadingRouteChangeTimeOffset);
                 if (args.Order == GameObjectOrder.MoveTo)
                 {
@@ -1058,38 +1052,9 @@ namespace Evade
                     }
                 }
 
-                //var computedPoints = Utils.CirclePoints(20, 250, PlayerPosition.To3D()).ToArray().To2DList();
-                //var point = computedPoints.Select(x => x.CutVectorWall(PlayerPosition, out foundWall)).
-                //    Where(x => IsSafe(x).IsSafe).OrderByDescending(x => (x - PlayerPosition).AngleBetween(x - args.TargetPosition.To2D())).
-                //    ThenBy(x => x.Distance(PlayerPosition)).
-                //    FirstOrDefault();
-                //
-                //if (point.IsValid())
-                //{
-                //    ObjectManager.Player.SendMovePacket(point);
-                //}
-
                 ForcePathFollowing = true;
                 args.Process = false;
             }
-
-            if (foundWall && DetectedSkillshots.Count != 0 && args.Order != GameObjectOrder.AttackUnit)
-            {
-               //var points = Utils.CirclePoints(20, 250, PlayerPosition.To3D()).ToArray().To2DList();
-               //var point = points.Select(x => x.CutVectorWall(PlayerPosition, out foundWall)).
-               //    Where(x => IsSafe(x).IsSafe).OrderByDescending(x => (x - PlayerPosition).AngleBetween(x - args.TargetPosition.To2D())).
-               //    ThenBy(x => x.Distance(PlayerPosition)).
-               //    FirstOrDefault();
-               //
-               //if (point.IsValid())
-               //{
-               //    ObjectManager.Player.SendMovePacket(point);
-               //}
-
-                //args.Process = false;
-                //return;
-            }
-
 
             //AutoAttacks.
             if (!safePath.IsSafe && args.Order == GameObjectOrder.AttackUnit)
