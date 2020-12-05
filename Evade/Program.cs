@@ -1013,7 +1013,7 @@ namespace Evade
                         Utils.TickCount - Config.LastEvadePointChangeT > Config.EvadePointChangeInterval)
                     {
                         //Update the evade point to the closest one:
-                        var points = Evader.GetEvadePoints(-1, 65, false, true);
+                        var points = Evader.GetEvadePoints(-1, 0, false, true);
                         if (points.Count > 0)
                         {
                             var to = new Vector2(args.TargetPosition.X, args.TargetPosition.Y);

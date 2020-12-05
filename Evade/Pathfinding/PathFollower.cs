@@ -35,7 +35,7 @@ namespace Evade.Pathfinding
                 if (Path.Count > 0)
                 {
                     Program.LastSentMovePacketT2 = Evade.Utils.TickCount;
-                    ObjectManager.Player.SendMovePacket(Path[0]);
+                    ObjectManager.Player.SendMovePacket(Path[0], true);
                 }
             }
         }

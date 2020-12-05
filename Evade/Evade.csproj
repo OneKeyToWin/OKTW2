@@ -37,28 +37,28 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="clipper_library">
-      <HintPath>..\..\..\..\Desktop\LeagueSharp\Kernel\clipper_library.dll</HintPath>
+      <HintPath>..\..\..\..\Downloads\LeagueSharp\Kernel\clipper_library.dll</HintPath>
     </Reference>
     <Reference Include="LeagueSharp">
-      <HintPath>..\..\..\..\Desktop\LeagueSharp\Kernel\LeagueSharp.dll</HintPath>
+      <HintPath>..\..\..\..\Downloads\LeagueSharp\Kernel\LeagueSharp.dll</HintPath>
     </Reference>
     <Reference Include="LeagueSharp.Common">
-      <HintPath>..\..\..\..\Desktop\LeagueSharp\Kernel\LeagueSharp.Common.dll</HintPath>
+      <HintPath>..\..\..\..\Downloads\LeagueSharp\Kernel\LeagueSharp.Common.dll</HintPath>
     </Reference>
     <Reference Include="LeagueSharp.Data">
-      <HintPath>..\..\..\..\Desktop\LeagueSharp\Kernel\LeagueSharp.Data.dll</HintPath>
+      <HintPath>..\..\..\..\Downloads\LeagueSharp\Kernel\LeagueSharp.Data.dll</HintPath>
     </Reference>
     <Reference Include="LeagueSharp.Sandbox">
-      <HintPath>..\..\..\..\Desktop\LeagueSharp\Kernel\LeagueSharp.Sandbox.dll</HintPath>
+      <HintPath>..\..\..\..\Downloads\LeagueSharp\Kernel\LeagueSharp.Sandbox.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\..\..\Desktop\LeagueSharp\Kernel\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\..\..\Downloads\LeagueSharp\Kernel\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX">
-      <HintPath>..\..\..\..\Desktop\LeagueSharp\Kernel\SharpDX.dll</HintPath>
+      <HintPath>..\..\..\..\Downloads\LeagueSharp\Kernel\SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.Direct3D9">
-      <HintPath>..\..\..\..\Desktop\LeagueSharp\Kernel\SharpDX.Direct3D9.dll</HintPath>
+      <HintPath>..\..\..\..\Downloads\LeagueSharp\Kernel\SharpDX.Direct3D9.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
