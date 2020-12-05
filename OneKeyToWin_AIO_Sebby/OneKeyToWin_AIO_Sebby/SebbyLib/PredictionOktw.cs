@@ -291,6 +291,10 @@ namespace SebbyLib.Prediction
             // PREPARE MATH ///////////////////////////////////////////////////////////////////////////////////
             var wayPoints = input.Unit.GetWaypoints();
             var lastWaypiont = wayPoints.Last().To3D();
+            if (!input.Unit.IsMoving)
+            {
+                lastWaypiont = input.Unit.Position;
+            }
             var distanceUnitToWaypoint = lastWaypiont.Distance(input.Unit.Position);
             var distanceFromToUnit = input.From.Distance(input.Unit.Position);
             var distanceFromToWaypoint = lastWaypiont.Distance(input.From);
