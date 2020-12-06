@@ -71,6 +71,23 @@ namespace Evade
         private static void Game_OnUpdate(EventArgs args)
         {
             hius.RemoveAll(x => x.created_at + 2000 < Utils.TickCount);
+
+           
+            {
+                //Get the skillshot data.
+                var spellData = SpellDatabase.GetByName(ObjectManager.Player.Spellbook.GetSpell(SpellSlot.Q).SData.Name);
+
+                //Skillshot not added in the database.
+                if (spellData == null)
+                {
+                    return;
+                }
+                //if(Program.DetectedSkillshots.Count == 0)
+                //{
+                //    TriggerOnDetectSkillshot(DetectionType.ProcessSpell, spellData,
+                //        Utils.TickCount, Game.CursorPos.To2D(), ObjectManager.Player.Position.To2D(), ObjectManager.Player.Position.To2D(), ObjectManager.Player);
+                //}
+            }
         }
 
         public static bool GetHiuLine(Vector2 position, ref Vector2 start, ref Vector2 end)

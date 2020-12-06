@@ -903,16 +903,23 @@ namespace Evade
             if (!safePath.IsSafe && args.Order != GameObjectOrder.AttackUnit)
             {
                 Console.WriteLine("block move");
-                if (safePath.Intersection.Valid)
+                //if (safePath.Intersection.Valid)
+                //{
+                //    if (ObjectManager.Player.Distance(safePath.Intersection.Point) > 75)
+                //    {
+                //        Console.WriteLine("update point block move");
+                //        EvadePoint = safePath.Intersection.Point;
+                //        Evading = true;
+                //    }
+                //}
+                Vector2 pathfinderPoint = GetPathFinderPoint();
+                if (pathfinderPoint.IsValid())
                 {
-                    if (ObjectManager.Player.Distance(safePath.Intersection.Point) > 75)
-                    {
-                        Console.WriteLine("update point block move");
-                        EvadePoint = safePath.Intersection.Point;
-                        Evading = true;
-                    }
+                    Console.WriteLine("FOUND POINT");
+                    ObjectManager.Player.SendMovePacket(pathfinderPoint);
+                    
                 }
-                ObjectManager.Player.SendMovePacket(safePath.Intersection.Point);
+                args.Process = false;
                 return;
             }
 
@@ -938,6 +945,87 @@ namespace Evade
             }
             Console.WriteLine("move accept");
         }
+
+        public static Vector2 GetPathFinderPoint()
+        {
+            Vector2 Center;
+            Vector2[] Points = new Vector2[16]; ;
+            var gameCursorVec2 = Game.CursorPos.To2D();
+            Center = ObjectManager.Player.Position.To2D();
+            Points = CirclePoints(16, 500, Center);
+            Points = Points.OrderBy(x => x.Distance(gameCursorVec2, true)).ToArray();
+
+            foreach (var vector2 in Points)
+            {
+                var truePosition = CutVector(PlayerPosition,vector2);
+
+                if (!IsSafe(truePosition).IsSafe)
+                {
+                    continue;
+                }
+
+                var safeResult = IsSafePath(ObjectManager.Player.GetPath(truePosition.To3D()).To2DList(), 250);
+                if (!safeResult.IsSafe || safeResult.Intersection.Valid)
+                {
+                    continue;
+                }
+
+                if (ObjectManager.Player.Distance(truePosition, true) < 125 * 125)
+                {
+                    continue;
+                }
+
+                if (ObjectManager.Player.Direction.To2D().AngleBetween(truePosition - PlayerPosition) < 120)
+                {
+                    return truePosition;
+                }
+            }
+
+            return Vector2.Zero;
+        }
+
+        public static Vector2 CutVector(Vector2 from, Vector2 to, int step = 20)
+        {
+            float distance = from.Distance(to);
+            Vector2 output = to;
+            var array = new List<Vector2>();
+
+            for (float i = 0; i <= distance; i += step)
+            {
+                Vector2 vec = from.Extend(to, i);
+
+                array.Add(vec);
+            }
+
+            for (int i = 0; i < array.Count; i++)
+            {
+                if (!array[i].IsWall())
+                {
+                    continue;
+                }
+
+                Vector2 result = i - 1 >= 0 ? array[i - 1] : array[i];
+
+                /**
+                 * Możemy tylko dojść do ściany do końcówki BBoxa 
+                 */
+                return result.Extend(from, ObjectManager.Player.BoundingRadius);
+            }
+            return output;
+        }
+
+        public static Vector2[] CirclePoints(float CircleLineSegmentN, float radius, Vector2 position)
+        {
+            var points = new List<Vector2>();
+            for (var i = 1; i <= CircleLineSegmentN; i++)
+            {
+                var angle = i * 2 * Math.PI / CircleLineSegmentN;
+                var point = new Vector2(position.X + radius * (float)Math.Cos(angle), position.Y + radius * (float)Math.Sin(angle));
+                points.Add(point);
+            }
+            return points.ToArray();
+        }
+
 
         private static void UnitOnOnDash(Obj_AI_Base sender, Dash.DashItem args)
         {
