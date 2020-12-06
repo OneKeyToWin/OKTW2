@@ -1,18 +1,3 @@
-// Copyright 2014 - 2014 Esk0r
-// Config.cs is part of Evade.
-// 
-// Evade is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Evade is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU General Public License for more details.
-// 
-// You should have received a copy of the GNU General Public License
-// along with Evade. If not, see <http://www.gnu.org/licenses/>.
 
 #region
 
@@ -28,9 +13,9 @@ namespace Evade
 {
     internal static class Config
     {
-        public const bool PrintSpellData = true;
-        public const bool TestOnAllies = true;
-        public const int SkillShotsExtraRadius = 20;
+        public const bool PrintSpellData = false;
+        public const bool TestOnAllies = false;
+        public const int SkillShotsExtraRadius = 15;
         public const int SkillShotsExtraRange = 20;
         public const int GridSize = 10;
         public const int ExtraEvadeDistance = 15;
@@ -41,13 +26,10 @@ namespace Evade
         public const int DiagonalEvadePointsStep = 20;
 
         public const int CrossingTimeOffset = 250;
-
         public const int EvadingFirstTimeOffset = 250;
         public const int EvadingSecondTimeOffset = 80;
-
         public const int EvadingRouteChangeTimeOffset = 250;
-
-        public const int EvadePointChangeInterval = 300;
+        public const int EvadePointChangeInterval = 200;
         public static int LastEvadePointChangeT = 0;
 
         public static Menu Menu;

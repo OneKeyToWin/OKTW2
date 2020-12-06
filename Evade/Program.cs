@@ -28,7 +28,6 @@ namespace Evade
         private static readonly Random RandomN = new Random();
         public static int LastSentMovePacketT = 0;
         public static int LastSentMovePacketT2 = 0;
-        private static int LastSMovePacketT = 0;
 
         public static bool Evading
         {
@@ -86,6 +85,7 @@ namespace Evade
             Game.OnUpdate += Game_OnOnGameUpdate;
             Obj_AI_Hero.OnIssueOrder += ObjAiHeroOnOnIssueOrder;
             Spellbook.OnCastSpell += Spellbook_OnCastSpell;
+
             //Set up the OnDetectSkillshot Event.
             SkillshotDetector.OnDetectSkillshot += OnDetectSkillshot;
             SkillshotDetector.OnDeleteMissile += SkillshotDetectorOnOnDeleteMissile;
@@ -97,7 +97,6 @@ namespace Evade
             CustomEvents.Unit.OnDash += UnitOnOnDash;
 
             DetectedSkillshots.OnAdd += DetectedSkillshots_OnAdd;
-
             Drawing.OnPreReset += dummyArgs => { WarningMsg.OnLostDevice(); };
             Drawing.OnPostReset += dummyArgs => { WarningMsg.OnResetDevice(); };
 
@@ -903,21 +902,11 @@ namespace Evade
             if (!safePath.IsSafe && args.Order != GameObjectOrder.AttackUnit)
             {
                 Console.WriteLine("block move");
-                //if (safePath.Intersection.Valid)
-                //{
-                //    if (ObjectManager.Player.Distance(safePath.Intersection.Point) > 75)
-                //    {
-                //        Console.WriteLine("update point block move");
-                //        EvadePoint = safePath.Intersection.Point;
-                //        Evading = true;
-                //    }
-                //}
                 Vector2 pathfinderPoint = GetPathFinderPoint();
                 if (pathfinderPoint.IsValid())
                 {
                     Console.WriteLine("FOUND POINT");
-                    ObjectManager.Player.SendMovePacket(pathfinderPoint);
-                    
+                    ObjectManager.Player.SendMovePacket(pathfinderPoint, true);
                 }
                 args.Process = false;
                 return;
@@ -952,7 +941,7 @@ namespace Evade
             Vector2[] Points = new Vector2[16]; ;
             var gameCursorVec2 = Game.CursorPos.To2D();
             Center = ObjectManager.Player.Position.To2D();
-            Points = CirclePoints(16, 500, Center);
+            Points = CirclePoints(16, 400, Center);
             Points = Points.OrderBy(x => x.Distance(gameCursorVec2, true)).ToArray();
 
             foreach (var vector2 in Points)
@@ -960,25 +949,17 @@ namespace Evade
                 var truePosition = CutVector(PlayerPosition,vector2);
 
                 if (!IsSafe(truePosition).IsSafe)
-                {
                     continue;
-                }
 
                 var safeResult = IsSafePath(ObjectManager.Player.GetPath(truePosition.To3D()).To2DList(), 250);
                 if (!safeResult.IsSafe || safeResult.Intersection.Valid)
-                {
                     continue;
-                }
-
+                
                 if (ObjectManager.Player.Distance(truePosition, true) < 125 * 125)
-                {
                     continue;
-                }
 
                 if (ObjectManager.Player.Direction.To2D().AngleBetween(truePosition - PlayerPosition) < 120)
-                {
                     return truePosition;
-                }
             }
 
             return Vector2.Zero;
@@ -993,22 +974,15 @@ namespace Evade
             for (float i = 0; i <= distance; i += step)
             {
                 Vector2 vec = from.Extend(to, i);
-
                 array.Add(vec);
             }
 
             for (int i = 0; i < array.Count; i++)
             {
                 if (!array[i].IsWall())
-                {
                     continue;
-                }
 
                 Vector2 result = i - 1 >= 0 ? array[i - 1] : array[i];
-
-                /**
-                 * Możemy tylko dojść do ściany do końcówki BBoxa 
-                 */
                 return result.Extend(from, ObjectManager.Player.BoundingRadius);
             }
             return output;
@@ -1156,7 +1130,7 @@ namespace Evade
                         if (points.Count > 0)
                         {
                             EvadePoint = to.Closest(points);
-                            var nEvadePoint = EvadePoint.Extend(PlayerPosition, -100);
+                            var nEvadePoint = EvadePoint.Extend(PlayerPosition, -60);
                             if (
                                 Program.IsSafePath(
                                     ObjectManager.Player.GetPath(nEvadePoint.To3D()).To2DList(),

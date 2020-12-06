@@ -36,13 +36,20 @@ namespace Evade
             get { return (int)(Game.Time * 1000f); }
         }
 
+        public static Vector3[] GetPath2(this Obj_AI_Hero hero, Vector3 end)
+        {
+            List<Vector3> result = new List<Vector3>();
+
+            result.Add(hero.Position);
+
+            return result.ToArray();
+        }
+
         public static List<Vector2> To2DList(this Vector3[] v)
         {
             var result = new List<Vector2>();
             foreach (var point in v)
-            {
                 result.Add(point.To2D());
-            }
             return result;
         }
 

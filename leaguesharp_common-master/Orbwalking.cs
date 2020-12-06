@@ -112,7 +112,7 @@ namespace LeagueSharp.Common
         private static int _autoattackCounter;
         private static int _delay;
         private static AttackableUnit _lastTarget;
-        private static float _minDistance = 400;
+        private static float _minDistance = 100;
         private static bool _missileLaunched;
 
         static Orbwalking()

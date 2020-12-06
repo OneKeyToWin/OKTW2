@@ -76,7 +76,6 @@ namespace Evade
         }
     }
 
-
     public class Skillshot
     {
         public Geometry.Circle Circle;
