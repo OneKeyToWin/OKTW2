@@ -159,9 +159,7 @@ namespace Evade
             var alreadyAdded = false;
 
             if (Config.Menu.Item("DisableFow").GetValue<bool>() && !skillshot.Unit.IsVisible)
-            {
                 return;
-            }
 
             foreach (var item in DetectedSkillshots)
             {
@@ -177,9 +175,8 @@ namespace Evade
 
             //Check if the skillshot is from an ally.
             if (skillshot.Unit.Team == ObjectManager.Player.Team && !Config.TestOnAllies)
-            {
                 return;
-            }
+            
 
             //Check if the skillshot is too far away.
             if (skillshot.Start.Distance(PlayerPosition) >

@@ -375,9 +375,7 @@ namespace Evade
             }
         }
 
-        /// <summary>
         /// Returns the missile position after time time.
-        /// </summary>
         public Vector2 GlobalGetMissilePosition(int time)
         {
             var t = Math.Max(0, Utils.TickCount + time - StartTick - SpellData.Delay);
@@ -385,23 +383,17 @@ namespace Evade
             return Start + Direction * t;
         }
 
-        /// <summary>
         /// Returns the missile position after time time.
-        /// </summary>
         public Vector2 GetMissilePosition(int time)
         {
             var t = Math.Max(0, Utils.TickCount + time - StartTick - SpellData.Delay);
-
-
             var x = 0;
-
             //Missile with acceleration = 0.
             if (SpellData.MissileAccel == 0)
             {
                 x = t * SpellData.MissileSpeed / 1000;
             }
-
-                //Missile with constant acceleration.
+            //Missile with constant acceleration.
             else
             {
                 var t1 = (SpellData.MissileAccel > 0
@@ -428,11 +420,7 @@ namespace Evade
             t = (int) Math.Max(0, Math.Min(CollisionEnd.Distance(Start), x));
             return Start + Direction * t;
         }
-
-
-        /// <summary>
         /// Returns if the skillshot will hit you when trying to blink to the point.
-        /// </summary>
         public bool IsSafeToBlink(Vector2 point, int timeOffset, int delay = 0)
         {
             timeOffset /= 2;
@@ -464,9 +452,7 @@ namespace Evade
             return timeToExplode > timeOffset + delay;
         }
 
-        /// <summary>
         /// Returns if the skillshot will hit the unit if the unit follows the path.
-        /// </summary>
         public SafePathResult IsSafePath(GamePath path,
             int timeOffset,
             int speed = -1,
@@ -479,9 +465,7 @@ namespace Evade
             speed = (speed == -1) ? (int) ObjectManager.Player.MoveSpeed : speed;
 
             if (unit == null)
-            {
                 unit = ObjectManager.Player;
-            }
 
             var allIntersections = new List<FoundIntersection>();
             for (var i = 0; i <= path.Count - 2; i++)
@@ -494,7 +478,6 @@ namespace Evade
                 {
                     var sideStart = Polygon.Points[j];
                     var sideEnd = Polygon.Points[j == (Polygon.Points.Count - 1) ? 0 : j + 1];
-
                     var intersection = from.Intersection(to, sideStart, sideEnd);
 
                     if (intersection.Intersects)

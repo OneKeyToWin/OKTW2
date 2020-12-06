@@ -381,12 +381,6 @@ namespace LeagueSharp.Common
 
             var point = position;
 
-            if (Player.Distance(point, true) < 150 * 150)
-            {
-                point = playerPosition.Extend(
-                    position,
-                    randomizeMinDistance ? (_random.NextFloat(0.6f, 1) + 0.2f) * _minDistance : _minDistance);
-            }
             var angle = 0f;
             var currentPath = Player.GetWaypoints();
             if (currentPath.Count > 1 && currentPath.PathLength() > 100)
@@ -414,9 +408,8 @@ namespace LeagueSharp.Common
                 return;
 
             if (Player.Distance(point, true) > 500 * 500)
-            {
-                point = playerPosition.Extend(position, randomizeMinDistance ? (_random.NextFloat(0.6f, 1) + 0.2f) * 400 : 400);
-            }
+                point = playerPosition.Extend(position, randomizeMinDistance ? (_random.NextFloat(0.6f, 1)) * 800 : 800);
+
             Player.ForceIssueOrder(GameObjectOrder.MoveTo, point);
             LastMoveCommandPosition = point;
             LastMoveCommandT = Utils.GameTimeTickCount;
