@@ -413,6 +413,10 @@ namespace LeagueSharp.Common
             if (angle >= 60 && Utils.GameTimeTickCount - LastMoveCommandT < 60)
                 return;
 
+            if (Player.Distance(point, true) > 500 * 500)
+            {
+                point = playerPosition.Extend(position, randomizeMinDistance ? (_random.NextFloat(0.6f, 1) + 0.2f) * 400 : 400);
+            }
             Player.ForceIssueOrder(GameObjectOrder.MoveTo, point);
             LastMoveCommandPosition = point;
             LastMoveCommandT = Utils.GameTimeTickCount;
