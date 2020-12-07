@@ -934,11 +934,8 @@ namespace Evade
 
         public static Vector2 GetPathFinderPoint()
         {
-            Vector2 Center;
-            Vector2[] Points = new Vector2[16]; ;
             var gameCursorVec2 = Game.CursorPos.To2D();
-            Center = ObjectManager.Player.Position.To2D();
-            Points = CirclePoints(16, 400, Center);
+            var Points = CirclePoints(16, 400, ObjectManager.Player.Position.To2D());
             Points = Points.OrderBy(x => x.Distance(gameCursorVec2, true)).ToArray();
 
             foreach (var vector2 in Points)
@@ -1127,11 +1124,8 @@ namespace Evade
                         if (points.Count > 0)
                         {
                             EvadePoint = to.Closest(points);
-                            var nEvadePoint = EvadePoint.Extend(PlayerPosition, -60);
-                            if (
-                                Program.IsSafePath(
-                                    ObjectManager.Player.GetPath(nEvadePoint.To3D()).To2DList(),
-                                    Config.EvadingSecondTimeOffset, (int)ObjectManager.Player.MoveSpeed, 100).IsSafe)
+                            var nEvadePoint = EvadePoint.Extend(PlayerPosition, -100);
+                            if (Program.IsSafePath(ObjectManager.Player.GetPath(nEvadePoint.To3D()).To2DList(), Config.EvadingSecondTimeOffset, (int)ObjectManager.Player.MoveSpeed, 100).IsSafe)
                             {
                                 EvadePoint = nEvadePoint;
                             }
