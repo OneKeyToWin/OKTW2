@@ -3701,6 +3701,34 @@ namespace Evade
 
             #endregion Taric
 
+            #region Teemo
+
+            Spells.Add(
+                new SpellData
+                {
+                    ChampionName = "Teemo",
+                    SpellName = "TeemoR",
+                    Slot = SpellSlot.R,
+                    Type = SkillShotType.SkillshotCircle,
+                    Delay = 250,
+                    ExtraDuration = 3050,
+                    Range = 600,
+                    Radius = 140,
+                    MissileSpeed = int.MaxValue,
+                    FixedRange = false,
+                    AddHitbox = true,
+                    DontCross = true,
+                    DangerValue = 2,
+                    IsDangerous = true,
+                    MissileSpellName = "ZileanQMissile",
+                    ToggleParticleName = "Zilean_.+_Q.+attach_mis",
+                    EndAtParticle = "Noxious Trap",
+                    //EndAtParticle = "Zilean_.+_Q.+TimeBombFixGreen",
+                    CollisionObjects = new[] { CollisionObjectTypes.YasuoWall }
+                });
+
+            #endregion Zilean
+
             #region Thresh
 
             Spells.Add(
@@ -4466,15 +4494,18 @@ namespace Evade
                     Slot = SpellSlot.Q,
                     Type = SkillShotType.SkillshotCircle,
                     Delay = 250 + 450,
-                    ExtraDuration = 400,
+                    ExtraDuration = 3050,
                     Range = 900,
                     Radius = 140,
                     MissileSpeed = int.MaxValue,
                     FixedRange = false,
                     AddHitbox = true,
+                    DontCross = true,
                     DangerValue = 2,
-                    IsDangerous = false,
+                    IsDangerous = true,
                     MissileSpellName = "ZileanQMissile",
+                    ToggleParticleName = "Zilean_.+_Q.+attach_mis",
+                    //EndAtParticle = "Zilean_.+_Q.+TimeBombFixGreen",
                     CollisionObjects = new[] {CollisionObjectTypes.YasuoWall}
                 });
 
@@ -4757,7 +4788,7 @@ namespace Evade
                     Type = SkillShotType.SkillshotMissileLine,
                     Delay = 250,
                     Range = 1100,
-                    Radius = 70,
+                    Radius = 80,
                     MissileSpeed = 2000,
                     AddHitbox = true,
                     DangerValue = 4,

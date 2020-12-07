@@ -76,8 +76,8 @@ namespace Evade
 
             if (Config.TestOnAllies && spellData != null && Program.DetectedSkillshots.Count == 0 )
             {
-                TriggerOnDetectSkillshot(DetectionType.ProcessSpell, spellData,
-                    Utils.TickCount, Game.CursorPos.To2D(), ObjectManager.Player.Position.To2D(), ObjectManager.Player.Position.To2D(), ObjectManager.Player);
+                //TriggerOnDetectSkillshot(DetectionType.ProcessSpell, spellData,
+                //    Utils.TickCount, Game.CursorPos.To2D(), ObjectManager.Player.Position.To2D(), ObjectManager.Player.Position.To2D(), ObjectManager.Player);
             }
         }
 

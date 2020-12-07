@@ -903,7 +903,11 @@ namespace Evade
                 if (pathfinderPoint.IsValid())
                 {
                     Console.WriteLine("FOUND POINT");
-                    ObjectManager.Player.SendMovePacket(pathfinderPoint, true);
+                    if (Utils.TickCount - LastSentMovePacketT > 1000 / 3)
+                    {
+                        LastSentMovePacketT = Utils.TickCount;
+                        ObjectManager.Player.SendMovePacket(pathfinderPoint, true);
+                    }
                 }
                 args.Process = false;
                 return;
@@ -935,21 +939,21 @@ namespace Evade
         public static Vector2 GetPathFinderPoint()
         {
             var gameCursorVec2 = Game.CursorPos.To2D();
-            var Points = CirclePoints(16, 400, ObjectManager.Player.Position.To2D());
+            var Points = Utils.CirclePoints(20, 300, ObjectManager.Player.Position.To2D());
             Points = Points.OrderBy(x => x.Distance(gameCursorVec2, true)).ToArray();
 
             foreach (var vector2 in Points)
             {
-                var truePosition = CutVector(PlayerPosition,vector2);
+                var truePosition = Utils.CutVector(PlayerPosition,vector2);
 
                 if (!IsSafe(truePosition).IsSafe)
                     continue;
 
-                var safeResult = IsSafePath(ObjectManager.Player.GetPath(truePosition.To3D()).To2DList(), 250);
+                var safeResult = IsSafePath(ObjectManager.Player.GetPath(truePosition.To3D()).To2DList(), Config.CrossingTimeOffset);
                 if (!safeResult.IsSafe || safeResult.Intersection.Valid)
                     continue;
                 
-                if (ObjectManager.Player.Distance(truePosition, true) < 125 * 125)
+                if (ObjectManager.Player.Distance(truePosition, true) < 100 * 100)
                     continue;
 
                 if (ObjectManager.Player.Direction.To2D().AngleBetween(truePosition - PlayerPosition) < 120)
@@ -958,42 +962,6 @@ namespace Evade
 
             return Vector2.Zero;
         }
-
-        public static Vector2 CutVector(Vector2 from, Vector2 to, int step = 20)
-        {
-            float distance = from.Distance(to);
-            Vector2 output = to;
-            var array = new List<Vector2>();
-
-            for (float i = 0; i <= distance; i += step)
-            {
-                Vector2 vec = from.Extend(to, i);
-                array.Add(vec);
-            }
-
-            for (int i = 0; i < array.Count; i++)
-            {
-                if (!array[i].IsWall())
-                    continue;
-
-                Vector2 result = i - 1 >= 0 ? array[i - 1] : array[i];
-                return result.Extend(from, ObjectManager.Player.BoundingRadius);
-            }
-            return output;
-        }
-
-        public static Vector2[] CirclePoints(float CircleLineSegmentN, float radius, Vector2 position)
-        {
-            var points = new List<Vector2>();
-            for (var i = 1; i <= CircleLineSegmentN; i++)
-            {
-                var angle = i * 2 * Math.PI / CircleLineSegmentN;
-                var point = new Vector2(position.X + radius * (float)Math.Cos(angle), position.Y + radius * (float)Math.Sin(angle));
-                points.Add(point);
-            }
-            return points.ToArray();
-        }
-
 
         private static void UnitOnOnDash(Obj_AI_Base sender, Dash.DashItem args)
         {

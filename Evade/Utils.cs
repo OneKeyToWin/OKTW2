@@ -45,6 +45,48 @@ namespace Evade
             return result.ToArray();
         }
 
+        public static Vector2 CutVector(Vector2 from, Vector2 to, int step = 20)
+        {
+            float distance = from.Distance(to);
+            Vector2 output = to;
+            var array = new List<Vector2>();
+
+            for (float i = 0; i <= distance; i += step)
+            {
+                Vector2 vec = from.Extend(to, i);
+                array.Add(vec);
+            }
+
+            for (int i = 0; i < array.Count; i++)
+            {
+                if (!array[i].IsWall())
+                    continue;
+
+                Vector2 result = i - 1 >= 0 ? array[i - 1] : array[i];
+                return result.Extend(from, ObjectManager.Player.BoundingRadius);
+            }
+
+            return output;
+        }
+
+        public static Vector2[] CirclePoints(float CircleLineSegmentN, float radius, Vector2 position)
+        {
+            var points = new List<Vector2>();
+            for (var i = 1; i <= CircleLineSegmentN; i++)
+            {
+                var angle = i * 2 * Math.PI / CircleLineSegmentN;
+                var point = new Vector2(position.X + radius * (float)Math.Cos(angle), position.Y + radius * (float)Math.Sin(angle));
+                points.Add(point);
+            }
+            radius = radius / 3;
+            for (var i = 1; i <= CircleLineSegmentN / 2; i++)
+            {
+                var angle = i * 2 * Math.PI / CircleLineSegmentN;
+                var point = new Vector2(position.X + radius * (float)Math.Cos(angle), position.Y + (radius) * (float)Math.Sin(angle));
+                points.Add(point);
+            }
+            return points.ToArray();
+        }
         public static List<Vector2> To2DList(this Vector3[] v)
         {
             var result = new List<Vector2>();
