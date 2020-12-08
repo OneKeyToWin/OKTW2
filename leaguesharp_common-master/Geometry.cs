@@ -352,51 +352,62 @@
             Vector2 lineSegment2Start,
             Vector2 lineSegment2End)
         {
-            double deltaACy = lineSegment1Start.Y - lineSegment2Start.Y;
-            double deltaDCx = lineSegment2End.X - lineSegment2Start.X;
-            double deltaACx = lineSegment1Start.X - lineSegment2Start.X;
-            double deltaDCy = lineSegment2End.Y - lineSegment2Start.Y;
-            double deltaBAx = lineSegment1End.X - lineSegment1Start.X;
-            double deltaBAy = lineSegment1End.Y - lineSegment1Start.Y;
+            Vector2 side1 = new Vector2(lineSegment1End.X - lineSegment1Start.X, lineSegment1End.Y - lineSegment1Start.Y );
+            Vector2 side2 = new Vector2(lineSegment2End.X - lineSegment2Start.X, lineSegment2End.Y - lineSegment2Start.Y );
 
-            var denominator = deltaBAx * deltaDCy - deltaBAy * deltaDCx;
-            var numerator = deltaACy * deltaDCx - deltaACx * deltaDCy;
+            var s = (-side1.Y * (lineSegment1Start.X - lineSegment2Start.X) + side1.X * (lineSegment1Start.Y - lineSegment2Start.Y)) / (-side2.X * side1.Y + side1.X * side2.Y);
+            var t = (side2.X * (lineSegment1Start.Y - lineSegment2Start.Y) - side2.Y * (lineSegment1Start.X - lineSegment2Start.X)) / (-side2.X * side1.Y + side1.X * side2.Y);
 
-            if (Math.Abs(denominator) < float.Epsilon)
-            {
-                if (Math.Abs(numerator) < float.Epsilon)
-                {
-                    // collinear. Potentially infinite intersection points.
-                    // Check and return one of them.
-                    if (lineSegment1Start.X >= lineSegment2Start.X && lineSegment1Start.X <= lineSegment2End.X)
-                    {
-                        return new IntersectionResult(true, lineSegment1Start);
-                    }
-                    if (lineSegment2Start.X >= lineSegment1Start.X && lineSegment2Start.X <= lineSegment1End.X)
-                    {
-                        return new IntersectionResult(true, lineSegment2Start);
-                    }
-                    return new IntersectionResult();
-                }
-                // parallel
-                return new IntersectionResult();
-            }
+            if (s >= 0 && s <= 1 && t >= 0 && t <= 1)
+                return new IntersectionResult( true,  new Vector2(lineSegment1Start.X + t * side1.X,  lineSegment1Start.Y + t * side1.Y));
 
-            var r = numerator / denominator;
-            if (r < 0 || r > 1)
-            {
-                return new IntersectionResult();
-            }
+            return new IntersectionResult(false, lineSegment1Start);
 
-            var s = (deltaACy * deltaBAx - deltaACx * deltaBAy) / denominator;
-            if (s < 0 || s > 1)
-            {
-                return new IntersectionResult();
-            }
+            //double deltaACy = lineSegment1Start.Y - lineSegment2Start.Y;
+            //double deltaDCx = lineSegment2End.X - lineSegment2Start.X;
+            //double deltaACx = lineSegment1Start.X - lineSegment2Start.X;
+            //double deltaDCy = lineSegment2End.Y - lineSegment2Start.Y;
+            //double deltaBAx = lineSegment1End.X - lineSegment1Start.X;
+            //double deltaBAy = lineSegment1End.Y - lineSegment1Start.Y;
 
-            return new IntersectionResult(
-                true,
-                new Vector2((float)(lineSegment1Start.X + r * deltaBAx), (float)(lineSegment1Start.Y + r * deltaBAy)));
+            //var denominator = deltaBAx * deltaDCy - deltaBAy * deltaDCx;
+            //var numerator = deltaACy * deltaDCx - deltaACx * deltaDCy;
+
+            //if (Math.Abs(denominator) < float.Epsilon)
+            //{
+            //    if (Math.Abs(numerator) < float.Epsilon)
+            //    {
+            //        // collinear. Potentially infinite intersection points.
+            //        // Check and return one of them.
+            //        if (lineSegment1Start.X >= lineSegment2Start.X && lineSegment1Start.X <= lineSegment2End.X)
+            //        {
+            //            return new IntersectionResult(true, lineSegment1Start);
+            //        }
+            //        if (lineSegment2Start.X >= lineSegment1Start.X && lineSegment2Start.X <= lineSegment1End.X)
+            //        {
+            //            return new IntersectionResult(true, lineSegment2Start);
+            //        }
+            //        return new IntersectionResult();
+            //    }
+            //    // parallel
+            //    return new IntersectionResult();
+            //}
+
+            //var r = numerator / denominator;
+            //if (r < 0 || r > 1)
+            //{
+            //    return new IntersectionResult();
+            //}
+
+            //var s = (deltaACy * deltaBAx - deltaACx * deltaBAy) / denominator;
+            //if (s < 0 || s > 1)
+            //{
+            //    return new IntersectionResult();
+            //}
+
+            //return new IntersectionResult(
+            //    true,
+            //    new Vector2((float)(lineSegment1Start.X + r * deltaBAx), (float)(lineSegment1Start.Y + r * deltaBAy)));
         }
 
         //Vector2 class extended methods:
