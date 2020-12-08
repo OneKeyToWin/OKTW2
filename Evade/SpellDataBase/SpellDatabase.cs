@@ -601,7 +601,25 @@ namespace Evade
                     MissileSpellName = "CaitlynPiltoverPeacemaker",
                     CollisionObjects = new[] {CollisionObjectTypes.YasuoWall}
                 });
-
+            Spells.Add(
+                new SpellData
+                {
+                    ChampionName = "Caitlyn",
+                    SpellName = "CaitlynYordleTrap",
+                    Slot = SpellSlot.W,
+                    Type = SkillShotType.SkillshotCircle,
+                    Delay = 1500,
+                    ExtraDuration = 30000,
+                    Range = 1000,
+                    Radius = 70,
+                    MissileSpeed = int.MaxValue,
+                    FixedRange = false,
+                    AddHitbox = true,
+                    DontCross = true,
+                    DangerValue = 2,
+                    IsDangerous = true,
+                    ToggleParticleName = "caitlyn_.+_yordleTrap_trigger_sound"
+                });
             Spells.Add(
                 new SpellData
                 {
@@ -3700,34 +3718,6 @@ namespace Evade
                 });
 
             #endregion Taric
-
-            #region Teemo
-
-            Spells.Add(
-                new SpellData
-                {
-                    ChampionName = "Teemo",
-                    SpellName = "TeemoR",
-                    Slot = SpellSlot.R,
-                    Type = SkillShotType.SkillshotCircle,
-                    Delay = 250,
-                    ExtraDuration = 3050,
-                    Range = 600,
-                    Radius = 140,
-                    MissileSpeed = int.MaxValue,
-                    FixedRange = false,
-                    AddHitbox = true,
-                    DontCross = true,
-                    DangerValue = 2,
-                    IsDangerous = true,
-                    MissileSpellName = "ZileanQMissile",
-                    ToggleParticleName = "Zilean_.+_Q.+attach_mis",
-                    EndAtParticle = "Noxious Trap",
-                    //EndAtParticle = "Zilean_.+_Q.+TimeBombFixGreen",
-                    CollisionObjects = new[] { CollisionObjectTypes.YasuoWall }
-                });
-
-            #endregion Zilean
 
             #region Thresh
 
