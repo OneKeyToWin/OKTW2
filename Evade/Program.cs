@@ -787,8 +787,8 @@ namespace Evade
         {
             if (sender.Owner.IsValid && sender.Owner.IsMe)
             {
-                if (args.Slot == SpellSlot.Recall)
-                    EvadeToPoint = new Vector2();
+                //if (args.Slot == SpellSlot.Recall)
+                //    EvadeToPoint = new Vector2();
 
                 if (Evading)
                 {
