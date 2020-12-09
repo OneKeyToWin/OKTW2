@@ -176,10 +176,10 @@ namespace Evade
 
         private static void GameObject_OnCreate(GameObject sender, EventArgs args)
         {
-            /*if (ObjectManager.Player.Distance(sender.Position) < 1000)
+            if (Config.PrintSpellData && sender is Obj_AI_Hero)
             {
-                Console.WriteLine(Utils.TickCount + " " + sender.Name + " " + sender.IsAlly + " " + sender.Type);
-            }*/
+                Console.WriteLine(Utils.TickCount + " GameObject_OnCreate " + sender.Name + " " + sender.IsAlly + " " + sender.Type);
+            }
 
             var minion = sender as Obj_AI_Minion;
 
@@ -327,7 +327,7 @@ namespace Evade
             for (var i = Program.DetectedSkillshots.Count - 1; i >= 0; i--)
             {
                 var skillshot = Program.DetectedSkillshots[i];
-                if (skillshot.SpellData.ToggleParticleName != "" && new Regex(skillshot.SpellData.ToggleParticleName).IsMatch(sender.Name))
+                if (skillshot.SpellData.ToggleParticleName != "" && new Regex(skillshot.SpellData.ToggleParticleName).IsMatch(sender.Name) && !skillshot.IsSafe(sender.Position.To2D()))
                 {
                     Program.DetectedSkillshots.RemoveAt(i);
                 }

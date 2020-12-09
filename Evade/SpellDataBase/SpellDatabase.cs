@@ -609,7 +609,6 @@ namespace Evade
                     Slot = SpellSlot.W,
                     Type = SkillShotType.SkillshotCircle,
                     Delay = 1350,
-                    ExtraDuration = 30000,
                     Range = 800,
                     Radius = 70,
                     MissileSpeed = int.MaxValue,
@@ -2508,7 +2507,7 @@ namespace Evade
                     AddHitbox = true,
                     DangerValue = 2,
                     IsDangerous = false,
-                    MissileSpellName = "LuluQMissile",
+                    MissileSpellName = "LuluQMissile",  
                     CollisionObjects = new[] {CollisionObjectTypes.YasuoWall},
                 });
 
@@ -2564,20 +2563,19 @@ namespace Evade
                     SpellName = "LuxLightStrikeKugel",
                     Slot = SpellSlot.E,
                     Type = SkillShotType.SkillshotCircle,
-                    Delay = 250,
+                    Delay = 300,
+                    ExtraDuration = 5500,
                     Range = 1100,
                     Radius = 275,
                     MissileSpeed = 1300,
                     FixedRange = false,
                     AddHitbox = true,
-                    DangerValue = 2,
                     IsDangerous = false,
-                    MissileSpellName = "LuxLightStrikeKugel",
-                    ExtraDuration = 5500,
-                    ToggleParticleName = "Lux_.+_E_tar_aoe_",
                     DontCross = true,
-                    CanBeRemoved = true,
-                    DisabledByDefault = false,
+                    MissileSpellName = "LuxLightStrikeKugel",
+                    ToggleParticleName = "Lux_.+_E_tar_aoe_",
+                    DangerValue = 2,
+                    CanBeRemoved = false,
                     CollisionObjects = new[] { CollisionObjectTypes.YasuoWall },
                 });
 
@@ -3214,22 +3212,41 @@ namespace Evade
                 new SpellData
                 {
                     ChampionName = "Sion",
-                    SpellName = "SionE",
-                    Slot = SpellSlot.E,
-                    Type = SkillShotType.SkillshotMissileLine,
-                    Delay = 250,
-                    Range = 800,
-                    Radius = 80,
-                    MissileSpeed = 1800,
+                    SpellName = "SionQ",
+                    Slot = SpellSlot.Q,
+                    Type = SkillShotType.SkillshotLine,
+                    Delay = 900,
+                    ExtraDuration = 1000,
+                    Range = 780,
+                    Radius = 230,
+                    MissileSpeed = 2000,
                     FixedRange = true,
                     AddHitbox = true,
                     DangerValue = 3,
                     IsDangerous = true,
-                    MissileSpellName = "SionEMissile",
-                    CollisionObjects =
-                        new[] {CollisionObjectTypes.Champions, CollisionObjectTypes.YasuoWall},
+                    DontCross = true,
+                    MissileSpellName = "SionQHitParticleMissile2",
+                    ToggleParticleName = "SionQHitParticleMissile2",
                 });
-
+            Spells.Add(
+               new SpellData
+               {
+                   ChampionName = "Sion",
+                   SpellName = "SionE",
+                   Slot = SpellSlot.E,
+                   Type = SkillShotType.SkillshotMissileLine,
+                   Delay = 250,
+                   Range = 1400,
+                   Radius = 80,
+                   MissileSpeed = 1800,
+                   FixedRange = true,
+                   AddHitbox = true,
+                   DangerValue = 3,
+                   IsDangerous = true,
+                   MissileSpellName = "SionEMissile",
+                   CollisionObjects =
+                       new[] { CollisionObjectTypes.Champions, CollisionObjectTypes.YasuoWall },
+               });
             Spells.Add(
                 new SpellData
                 {
@@ -3238,7 +3255,7 @@ namespace Evade
                     Slot = SpellSlot.R,
                     Type = SkillShotType.SkillshotMissileLine,
                     Delay = 500,
-                    Range = 800,
+                    Range = 750,
                     Radius = 120,
                     MissileSpeed = 1000,
                     FixedRange = true,
@@ -4367,7 +4384,6 @@ namespace Evade
                     MissileSpellName = "ZiggsQSpell",
                     EarlyEvade = new[] {EarlyObjects.Allies, EarlyObjects.Minions, EarlyObjects.AllyObjects},
                     CanBeRemoved = false,
-                    DisableFowDetection = true,
                 });
 
             Spells.Add(
@@ -4389,7 +4405,6 @@ namespace Evade
                     ExtraMissileNames = new[] {"ZiggsQSpell2"},
                     EarlyEvade = new[] {EarlyObjects.Allies, EarlyObjects.Minions, EarlyObjects.AllyObjects},
                     CanBeRemoved = false,
-                    DisableFowDetection = true,
                 });
 
             Spells.Add(
@@ -4411,7 +4426,6 @@ namespace Evade
                     ExtraMissileNames = new[] {"ZiggsQSpell3"},
                     EarlyEvade = new[] {EarlyObjects.Allies, EarlyObjects.Minions, EarlyObjects.AllyObjects},
                     CanBeRemoved = false,
-                    DisableFowDetection = true,
                 });
 
             Spells.Add(
@@ -4422,6 +4436,7 @@ namespace Evade
                     Slot = SpellSlot.W,
                     Type = SkillShotType.SkillshotCircle,
                     Delay = 250,
+                    ExtraDuration = 5000,
                     Range = 1000,
                     Radius = 275,
                     MissileSpeed = 1750,
@@ -4430,7 +4445,8 @@ namespace Evade
                     DangerValue = 2,
                     IsDangerous = false,
                     MissileSpellName = "ZiggsW",
-                    DisableFowDetection = true,
+                    ToggleParticleName = "Ziggs.+_W_aoe",
+                    DontCross = true,
                     CollisionObjects = new[] {CollisionObjectTypes.YasuoWall},
                 });
 
@@ -4449,10 +4465,28 @@ namespace Evade
                     AddHitbox = true,
                     DangerValue = 2,
                     IsDangerous = false,
-                    MissileSpellName = "ZiggsE",
-                    DisableFowDetection = true,
+                    DontCross = true,
                 });
-
+            Spells.Add(
+               new SpellData
+               {
+                   ChampionName = "Ziggs",
+                   SpellName = "ZiggsE",
+                   MissileSpellName = "ZiggsE3",
+                   Slot = SpellSlot.E,
+                   Type = SkillShotType.SkillshotCircle,
+                   Delay = 50,
+                   ExtraDuration = 11000,
+                   ToggleParticleName = "Ziggs.+_E_aoe",
+                   Range = 900,
+                   Radius = 20,
+                   MissileSpeed = 1750,
+                   FixedRange = false,
+                   AddHitbox = true,
+                   DangerValue = 2,
+                   IsDangerous = false,
+                   DontCross = true,
+               });
             Spells.Add(
                 new SpellData
                 {
