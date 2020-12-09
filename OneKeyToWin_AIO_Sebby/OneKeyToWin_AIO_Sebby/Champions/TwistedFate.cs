@@ -12,7 +12,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
         private string temp = null;
         private bool cardok = true;
         private int FindCard = 0;
-        private string wName = "";
+        //private string wName = "";
 
         public TwistedFate()
         {
@@ -39,7 +39,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             Config.SubMenu(Player.ChampionName).SubMenu("W Config").AddItem(new MenuItem("Wblue", "Blue key", true).SetValue(new KeyBind("U".ToCharArray()[0], KeyBindType.Press))); //32 == space 
             Config.SubMenu(Player.ChampionName).SubMenu("W Config").AddItem(new MenuItem("Wred", "RED key", true).SetValue(new KeyBind("I".ToCharArray()[0], KeyBindType.Press))); //32 == space 
 
-            
+
             Config.SubMenu(Player.ChampionName).SubMenu("W Config").AddItem(new MenuItem("WblockAA", "Block AA if seeking GOLD card", true).SetValue(true));
             Config.SubMenu(Player.ChampionName).SubMenu("W Config").AddItem(new MenuItem("harassW", "Harass GOLD low range", true).SetValue(true));
             Config.SubMenu(Player.ChampionName).SubMenu("W Config").AddItem(new MenuItem("ignoreW", "Ignore first card", true).SetValue(true));
@@ -65,8 +65,8 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
         private void Obj_AI_Base_OnCreate(GameObject sender, EventArgs args)
         {
-            if (sender.IsValid<Obj_GeneralParticleEmitter>() && sender.Name.Contains("TwistedFate_Base_W_"))
-                wName = sender.Name;
+            // if (sender.IsValid<Obj_GeneralParticleEmitter>() && sender.Name.Contains("TwistedFate_Base_W_"))
+            //     wName = sender.Name;
         }
 
         private void Game_OnWndProc(WndEventArgs args)
@@ -82,7 +82,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
         private void Orbwalking_BeforeAttack(Orbwalking.BeforeAttackEventArgs args)
         {
-            if(Program.Combo && W.IsReady() && FindCard == 1 && W.Instance.Name != "PickACard" &&  Config.Item("WblockAA", true).GetValue<bool>())
+            if (Program.Combo && W.IsReady() && FindCard == 1 && W.Instance.Name != "PickACard" && Config.Item("WblockAA", true).GetValue<bool>())
             {
                 args.Process = false;
             }
@@ -92,14 +92,14 @@ namespace OneKeyToWin_AIO_Sebby.Champions
         {
             foreach (var buf in Player.Buffs.Where(x => x.Name != "secondsight"))
             {
-                
+
             }
             if (!Config.Item("ignoreW", true).GetValue<bool>())
                 cardok = true;
 
             if (W.IsReady())
             {
-                if(Config.Item("Wmode", true).GetValue<StringList>().SelectedIndex == 0)
+                if (Config.Item("Wmode", true).GetValue<StringList>().SelectedIndex == 0)
                     LogicW();
                 else
                     LogicWmaunal();
@@ -110,7 +110,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 cardok = false;
             }
 
-            if(Program.LagFree(2)  && Q.IsReady() && Config.Item("autoQ", true).GetValue<bool>())
+            if (Program.LagFree(2) && Q.IsReady() && Config.Item("autoQ", true).GetValue<bool>())
                 LogicQ();
 
             if (Program.LagFree(4) && Q.IsReady())
@@ -118,7 +118,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
             if (R.IsReady())
             {
-                if(Program.LagFree(3) && W.IsReady() && Config.Item("autoR", true).GetValue<bool>())
+                if (Program.LagFree(3) && W.IsReady() && Config.Item("autoR", true).GetValue<bool>())
                     LogicR();
 
                 if (Config.Item("useR", true).GetValue<KeyBind>().Active)
@@ -137,7 +137,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                     }
                 }
             }
-                //Program.debug("" + (W.Instance.CooldownExpires - Game.Time));
+            //Program.debug("" + (W.Instance.CooldownExpires - Game.Time));
         }
 
         private void LogicWmaunal()
@@ -169,11 +169,11 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                     }
                 }
             }
-            else 
+            else
             {
                 if (temp == null)
-                    temp = wName;
-                else if (temp != wName)
+                    temp = W.Instance.Name;
+                else if (temp != W.Instance.Name)
                     cardok = true;
 
                 if (cardok)
@@ -181,25 +181,25 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                     if (R.IsReady() && (Player.HasBuff("destiny_marker") || Player.HasBuff("gate")))
                     {
                         FindCard = 1;
-                        if (wName == "TwistedFate_Base_W_GoldCard.troy")
+                        if (W.Instance.Name == "GoldCardLock")
                             W.Cast();
                     }
                     else if (FindCard == 1)
                     {
-                        if (wName == "TwistedFate_Base_W_GoldCard.troy")
+                        if (W.Instance.Name == "GoldCardLock")
                         {
-                            Console.WriteLine("dupa" + Game.Time);  
+                            Console.WriteLine("dupa" + Game.Time);
                             W.Cast();
                         }
                     }
                     else if (FindCard == 2)
                     {
-                        if (wName == "TwistedFate_Base_W_BlueCard.troy")
+                        if (W.Instance.Name == "BlueCardLock")
                             W.Cast();
                     }
                     else if (FindCard == 3)
                     {
-                        if (wName == "TwistedFate_Base_W_RedCard.troy")
+                        if (W.Instance.Name == "RedCardLock")
                             W.Cast();
                     }
                 }
@@ -211,7 +211,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
             var t = TargetSelector.GetTarget(1100, TargetSelector.DamageType.Magical);
             if (!Player.HasBuff("pickacard_tracker"))
-            { 
+            {
                 if (Utils.TickCount - W.LastCastAttemptT > 300)
                 {
                     if (R.IsReady() && (Player.HasBuff("destiny_marker") || Player.HasBuff("gate")))
@@ -227,17 +227,17 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                     }
                 }
             }
-            else 
+            else
             {
                 if (temp == null)
-                    temp = wName;
-                else if (temp != wName)
+                    temp = W.Instance.Name;
+                else if (temp != W.Instance.Name)
                     cardok = true;
 
                 if (cardok)
                 {
                     Obj_AI_Hero orbTarget = null;
-                    
+
                     var getTarget = Orbwalker.GetTarget();
                     if (getTarget != null && getTarget.Type == GameObjectType.obj_AI_Hero)
                     {
@@ -247,42 +247,42 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                     if (R.IsReady() && (Player.HasBuff("destiny_marker") || Player.HasBuff("gate")))
                     {
                         FindCard = 1;
-                        if (wName == "TwistedFate_Base_W_GoldCard.troy")
+                        if (W.Instance.Name == "GoldCardLock")
                             W.Cast();
                     }
-                    else if (Program.Combo && orbTarget.IsValidTarget() &&  W.GetDamage(orbTarget) + Player.GetAutoAttackDamage(orbTarget) > orbTarget.Health)
+                    else if (Program.Combo && orbTarget.IsValidTarget() && W.GetDamage(orbTarget) + Player.GetAutoAttackDamage(orbTarget) > orbTarget.Health)
                     {
                         W.Cast();
-                        Program.debug("1" + wName);
+                        Program.debug("1" + W.Instance.Name);
                     }
-                    else if ( Player.Mana < RMANA + QMANA + WMANA)
+                    else if (Player.Mana < RMANA + QMANA + WMANA)
                     {
                         FindCard = 2;
-                        if (wName == "TwistedFate_Base_W_BlueCard.troy")
+                        if (W.Instance.Name == "BlueCardLock")
                             W.Cast();
                     }
                     else if (Program.Harass && orbTarget.IsValidTarget())
                     {
                         FindCard = 1;
-                        if (wName == "TwistedFate_Base_W_BlueCard.troy")
+                        if (W.Instance.Name == "BlueCardLock")
                             W.Cast();
                     }
                     else if (Player.ManaPercent > Config.Item("WredFarm", true).GetValue<Slider>().Value && FarmSpells && Config.Item("farmW", true).GetValue<bool>())
                     {
                         FindCard = 3;
-                        if (wName == "TwistedFate_Base_W_RedCard.troy")
+                        if (W.Instance.Name == "RedCardLock")
                             W.Cast();
                     }
                     else if ((Program.LaneClear || Player.Mana < RMANA + QMANA) && Config.Item("farmW", true).GetValue<bool>())
                     {
                         FindCard = 2;
-                        if (wName == "TwistedFate_Base_W_BlueCard.troy")
+                        if (W.Instance.Name == "BlueCardLock")
                             W.Cast();
                     }
-                    else if(Program.Combo)
+                    else if (Program.Combo)
                     {
                         FindCard = 1;
-                        if (wName == "TwistedFate_Base_W_GoldCard.troy")
+                        if (W.Instance.Name == "GoldCardLock")
                             W.Cast();
                     }
                 }
@@ -336,20 +336,20 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             var t = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
             if (t.IsValidTarget())
             {
-                    if (OktwCommon.GetKsDamage(t, Q)> t.Health && !Orbwalking.InAutoAttackRange(t))
+                if (OktwCommon.GetKsDamage(t, Q) > t.Health && !Orbwalking.InAutoAttackRange(t))
+                    Program.CastSpell(Q, t);
+
+                if (W.Instance.CooldownExpires - Game.Time < W.Instance.Cooldown - 1.3 && !Player.HasBuff("pickacard_tracker") && (W.Instance.CooldownExpires - Game.Time > 3 || Player.CountEnemiesInRange(950) == 0))
+                {
+                    if (Program.Combo && Player.Mana > RMANA + QMANA)
                         Program.CastSpell(Q, t);
+                    if (Program.Harass && Player.Mana > RMANA + QMANA + WMANA + EMANA && Config.Item("harassQ", true).GetValue<bool>() && OktwCommon.CanHarras() && Config.Item("Harass" + t.ChampionName).GetValue<bool>())
+                        Program.CastSpell(Q, t);
+                }
 
-                    if (W.Instance.CooldownExpires - Game.Time < W.Instance.Cooldown - 1.3 && !Player.HasBuff("pickacard_tracker") && (W.Instance.CooldownExpires - Game.Time > 3 || Player.CountEnemiesInRange(950) == 0))
-                    {
-                        if (Program.Combo && Player.Mana > RMANA + QMANA)
-                            Program.CastSpell(Q, t);
-                        if (Program.Harass && Player.Mana > RMANA + QMANA + WMANA + EMANA && Config.Item("harassQ", true).GetValue<bool>() && OktwCommon.CanHarras() && Config.Item("Harass" + t.ChampionName).GetValue<bool>())
-                            Program.CastSpell(Q, t);
-                    }
+                foreach (var enemy in HeroManager.Enemies.Where(enemy => enemy.IsValidTarget(Q.Range) && !OktwCommon.CanMove(enemy)))
+                    Q.Cast(enemy, true, true);
 
-                    foreach (var enemy in HeroManager.Enemies.Where(enemy => enemy.IsValidTarget(Q.Range) && !OktwCommon.CanMove(enemy)))
-                        Q.Cast(enemy, true, true);
-                
             }
             else if (FarmSpells && Config.Item("farmQ", true).GetValue<bool>())
             {
@@ -408,10 +408,10 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                     Utility.DrawCircle(Player.Position, Q.Range, System.Drawing.Color.Cyan, 1, 1);
             }
 
-            if(Config.Item("cardInfo", true).GetValue<bool>() && Player.HasBuff("pickacard_tracker"))
+            if (Config.Item("cardInfo", true).GetValue<bool>() && Player.HasBuff("pickacard_tracker"))
             {
-                if(FindCard == 1)
-                    drawText("SEEK YELLOW" , Player.Position, System.Drawing.Color.Yellow, -70);
+                if (FindCard == 1)
+                    drawText("SEEK YELLOW", Player.Position, System.Drawing.Color.Yellow, -70);
                 if (FindCard == 2)
                     drawText("SEEK BLUE ", Player.Position, System.Drawing.Color.Aqua, -70);
                 if (FindCard == 3)
@@ -420,10 +420,10 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             }
 
 
-            if (R.IsReady() && Config.Item("notR", true).GetValue<bool>() )
+            if (R.IsReady() && Config.Item("notR", true).GetValue<bool>())
             {
                 var t = TargetSelector.GetTarget(R.Range, TargetSelector.DamageType.Magical);
-                if (t.IsValidTarget() )
+                if (t.IsValidTarget())
                 {
                     var comboDMG = Q.GetDamage(t) + W.GetDamage(t) + Player.GetAutoAttackDamage(t) * 3;
                     if (Player.HasBuff("destiny_marker"))
