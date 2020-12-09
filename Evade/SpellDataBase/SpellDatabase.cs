@@ -3737,29 +3737,70 @@ namespace Evade
             #endregion Taric
 
             #region Thresh
-
             Spells.Add(
-                new SpellData
-                {
-                    ChampionName = "Thresh",
-                    SpellName = "ThreshQ",
-                    Slot = SpellSlot.Q,
-                    Type = SkillShotType.SkillshotMissileLine,
-                    Delay = 500,
-                    Range = 1100,
-                    Radius = 70,
-                    MissileSpeed = 1900,
-                    FixedRange = true,
-                    AddHitbox = true,
-                    DangerValue = 3,
-                    IsDangerous = true,
-                    MissileSpellName = "ThreshQMissile",
-                    EarlyEvade = new[] {EarlyObjects.Allies, EarlyObjects.Minions, EarlyObjects.AllyObjects},
-                    CanBeRemoved = true,
-                    CollisionObjects =
-                        new[]
-                        {CollisionObjectTypes.Minion, CollisionObjectTypes.Champions, CollisionObjectTypes.YasuoWall},
-                });
+            new SpellData
+            {
+                ChampionName = "Thresh",
+                SpellName = "ThreshQInternal",
+                Slot = SpellSlot.Q,
+                Type = SkillShotType.SkillshotCircle,
+                Delay = 500,
+                Range = 0,
+                Radius = 1100,
+                MissileSpeed = int.MaxValue,
+                FixedRange = true,
+                AddHitbox = true,
+                DangerValue = 3,
+                IsDangerous = false,
+                FollowCaster = true,
+                DisabledByDefault = true,
+            });
+            //Spells.Add(
+
+            //    new SpellData
+            //    {
+            //        ChampionName = "Thresh",
+            //        SpellName = "ThreshQInternal",
+            //        Slot = SpellSlot.Q,
+            //        Type = SkillShotType.SkillshotMissileLine,
+            //        Delay = 500,
+            //        Range = 1100,
+            //        Radius = 70,
+            //        MissileSpeed = 1900,
+            //        FixedRange = true,
+            //        AddHitbox = true,
+            //        DangerValue = 3,
+            //        IsDangerous = true,
+
+            //        EarlyEvade = new[] {EarlyObjects.Allies, EarlyObjects.Minions, EarlyObjects.AllyObjects},
+            //        CanBeRemoved = true,
+            //        CollisionObjects =
+            //            new[]
+            //            {CollisionObjectTypes.Minion, CollisionObjectTypes.Champions, CollisionObjectTypes.YasuoWall},
+            //    });
+            Spells.Add(
+
+               new SpellData
+               {
+                   ChampionName = "Thresh",
+                   SpellName = "ThreshQ",
+                   Slot = SpellSlot.Q,
+                   Type = SkillShotType.SkillshotMissileLine,
+                   Delay = 500,
+                   Range = 1100,
+                   Radius = 70,
+                   MissileSpeed = 1900,
+                   FixedRange = true,
+                   AddHitbox = true,
+                   DangerValue = 3,
+                   IsDangerous = true,
+                   MissileSpellName = "ThreshQMissile",
+                   EarlyEvade = new[] { EarlyObjects.Allies, EarlyObjects.Minions, EarlyObjects.AllyObjects },
+                   CanBeRemoved = true,
+                   CollisionObjects =
+                       new[]
+                       {CollisionObjectTypes.Minion, CollisionObjectTypes.Champions, CollisionObjectTypes.YasuoWall},
+               });
 
             Spells.Add(
                 new SpellData
