@@ -97,25 +97,25 @@ namespace Evade
 
             #region Aatrox
 
-            Spells.Add(
-                new SpellData
-                {
-                    ChampionName = "Aatrox",
-                    SpellName = "AatroxW",
-                    Slot = SpellSlot.W,
-                    Type = SkillShotType.SkillshotMissileLine,
-                    Delay = 250,
-                    Range = 825,
-                    Radius = 60,
-                    MissileSpeed = 1600,
-                    FixedRange = true,
-                    AddHitbox = true,
-                    DangerValue = 3,
-                    IsDangerous = true,
-                    MissileSpellName = "AatroxW",
-                    CanBeRemoved = true,
-                    CollisionObjects = new [] { CollisionObjectTypes.YasuoWall, CollisionObjectTypes.Minion, CollisionObjectTypes.Champions }
-                });
+            //Spells.Add(
+            //    new SpellData
+            //    {
+            //        ChampionName = "Aatrox",
+            //        SpellName = "AatroxW",
+            //        Slot = SpellSlot.W,
+            //        Type = SkillShotType.SkillshotMissileLine,
+            //        Delay = 250,
+            //        Range = 825,
+            //        Radius = 60,
+            //        MissileSpeed = 1600,
+            //        FixedRange = true,
+            //        AddHitbox = true,
+            //        DangerValue = 3,
+            //        IsDangerous = true,
+            //        MissileSpellName = "AatroxW",
+            //        CanBeRemoved = true,
+            //        CollisionObjects = new [] { CollisionObjectTypes.YasuoWall, CollisionObjectTypes.Minion, CollisionObjectTypes.Champions }
+            //    });
 
             #endregion Aatrox
 
@@ -206,7 +206,7 @@ namespace Evade
                     Type = SkillShotType.SkillshotMissileLine,
                     Delay = 250,
                     Range = 1100,
-                    Radius = 90,
+                    Radius = 80,
                     MissileSpeed = 2000,
                     FixedRange = true,
                     AddHitbox = true,
@@ -315,7 +315,7 @@ namespace Evade
                     Slot = SpellSlot.W,
                     Type = SkillShotType.SkillshotMissileLine,
                     Delay = 250,
-                    Range = 1250,
+                    Range = 1300,
                     Radius = 60,
                     MissileSpeed = 1500,
                     FixedRange = true,
@@ -411,7 +411,7 @@ namespace Evade
                     Type = SkillShotType.SkillshotMissileLine,
                     Delay = 250,
                     Range = 950,
-                    Radius = 60,
+                    Radius = 65,
                     MissileSpeed = 1600,
                     FixedRange = true,
                     AddHitbox = true,
@@ -592,7 +592,7 @@ namespace Evade
                     Type = SkillShotType.SkillshotMissileLine,
                     Delay = 625,
                     Range = 1300,
-                    Radius = 90,
+                    Radius = 60,
                     MissileSpeed = 2200,
                     FixedRange = true,
                     AddHitbox = true,
@@ -608,9 +608,9 @@ namespace Evade
                     SpellName = "CaitlynYordleTrap",
                     Slot = SpellSlot.W,
                     Type = SkillShotType.SkillshotCircle,
-                    Delay = 1500,
+                    Delay = 1350,
                     ExtraDuration = 30000,
-                    Range = 1000,
+                    Range = 800,
                     Radius = 70,
                     MissileSpeed = int.MaxValue,
                     FixedRange = false,
@@ -1101,9 +1101,9 @@ namespace Evade
                     Slot = SpellSlot.W,
                     Type = SkillShotType.SkillshotMissileLine,
                     Delay = 250,
-                    Range = 1050,
+                    Range = 1200,
                     Radius = 80,
-                    MissileSpeed = 1600,
+                    MissileSpeed = 2000,
                     FixedRange = true,
                     AddHitbox = true,
                     DangerValue = 2,
@@ -2236,7 +2236,7 @@ namespace Evade
                 new SpellData
                 {
                     ChampionName = "Leblanc",
-                    SpellName = "LeblancSlideM",
+                    SpellName = "LeblancR",
                     Slot = SpellSlot.R,
                     Type = SkillShotType.SkillshotCircle,
                     Delay = 0,
@@ -2254,7 +2254,7 @@ namespace Evade
                 new SpellData
                 {
                     ChampionName = "Leblanc",
-                    SpellName = "LeblancSoulShackle",
+                    SpellName = "LeblancE",
                     Slot = SpellSlot.E,
                     Type = SkillShotType.SkillshotMissileLine,
                     Delay = 250,
