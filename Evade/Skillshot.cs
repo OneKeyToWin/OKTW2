@@ -226,7 +226,7 @@ namespace Evade
 
             return _cachedValue;
         }
-        
+
         public void Game_OnGameUpdate()
         {
             //Even if it doesnt consume a lot of resources with 20 updatest second works k
@@ -262,34 +262,7 @@ namespace Evade
                 Rectangle = new Geometry.Rectangle(Start, End, SpellData.Radius);
                 UpdatePolygon();
             }
-            //if (SpellData.SpellName == "ThreshQInternal")
-            //{
-            //    if (_helperTick == 0)
-            //    {
-            //        _helperTick = StartTick;
-            //    }
 
-            //    //SpellData.MissileSpeed = (int)Unit.MoveSpeed;
-            //    if (Unit.IsValidTarget(float.MaxValue, false))
-            //    {
-            //        if (!Unit.Spellbook.IsCastingSpell )
-            //        {
-            //            StartTick = 0;
-            //        }
-            //        else
-            //        {
-            //            StartTick = Utils.TickCount;
-            //            Start = Unit.Position.To2D();
-            //            End = Unit.Position.To2D() + 1200 * Unit.Direction.To2D()/*.Rotated(-1.57079633f)*/.Perpendicular();
-            //            Direction = Unit.Direction.To2D()/*.Rotated(-1.57079633f)*/;
-            //            UpdatePolygon();
-            //        }
-            //    }
-            //    else
-            //    {
-            //        StartTick = 0;
-            //    }
-            //}
             if (SpellData.SpellName == "SionR")
             {
                 if (_helperTick == 0)
@@ -308,8 +281,8 @@ namespace Evade
                     {
                         StartTick = Utils.TickCount - SpellData.Delay;
                         Start = Unit.ServerPosition.To2D();
-                        End = Unit.ServerPosition.To2D() + 1200 * Unit.Direction.To2D().Rotated(-1.57079633f).Perpendicular();
-                        Direction = Unit.Direction.To2D().Rotated(-1.57079633f);
+                        End = Unit.ServerPosition.To2D() + 1000 * Unit.Direction.To2D().Perpendicular();
+                        Direction = (End - Start).Normalized();
                         UpdatePolygon();
                     }
                 }
