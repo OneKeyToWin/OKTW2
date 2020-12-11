@@ -3744,7 +3744,7 @@ namespace Evade
                 SpellName = "ThreshQInternal",
                 Slot = SpellSlot.Q,
                 Type = SkillShotType.SkillshotCircle,
-                Delay = 500,
+                Delay = 1500,
                 Range = 0,
                 Radius = 1100,
                 MissileSpeed = int.MaxValue,
