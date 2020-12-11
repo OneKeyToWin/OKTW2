@@ -24,7 +24,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             Q = new Spell(SpellSlot.Q, 1250f);
             Q1 = new Spell(SpellSlot.Q, 1250f);
             W = new Spell(SpellSlot.W, 800f);
-            E = new Spell(SpellSlot.E, 750f);
+            E = new Spell(SpellSlot.E, 850f);
             R = new Spell(SpellSlot.R, 3000f);
 
             Q.SetSkillshot(0.65f, 60f, 2200f, false, SkillshotType.SkillshotLine);
@@ -84,7 +84,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
         static Vector3 wCastPos;
         static int wCastTimeMax;
-
+        
         private void Spellbook_OnCastSpell(Spellbook sender, SpellbookCastSpellEventArgs args)
         {
             if (args.Slot == SpellSlot.W)
@@ -105,6 +105,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             {
                 wCastPos = Player.Position.Extend(args.EndPosition, Player.Distance(args.EndPosition) + 50);
                 wCastTimeMax = Utils.TickCount + 500;
+                W.Cast(wCastPos);
                 //W.Cast(Player.Position.Extend(args.EndPosition, Player.Distance(args.EndPosition) + 50));
                 //Utility.DelayAction.Add(10, () => E.Cast(args.EndPosition));
             }
@@ -156,12 +157,15 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             if (Player.IsRecalling())
                 return;
 
-            if (!W.IsReady() || Utils.TickCount > wCastTimeMax)
+            if (/*!W.IsReady() ||*/ Utils.TickCount > wCastTimeMax)
             {
                 wCastPos = Vector3.Zero;
             }
             else if (wCastPos != Vector3.Zero)
             {
+                //Player.Spellbook.CastSpell(SpellSlot.Item1, wCastPos);
+                var galeforce = new Items.Item(6671, 800);
+                galeforce.Cast(wCastPos);
                 W.Cast(wCastPos);
             }
 
@@ -187,9 +191,10 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 if (Player.GetAutoAttackDamage(orbT) * 2 > orbT.Health)
                     return;
             }
+
             if (Program.LagFree(2) && W.IsReady())
                 LogicW();
-            if (Program.LagFree(3) && Q.IsReady() && Orbwalking.CanMove(40) && Config.Item("autoQ2", true).GetValue<bool>())
+            if (Program.LagFree(3) && Q.IsReady() && Orbwalking.CanMove(50) && Config.Item("autoQ2", true).GetValue<bool>())
                 LogicQ();
             if (Program.LagFree(4) && R.IsReady() && Config.Item("autoR", true).GetValue<bool>() && !ObjectManager.Player.UnderTurret(true) && Game.Time - QCastTime > 1)
                 LogicR();
@@ -235,7 +240,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
         private void LogicW()
         {
-            if (Player.Mana > RMANA + WMANA)
+            if (Player.Mana > RMANA + WMANA && Orbwalking.CanMove(50) && !Orbwalking.CanAttack())
             {
                 if (Config.Item("autoW", true).GetValue<bool>())
                 {
@@ -251,9 +256,8 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                     if (!trapPos.IsZero)
                         W.Cast(trapPos);
                 }
-                if (!Orbwalking.CanMove(40))
-                    return;
-                if ((int)(Game.Time * 10) % 2 == 0 && Config.Item("bushW2", true).GetValue<bool>())
+
+                if ((int)(Game.Time * 10) % 2 == 0 && Config.Item("bushW2", true).GetValue<bool>() && !Orbwalker.ShouldWait())
                 {
                     if (Player.Spellbook.GetSpell(SpellSlot.W).Ammo == new int[] { 0, 3, 3, 4, 4, 5 }[W.Level] && Player.CountEnemiesInRange(1000) == 0)
                     {
@@ -321,7 +325,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 {
                     var positionT = Player.ServerPosition - (t.Position - Player.ServerPosition);
 
-                    if (Player.Position.Extend(positionT, 400).CountEnemiesInRange(700) < 2)
+                    if (Player.Position.Extend(positionT, 400).CountEnemiesInRange(700) < 2 && Orbwalking.CanMove(0) && !Orbwalking.CanAttack())
                     {
                         var eDmg = E.GetDamage(t);
                         var qDmg = Q.GetDamage(t);
@@ -341,7 +345,8 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                     {
                         if (Config.Item("Ehitchance", true).GetValue<bool>())
                         {
-                            E.CastIfHitchanceEquals(t, HitChance.Dashing);
+                            if((Orbwalking.CanMove(0) && !Orbwalking.CanAttack()) || t.IsDashing())
+                                E.CastIfHitchanceEquals(t, HitChance.Dashing);
                         }
                         if (Player.Health < Player.MaxHealth * 0.3)
                         {
