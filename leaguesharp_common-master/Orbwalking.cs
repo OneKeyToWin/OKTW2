@@ -113,7 +113,6 @@ namespace LeagueSharp.Common
         private static int _delay;
         private static AttackableUnit _lastTarget;
         private static float _minDistance = 100;
-        private static bool _missileLaunched;
 
         static Orbwalking()
         {
@@ -186,6 +185,7 @@ namespace LeagueSharp.Common
             if (Player.IsCastingInterruptableSpell())
                 return false;
 
+
             if (!Player.CanAttack)
             {
                 if (_championName == "Aphelios" || Player.Spellbook.IsChanneling)
@@ -228,20 +228,25 @@ namespace LeagueSharp.Common
                 return false;
             }
 
+            if (!Player.IsDashing())
+            {
+                if (!Player.CanAttack)
+                    return false;
+                //if (Player.Spellbook.IsCastingSpell)
+                //    return false;
+            }
+
             return Utils.GameTimeTickCount + Game.Ping / 2 + 25 >= LastAATick + Player.AttackDelay * 1000;
         }
 
         public static bool CanMove(float extraWindup, bool disableMissileCheck = false)
         {
-            if (_missileLaunched && Orbwalker.MissileCheck && !disableMissileCheck)
-                return true;
-
             var localExtraWindup = 0;
             if (_championName == "Rengar" && (Player.HasBuff("rengarqbase") || Player.HasBuff("rengarqemp")))
                 localExtraWindup = 200;
 
             return NoCancelChamps.Contains(_championName) || (Utils.GameTimeTickCount + Game.Ping / 2
-                       >= LastAATick + AttackCastDelay * 1000 + extraWindup + localExtraWindup);
+                       >= LastAATick + AttackCastDelay * 1000 - 120 + extraWindup + localExtraWindup);
         }
 
         public static float GetAttackRange(Obj_AI_Hero target)
@@ -415,6 +420,7 @@ namespace LeagueSharp.Common
             LastMoveCommandT = Utils.GameTimeTickCount;
         }
 
+
         public static void Orbwalk(AttackableUnit target, Vector3 position, float extraWindup = 90, float holdAreaRadius = 0, bool useFixedDistance = true, bool randomizeMinDistance = true)
         {
             if (Utils.GameTimeTickCount - LastAttackCommandT < 70 + Math.Min(60, Game.Ping))
@@ -424,24 +430,30 @@ namespace LeagueSharp.Common
 
             try
             {
-                if (target.IsValidTarget() && CanAttack() && Attack)
+                if (target.IsValidTarget()  && Attack)
                 {
-                    DisableNextAttack = false;
-                    FireBeforeAttack(target);
-
-                    if (!DisableNextAttack)
+                    if (CanAttack())
                     {
-                        if (!NoCancelChamps.Contains(_championName))
-                        {
-                            _missileLaunched = false;
-                        }
+                        DisableNextAttack = false;
+                        FireBeforeAttack(target);
 
-                        if (Player.ForceIssueOrder(GameObjectOrder.AttackUnit, target))
+                        if (!DisableNextAttack)
                         {
-                            LastAttackCommandT = Utils.GameTimeTickCount;
-                            _lastTarget = target;
+                            if (Player.ForceIssueOrder(GameObjectOrder.AttackUnit, target))
+                            {
+                                LastAttackCommandT = Utils.GameTimeTickCount;
+                                _lastTarget = target;
+                            }
+                            return;
                         }
-                        return;
+                    }
+                    else if (Player.ChampionName == "Caitlyn")
+                    {
+                        var targetHero = (Obj_AI_Hero)target;
+                        if (targetHero != null && targetHero.HasBuff("caitlynyordletrapinternal") && Player.ForceIssueOrder(GameObjectOrder.AttackTo, Game.CursorPos))
+                        {
+                            Console.WriteLine("ALL INN");
+                        }
                     }
                 }
 
@@ -547,7 +559,6 @@ namespace LeagueSharp.Common
             if (IsAutoAttack(args.SData.Name))
             {
                 FireAfterAttack(sender, args.Target as AttackableUnit);
-                _missileLaunched = true;
             }
         }
 
@@ -575,7 +586,7 @@ namespace LeagueSharp.Common
                         PushLastTargets(Spell.Target.NetworkId);
 
                         LastAATick = Utils.GameTimeTickCount - Game.Ping / 2;
-                        _missileLaunched = false;
+
                         LastMoveCommandT = 0;
                         _autoattackCounter++;
 
@@ -651,7 +662,7 @@ namespace LeagueSharp.Common
 
                 /* Misc options */
                 var misc = new Menu("Misc", "Misc");
-                misc.AddItem(new MenuItem("HoldPosRadius", "Hold Position Radius").SetShared().SetValue(new Slider(50, 50, 250)));
+                misc.AddItem(new MenuItem("HoldPosRadius", "Hold Position Radius").SetShared().SetValue(new Slider(0, 50, 250)));
                 misc.AddItem(new MenuItem("PriorizeFarm", "Prioritize farm over harass").SetShared().SetValue(true));
                 misc.AddItem(new MenuItem("PrioritizeCasters", "Attack caster minions first").SetShared().SetValue(false));
                 misc.AddItem(new MenuItem("AttackWards", "Auto attack wards").SetShared().SetValue(false));
@@ -660,9 +671,6 @@ namespace LeagueSharp.Common
                 misc.AddItem(new MenuItem("Smallminionsprio", "Jungle clear small first").SetShared().SetValue(false));
                 misc.AddItem(new MenuItem("FocusMinionsOverTurrets", "Focus minions over objectives").SetShared().SetValue(new KeyBind('M', KeyBindType.Toggle)));
                 _config.AddSubMenu(misc);
-
-                /* Missile check */
-                _config.AddItem(new MenuItem("MissileCheck", "Use Missile Check").SetShared().SetValue(true));
 
                 /* Delay sliders */
                 _config.AddItem(new MenuItem("ExtraWindup", "Extra windup time").SetShared().SetValue(new Slider(80, 0, 200)));
@@ -681,11 +689,6 @@ namespace LeagueSharp.Common
                 Game.OnUpdate += this.GameOnOnGameUpdate;
                 Drawing.OnDraw += this.DrawingOnOnDraw;
                 Instances.Add(this);
-            }
-
-            public static bool MissileCheck
-            {
-                get { return _config.Item("MissileCheck").GetValue<bool>(); }
             }
 
             public OrbwalkingMode ActiveMode
