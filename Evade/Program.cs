@@ -109,13 +109,13 @@ namespace Evade
                 {
                     foreach (var spell in hero.Spellbook.Spells.Where(s => s.SData.Name != "BaseSpell"))
                     {
-                        Console.WriteLine("\n\n");
-                        Console.WriteLine("SpellSlot: {0} Spell: {1}", spell.Slot, spell.SData.Name);
-                        Console.WriteLine("=================================================================");
+                        if(Config.Debug) Console.WriteLine("\n\n");
+                        if(Config.Debug) Console.WriteLine("SpellSlot: {0} Spell: {1}", spell.Slot, spell.SData.Name);
+                        if(Config.Debug) Console.WriteLine("=================================================================");
                         foreach (var prop in spell.SData.GetType().GetProperties())
                         {
                             if (prop.Name != "Entries")
-                                Console.WriteLine("\t{0} => '{1}'", prop.Name, prop.GetValue(spell.SData, null));
+                                if(Config.Debug) Console.WriteLine("\t{0} => '{1}'", prop.Name, prop.GetValue(spell.SData, null));
                         }
 
                     }
@@ -129,7 +129,7 @@ namespace Evade
 
         private static void DetectedSkillshots_OnAdd(object sender, EventArgs e)
         {
-            Console.WriteLine("evading false3 ");
+            if(Config.Debug) Console.WriteLine("evading false3 ");
             Evading = false;
         }
 
@@ -176,14 +176,10 @@ namespace Evade
             //Check if the skillshot is from an ally.
             if (skillshot.Unit.Team == ObjectManager.Player.Team && !Config.TestOnAllies)
                 return;
-            
 
             //Check if the skillshot is too far away.
-            if (skillshot.Start.Distance(PlayerPosition) >
-                (skillshot.SpellData.Range + skillshot.SpellData.Radius + 1000) * 1.5)
-            {
+            if (skillshot.Start.Distance(PlayerPosition) > (skillshot.SpellData.Range + skillshot.SpellData.Radius + 1000) * 1.5)
                 return;
-            }
 
             //Add the skillshot to the detected skillshot list.
             if (!alreadyAdded || skillshot.SpellData.DontCheckForDuplicates)
@@ -567,7 +563,7 @@ namespace Evade
                     }
                     else
                     {
-                        Console.WriteLine("NOT FIND LINE");
+                        if(Config.Debug) Console.WriteLine("NOT FIND LINE");
                     }
 
                     return;
@@ -588,7 +584,7 @@ namespace Evade
 
                         if (firstEMissile != null)
                         {
-                            Console.WriteLine("Adding from missile");
+                            if(Config.Debug) Console.WriteLine("Adding from missile");
 
                             var skillshotToAdd = new Skillshot(skillshot.DetectionType, skillshot.SpellData, skillshot.StartTick, firstEMissile.EndPosition.To2D(), skillshot.End,
                                 skillshot.Unit);
@@ -600,7 +596,7 @@ namespace Evade
 
                     if (firstE != null)
                     {
-                        Console.WriteLine("Adding from particle");
+                        if(Config.Debug) Console.WriteLine("Adding from particle");
 
                         var skillshotToAdd = new Skillshot(skillshot.DetectionType, skillshot.SpellData, skillshot.StartTick, firstE.Position.To2D(), skillshot.End,
                             skillshot.Unit);
@@ -750,7 +746,7 @@ namespace Evade
             {
                 if (safeResult.IsSafe)
                 {
-                    Console.WriteLine("evading false1 ");
+                    if(Config.Debug) Console.WriteLine("evading false1 ");
                     //We are safe, stop evading.
                     Evading = false;
                 }
@@ -767,7 +763,7 @@ namespace Evade
             //Stop evading if the point is not safe.
             else if (Evading)
             {
-                Console.WriteLine("evading false2 ");
+                if(Config.Debug) Console.WriteLine("evading false2 ");
                 Evading = false;
             }
 
@@ -835,7 +831,7 @@ namespace Evade
             //Don't block the movement packets if cant find an evade point.
             if (NoSolutionFound)
             {
-                Console.WriteLine("NoSolutionFound");
+                if(Config.Debug) Console.WriteLine("NoSolutionFound");
                 return;
             }
 
@@ -862,16 +858,16 @@ namespace Evade
                 var rcSafePath = IsSafePath(myPath, Config.EvadingRouteChangeTimeOffset);
                 if (args.Order == GameObjectOrder.MoveTo)
                 {
-                    Console.WriteLine("Evading issue order " + Evading);
+                    if(Config.Debug) Console.WriteLine("Evading issue order " + Evading);
 
                     if (Evading && Utils.TickCount - Config.LastEvadePointChangeT > Config.EvadePointChangeInterval)
                     {
-                        Console.WriteLine("update point first ");
+                        if(Config.Debug) Console.WriteLine("update point first ");
                         //Update the evade point to the closest one:
                         var points = Evader.GetEvadePoints(-1, 0, false, true);
                         if (points.Count > 0)
                         {
-                            Console.WriteLine("update point");
+                            if(Config.Debug) Console.WriteLine("update point");
                             var to = new Vector2(args.TargetPosition.X, args.TargetPosition.Y);
                             EvadePoint = to.Closest(points);
                             Evading = true;
@@ -882,7 +878,7 @@ namespace Evade
                     //If the path is safe let the user follow it.
                     if (rcSafePath.IsSafe && IsSafe(myPath[myPath.Count - 1]).IsSafe && args.Order == GameObjectOrder.MoveTo)
                     {
-                        Console.WriteLine("update path");
+                        if(Config.Debug) Console.WriteLine("update path");
                         EvadePoint = myPath[myPath.Count - 1];
                         Evading = true;
                     }
@@ -898,11 +894,11 @@ namespace Evade
             //Not evading, outside the skillshots.
             if (!safePath.IsSafe && args.Order != GameObjectOrder.AttackUnit)
             {
-                Console.WriteLine("block move");
+                if(Config.Debug) Console.WriteLine("block move");
                 Vector2 pathfinderPoint = GetPathFinderPoint();
                 if (pathfinderPoint.IsValid())
                 {
-                    Console.WriteLine("FOUND POINT");
+                    if(Config.Debug) Console.WriteLine("FOUND POINT");
                     if (Utils.TickCount - LastSentMovePacketT > 1000 / 3)
                     {
                         LastSentMovePacketT = Utils.TickCount;
@@ -933,7 +929,7 @@ namespace Evade
                     }
                 }
             }
-            Console.WriteLine("move accept");
+            if(Config.Debug) Console.WriteLine("move accept");
         }
 
         public static Vector2 GetPathFinderPoint()

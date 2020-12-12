@@ -69,6 +69,18 @@ namespace Evade
             return output;
         }
 
+        public static Vector2[] CirclePointsNormal(float CircleLineSegmentN, float radius, Vector2 position)
+        {
+            var points = new List<Vector2>();
+            for (var i = 1; i <= CircleLineSegmentN; i++)
+            {
+                var angle = i * 2 * Math.PI / CircleLineSegmentN;
+                var point = new Vector2(position.X + radius * (float)Math.Cos(angle), position.Y + radius * (float)Math.Sin(angle));
+                points.Add(point);
+            }
+            return points.ToArray();
+        }
+
         public static Vector2[] CirclePoints(float CircleLineSegmentN, float radius, Vector2 position)
         {
             var points = new List<Vector2>();

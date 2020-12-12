@@ -384,7 +384,6 @@ namespace Evade
                 return;
             }
 
-
             if (Config.TestOnAllies) Console.WriteLine(
                     Utils.TickCount + " Projectile Created: " + missile.SData.Name + " distance: " +
                     missile.SData.CastRange + "Radius: " +
@@ -392,6 +391,17 @@ namespace Evade
 
             var missileName = missile.SData.Name;
 
+            if(missileName == "ThreshQMissile")
+            {
+                for (var i = Program.DetectedSkillshots.Count - 1; i >= 0; i--)
+                {
+                    var skillshot = Program.DetectedSkillshots[i];
+                    if (skillshot.SpellData.SpellName == "ThreshQInternal")
+                    {
+                        Program.DetectedSkillshots.RemoveAt(i);
+                    }
+                }
+            }
             if (missileName.Contains("HowlingGaleSpell"))
                 missileName = "HowlingGaleSpell";
 
@@ -650,9 +660,22 @@ namespace Evade
                 spellData.Delay = (int)(args.CastDelay * 1000);
             }
 
+            if (spellData.SpellName == "ThreshQInternal")
+            {
+                var points = Utils.CirclePointsNormal(50, 1100, sender.Position.To2D());
+
+                foreach (var point in points)
+                {
+                    if (ObjectManager.Player.Distance(point) < 700)
+                    {
+                        TriggerOnDetectSkillshot(DetectionType.ProcessSpell, spellData, startTime, startPos, point, point, sender);
+                    }
+                }
+                return;
+            }
             //Trigger the skillshot detection callbacks.
             TriggerOnDetectSkillshot(
-                DetectionType.ProcessSpell, spellData, startTime, startPos, endPos, args.End.To2D(), sender);
+            DetectionType.ProcessSpell, spellData, startTime, startPos, endPos, args.End.To2D(), sender);
         }
 
         /// <summary>
