@@ -452,7 +452,8 @@ namespace LeagueSharp.Common
                         var targetHero = (Obj_AI_Hero)target;
                         if (targetHero != null && targetHero.HasBuff("caitlynyordletrapinternal") && Player.ForceIssueOrder(GameObjectOrder.AttackTo, Game.CursorPos))
                         {
-                            Console.WriteLine("ALL INN");
+                            LastAttackCommandT = Utils.GameTimeTickCount;
+                            _lastTarget = target;
                         }
                     }
                 }

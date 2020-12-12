@@ -79,7 +79,6 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             //Orbwalking.AfterAttack += afterAttack;
             Obj_AI_Base.OnProcessSpellCast += Obj_AI_Base_OnProcessSpellCast;
             Spellbook.OnCastSpell += Spellbook_OnCastSpell;
-
         }
 
         static Vector3 wCastPos;
