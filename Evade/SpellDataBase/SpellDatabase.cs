@@ -4079,10 +4079,10 @@ namespace Evade
                 new SpellData
                 {
                     ChampionName = "Veigar",
-                    SpellName = "VeigarEventHorizon",
+                    SpellName = " ",
                     Slot = SpellSlot.E,
                     Type = SkillShotType.SkillshotRing,
-                    Delay = 500,
+                    Delay = 1000,
                     Range = 700,
                     Radius = 80,
                     MissileSpeed = int.MaxValue,
@@ -4090,11 +4090,30 @@ namespace Evade
                     AddHitbox = false,
                     DangerValue = 3,
                     IsDangerous = true,
-                    DontAddExtraDuration = true,
                     RingRadius = 350,
-                    ExtraDuration = 3300,
+                    ExtraDuration = 2800,
+                    DontAddExtraDuration = true,
                     DontCross = true,
-                    MissileSpellName = "",
+                    //DontCheckForDuplicates = true,
+                    SourceObjectName = "veigar_base_e_warning_red"
+                });
+            Spells.Add(
+                new SpellData
+                {
+                    ChampionName = "Veigar",
+                    SpellName = "VeigarEventHorizon",
+                    Slot = SpellSlot.E,
+                    Type = SkillShotType.SkillshotRing,
+                    Delay = 1000,
+                    Range = 700,
+                    Radius = 140,
+                    MissileSpeed = int.MaxValue,
+                    FixedRange = false,
+                    AddHitbox = false,
+                    DangerValue = 3,
+                    IsDangerous = true,
+                    RingRadius = 240,
+                    DontCross = true,
                 });
 
             #endregion Veigar
@@ -5716,8 +5735,9 @@ namespace Evade
                 {
                     continue;
                 }
+                var reg = new System.Text.RegularExpressions.Regex(spellData.SourceObjectName);
 
-                if (objectName.Contains(spellData.SourceObjectName))
+                if (reg.IsMatch(objectName))
                 {
                     return spellData;
                 }
