@@ -889,7 +889,13 @@ namespace Evade
                     var target = args.Target;
                     if (target != null && target.IsValid<Obj_AI_Base>() && target.IsVisible)
                     {
-
+                        foreach (var skillshot in DetectedSkillshots)
+                        {
+                            if (skillshot.Evade() && skillshot.IsDanger(PlayerPosition) && !skillshot.SpellData.IsDangerous)
+                            {
+                                Console.WriteLine("Can CAST AA");
+                            }
+                        }
                     }
                 }
 
@@ -1097,7 +1103,7 @@ namespace Evade
                         if (points.Count > 0)
                         {
                             EvadePoint = to.Closest(points);
-                            var nEvadePoint = EvadePoint.Extend(PlayerPosition, -20);
+                            var nEvadePoint = EvadePoint.Extend(PlayerPosition, -100);
                             if (Program.IsSafePath(ObjectManager.Player.GetPath(nEvadePoint.To3D()).To2DList(), Config.EvadingSecondTimeOffset, (int)ObjectManager.Player.MoveSpeed, 100).IsSafe)
                             {
                                 EvadePoint = nEvadePoint;
@@ -1404,12 +1410,10 @@ namespace Evade
                     {
                         if (IsAboutToHit(ObjectManager.Player, 100))
                         {
+                            //Let the user move freely inside the skillshot.
+                            NoSolutionFound = true;
                             Items.UseItem("ZhonyasHourglass");
                         }
-
-                        //Let the user move freely inside the skillshot.
-                        NoSolutionFound = true;
-
                         return;
                     }
 
