@@ -662,11 +662,11 @@ namespace Evade
 
             if (spellData.SpellName == "ThreshQInternal")
             {
-                var points = Utils.CirclePointsNormal(50, 1100, sender.Position.To2D());
+                var points = Utils.CirclePointsNormal(40, 1100, sender.Position.To2D());
 
                 foreach (var point in points)
                 {
-                    if (ObjectManager.Player.Distance(point) < 700)
+                    if (ObjectManager.Player.Distance(point) < 600)
                     {
                         TriggerOnDetectSkillshot(DetectionType.ProcessSpell, spellData, startTime, startPos, point, point, sender);
                     }

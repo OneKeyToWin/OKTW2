@@ -884,6 +884,15 @@ namespace Evade
                     }
                 }
 
+                if (args.Order == GameObjectOrder.AttackUnit)
+                {
+                    var target = args.Target;
+                    if (target != null && target.IsValid<Obj_AI_Base>() && target.IsVisible)
+                    {
+
+                    }
+                }
+
                 //Block the packets if we are evading or not safe.
                 args.Process = false;
                 return;
@@ -981,7 +990,7 @@ namespace Evade
 
             foreach (var skillshot in DetectedSkillshots)
             {
-                if (skillshot.Evade() && skillshot.IsDanger(point))
+                if (skillshot.Evade() && skillshot.IsDanger(point) )
                 {
                     result.SkillshotList.Add(skillshot);
                 }
@@ -1088,7 +1097,7 @@ namespace Evade
                         if (points.Count > 0)
                         {
                             EvadePoint = to.Closest(points);
-                            var nEvadePoint = EvadePoint.Extend(PlayerPosition, -100);
+                            var nEvadePoint = EvadePoint.Extend(PlayerPosition, -20);
                             if (Program.IsSafePath(ObjectManager.Player.GetPath(nEvadePoint.To3D()).To2DList(), Config.EvadingSecondTimeOffset, (int)ObjectManager.Player.MoveSpeed, 100).IsSafe)
                             {
                                 EvadePoint = nEvadePoint;

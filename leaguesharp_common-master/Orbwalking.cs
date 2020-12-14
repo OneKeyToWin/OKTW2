@@ -327,14 +327,14 @@ namespace LeagueSharp.Common
                             return 1800;
                     }
 
-                    result -= Math.Min(Game.Ping / 8f, 10f);
+                    result -= Math.Min(Game.Ping / 7f, 10f);
                     result -= 7;
                     if (Player.IsMoving && aiBase.IsMoving)
                     {
                         if (!aiBase.IsFacing(Player))
                             result -= 10;
                         if (Player.IsFacing(aiBase))
-                            result -= 7;
+                            result -= 8;
                     }
                 }
                 return result + target.BoundingRadius;
@@ -419,7 +419,6 @@ namespace LeagueSharp.Common
             LastMoveCommandPosition = point;
             LastMoveCommandT = Utils.GameTimeTickCount;
         }
-
 
         public static void Orbwalk(AttackableUnit target, Vector3 position, float extraWindup = 90, float holdAreaRadius = 0, bool useFixedDistance = true, bool randomizeMinDistance = true)
         {
