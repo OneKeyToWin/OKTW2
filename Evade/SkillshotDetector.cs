@@ -176,7 +176,7 @@ namespace Evade
 
         private static void GameObject_OnCreate(GameObject sender, EventArgs args)
         {
-            if (Config.PrintSpellData && sender is Obj_AI_Hero)
+            if (Config.PrintSpellData && !(sender is MissileClient) && ObjectManager.Player.Distance(sender.Position) < 1000)
             {
                 Console.WriteLine(Utils.TickCount + " GameObject_OnCreate " + sender.Name + " " + sender.IsAlly + " " + sender.Type);
             }
