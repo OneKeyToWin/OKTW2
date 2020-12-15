@@ -611,7 +611,7 @@ namespace LeagueSharp.Common
 
         private static void SpellbookOnStopCast(Spellbook spellbook, SpellbookStopCastEventArgs args)
         {
-            if (spellbook.Owner.IsValid && spellbook.Owner.IsMe && args.DestroyMissile && args.StopAnimation && args.MissileNetworkId != 0)
+            if (spellbook.Owner.IsValid && spellbook.Owner.IsMe && args.DestroyMissile && args.StopAnimation )
             {
                 ResetAutoAttackTimer();
                 Console.WriteLine("Basic Attack was cancelled!");
@@ -859,7 +859,7 @@ namespace LeagueSharp.Common
 
                     foreach (var minion in MinionList)
                     {
-                        var t = (int)(AttackCastDelay * 1000) - 100 + Game.Ping / 2
+                        var t = (int)(AttackCastDelay * 1000) - 20  /*+ Game.Ping / 2*/
                                 + 1000 * (int)Math.Max(0, this.Player.Distance(minion) - this.Player.BoundingRadius)
                                 / (int)GetMyProjectileSpeed();
 
@@ -868,7 +868,7 @@ namespace LeagueSharp.Common
                             t += 200 + Game.Ping / 2;
                         }
 
-                        var predHealth = HealthPrediction.GetHealthPrediction(minion, t, this.FarmDelay);
+                        var predHealth = HealthPrediction.GetHealthPrediction(minion, t, 0);
 
                         if (minion.Team != GameObjectTeam.Neutral && this.ShouldAttackMinion(minion))
                         {
