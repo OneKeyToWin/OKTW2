@@ -1057,12 +1057,9 @@ namespace Evade
             time += 150;
             foreach (var skillshot in DetectedSkillshots)
             {
-                if (skillshot.Evade())
+                if (skillshot.Evade() && skillshot.IsAboutToHit(time, unit))
                 {
-                    if (skillshot.IsAboutToHit(time, unit))
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
             return false;
@@ -1413,8 +1410,8 @@ namespace Evade
                             //Let the user move freely inside the skillshot.
                             NoSolutionFound = true;
                             Items.UseItem("ZhonyasHourglass");
+                            return;
                         }
-                        return;
                     }
 
                     //Shields
@@ -1423,11 +1420,12 @@ namespace Evade
                         if (IsAboutToHit(ObjectManager.Player, evadeSpell.Delay))
                         {
                             ObjectManager.Player.Spellbook.CastSpell(evadeSpell.Slot, ObjectManager.Player);
+                            NoSolutionFound = true;
+                            return;
                         }
 
                         //Let the user move freely inside the skillshot.
-                        NoSolutionFound = true;
-                        return;
+                       
                     }
                 }
             }
