@@ -97,25 +97,47 @@ namespace Evade
 
             #region Aatrox
 
-            //Spells.Add(
-            //    new SpellData
-            //    {
-            //        ChampionName = "Aatrox",
-            //        SpellName = "AatroxW",
-            //        Slot = SpellSlot.W,
-            //        Type = SkillShotType.SkillshotMissileLine,
-            //        Delay = 250,
-            //        Range = 825,
-            //        Radius = 60,
-            //        MissileSpeed = 1600,
-            //        FixedRange = true,
-            //        AddHitbox = true,
-            //        DangerValue = 3,
-            //        IsDangerous = true,
-            //        MissileSpellName = "AatroxW",
-            //        CanBeRemoved = true,
-            //        CollisionObjects = new [] { CollisionObjectTypes.YasuoWall, CollisionObjectTypes.Minion, CollisionObjectTypes.Champions }
-            //    });
+            Spells.Add(
+                new SpellData
+                {
+                    ChampionName = "Aatrox",
+                    SpellName = "AatroxQ1",
+                    Slot = SpellSlot.Q,
+                    Type = SkillShotType.SkillshotLine,
+                    Delay = 500,
+                    Range = 700,
+                    Radius = 90,
+                    ExtraDuration = 1500,
+                    DontAddExtraDuration = true,
+                    FixedRange = false,
+                    AddHitbox = true,
+                    DangerValue = 3,
+                    IsDangerous = true,
+                    DontCross = true,
+                    DontRemove = true,
+                    SourceObjectName = "Aatrox_Base_Q_Indicator_01",
+                    EndAtParticle = "Aatrox_Base_Q_Indicator_01"
+                });
+
+            Spells.Add(
+                new SpellData
+                {
+                    ChampionName = "Aatrox",
+                    SpellName = "AatroxW",
+                    Slot = SpellSlot.W,
+                    Type = SkillShotType.SkillshotMissileLine,
+                    Delay = 250,
+                    Range = 825,
+                    Radius = 60,
+                    MissileSpeed = 1600,
+                    FixedRange = true,
+                    AddHitbox = true,
+                    DangerValue = 3,
+                    IsDangerous = true,
+                    MissileSpellName = "AatroxW",
+                    CanBeRemoved = true,
+                    CollisionObjects = new[] { CollisionObjectTypes.YasuoWall, CollisionObjectTypes.Minion, CollisionObjectTypes.Champions }
+                });
 
             #endregion Aatrox
 
@@ -617,6 +639,7 @@ namespace Evade
                     DontCross = true,
                     DangerValue = 2,
                     IsDangerous = true,
+                    DontCheckForDuplicates = true,
                     ToggleParticleName = "caitlyn_.+_yordleTrap_trigger_sound"
                 });
             Spells.Add(
@@ -4399,26 +4422,52 @@ namespace Evade
 
             #region Zed
 
+
+
             Spells.Add(
                 new SpellData
                 {
                     ChampionName = "Zed",
-                    SpellName = "ZedQ",
-                    Slot = SpellSlot.Q,
-                    Type = SkillShotType.SkillshotMissileLine,
+                    SpellName = "ZedW",
+                    Slot = SpellSlot.W,
+                    Type = SkillShotType.SkillshotCircle,
                     Delay = 250,
-                    Range = 925,
-                    Radius = 50,
-                    MissileSpeed = 1700,
-                    FixedRange = true,
+                    Range = 750,
+                    Radius = 240,
+                    MissileSpeed = 2500,
+                    ExtraDuration = 5000,
+                    DontAddExtraDuration = false,
+                    FixedRange = false,
                     AddHitbox = true,
                     DangerValue = 2,
-                    IsDangerous = false,
-                    MissileSpellName = "ZedQMissile",
-                    //FromObjects = new[] { "Zed_Clone_idle.troy", "Zed_Clone_Idle.troy" },
-                    FromObjects = new[] {"Zed_Base_W_tar.troy", "Zed_Base_W_cloneswap_buf.troy"},
-                    CollisionObjects = new[] {CollisionObjectTypes.YasuoWall},
+                    IsDangerous = true,
+                    DontCross = true,
+                    DontCheckForDuplicates = true,
+                    MissileSpellName = "ZedWMissile",
+                    ToggleParticleName = "zed_.+_cloneswap",
+                    SourceObjectName = "zed_.+_cloneswap"
                 });
+
+            Spells.Add(
+               new SpellData
+               {
+                   ChampionName = "Zed",
+                   SpellName = "ZedQ",
+                   Slot = SpellSlot.Q,
+                   Type = SkillShotType.SkillshotMissileLine,
+                   Delay = 250,
+                   Range = 925,
+                   Radius = 50,
+                   MissileSpeed = 1700,
+                   FixedRange = true,
+                   AddHitbox = true,
+                   DangerValue = 2,
+                   IsDangerous = false,
+                   MissileSpellName = "ZedQMissile",
+                    //FromObjects = new[] { "Zed_Clone_idle.troy", "Zed_Clone_Idle.troy" },
+                    FromObjects = new[] { "Zed_Base_W_tar.troy", "Zed_Base_W_cloneswap_buf.troy" },
+                   CollisionObjects = new[] { CollisionObjectTypes.YasuoWall },
+               });
 
             #endregion Zed
 
@@ -5716,9 +5765,9 @@ namespace Evade
                     continue;
                 }
                                
-                var reg = new System.Text.RegularExpressions.Regex(spellData.EndAtParticle);
+                var reg = new System.Text.RegularExpressions.Regex(spellData.EndAtParticle.ToLowerInvariant());
 
-                if (reg.IsMatch(objectName))
+                if (reg.IsMatch(objectName.ToLowerInvariant()))
                 {
                     return spellData;
                 }
@@ -5736,7 +5785,7 @@ namespace Evade
                 {
                     continue;
                 }
-                var reg = new System.Text.RegularExpressions.Regex(spellData.SourceObjectName);
+                var reg = new System.Text.RegularExpressions.Regex(spellData.SourceObjectName.ToLowerInvariant());
 
                 if (reg.IsMatch(objectName))
                 {

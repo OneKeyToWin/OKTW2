@@ -22,10 +22,8 @@ namespace Evade
         public const int ExtraEvadeDistance = 30;
         public const int PathFindingDistance = 60;
         public const int PathFindingDistance2 = 35;
-
         public const int DiagonalEvadePointsCount = 7;
         public const int DiagonalEvadePointsStep = 20;
-
         public const int CrossingTimeOffset = 250;
         public const int EvadingFirstTimeOffset = 250;
         public const int EvadingSecondTimeOffset = 80;
@@ -125,6 +123,7 @@ namespace Evade
 
             var misc = new Menu("Misc", "Misc");
             misc.AddItem(new MenuItem("BlockSpells", "Block spells while evading").SetValue(new StringList(new []{"No", "Only dangerous", "Always"}, 1)));
+            misc.AddItem(new MenuItem("AllowAaLevel", "Allow auto-attacks danger level").SetValue(new Slider(4, 5, 1)));
             misc.AddItem(new MenuItem("DisableFow", "Disable fog of war dodging").SetValue(false));
             misc.AddItem(new MenuItem("ShowEvadeStatus", "Show Evade Status").SetValue(false));
             if (ObjectManager.Player.CharData.BaseSkinName == "Olaf")
@@ -133,7 +132,6 @@ namespace Evade
                     new MenuItem("DisableEvadeForOlafR", "Automatic disable Evade when Olaf's ulti is active!")
                         .SetValue(true));
             }
-
 
             Menu.AddSubMenu(misc);
 

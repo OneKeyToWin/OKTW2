@@ -672,6 +672,7 @@ namespace Evade
                 return;
             }
 
+
             if (ObjectManager.Player.IsWindingUp && !Orbwalking.IsAutoAttack(ObjectManager.Player.LastCastedSpellName()))
             {
                 Evading = false;
@@ -773,6 +774,24 @@ namespace Evade
                 //Inside the danger polygon.
                 if (!safeResult.IsSafe)
                 {
+                    if (ObjectManager.Player.IsWindingUp || !Orbwalking.CanMove(50))
+                    {
+                        foreach (var skillshot in DetectedSkillshots)
+                        {
+                            var dangerValue = skillshot.SpellData.DangerValue;
+                            var dangerSkillMenu = Config.Menu.Item("DangerLevel" + skillshot.SpellData.MenuItemName);
+
+                            if (dangerSkillMenu != null)
+                                dangerValue = dangerSkillMenu.GetValue<Slider>().Value;
+
+                            if (skillshot.Evade() && skillshot.IsDanger(PlayerPosition) && dangerValue <= Config.Menu.Item("AllowAaLevel").GetValue<Slider>().Value)
+                            {
+                                Console.WriteLine("Can CAST AA ON GAME UPDATE");
+                                return;
+                            }
+                        }
+                    }
+
                     //Search for an evade point:
                     TryToEvade(safeResult.SkillshotList, EvadeToPoint.IsValid() ? EvadeToPoint : Game.CursorPos.To2D());
                 }
@@ -884,16 +903,23 @@ namespace Evade
                     }
                 }
 
-                if (args.Order == GameObjectOrder.AttackUnit)
+                if (args.Order == GameObjectOrder.AttackUnit )
                 {
                     var target = args.Target;
                     if (target != null && target.IsValid<Obj_AI_Base>() && target.IsVisible)
                     {
                         foreach (var skillshot in DetectedSkillshots)
                         {
-                            if (skillshot.Evade() && skillshot.IsDanger(PlayerPosition) && !skillshot.SpellData.IsDangerous)
+                            var dangerValue = skillshot.SpellData.DangerValue;
+                            var dangerSkillMenu = Config.Menu.Item("DangerLevel" + skillshot.SpellData.MenuItemName);
+
+                            if (dangerSkillMenu != null)
+                                dangerValue = dangerSkillMenu.GetValue<Slider>().Value;
+
+                            if (skillshot.Evade() && skillshot.IsDanger(PlayerPosition) && dangerValue <= Config.Menu.Item("AllowAaLevel").GetValue<Slider>().Value)
                             {
                                 Console.WriteLine("Can CAST AA");
+                                return;
                             }
                         }
                     }
@@ -1040,13 +1066,8 @@ namespace Evade
         {
             foreach (var skillshot in DetectedSkillshots)
             {
-                if (skillshot.Evade())
-                {
-                    if (!skillshot.IsSafeToBlink(point, timeOffset, delay))
-                    {
-                        return false;
-                    }
-                }
+                if (skillshot.Evade() && !skillshot.IsSafeToBlink(point, timeOffset, delay))
+                    return false;
             }
             return true;
         }
@@ -1058,9 +1079,7 @@ namespace Evade
             foreach (var skillshot in DetectedSkillshots)
             {
                 if (skillshot.Evade() && skillshot.IsAboutToHit(time, unit))
-                {
                     return true;
-                }
             }
             return false;
         }
