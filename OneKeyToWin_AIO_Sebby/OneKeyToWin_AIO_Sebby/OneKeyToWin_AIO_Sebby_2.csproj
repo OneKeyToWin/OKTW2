@@ -36,48 +36,50 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="clipper_library">
-      <HintPath>..\..\..\..\..\Downloads\LeagueSharp\Kernel\clipper_library.dll</HintPath>
+    <Reference Include="clipper_library, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d12e08f2a3211a4a">
+      <HintPath>..\..\..\..\dlls\clipper_library.dll</HintPath>
     </Reference>
-    <Reference Include="Keras, Version=3.8.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\..\Downloads\LeagueSharp\Kernel\Keras.dll</HintPath>
+    <Reference Include="Keras, Version=3.8.5.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\..\..\dlls\Keras.dll</HintPath>
     </Reference>
     <Reference Include="LeagueSharp">
-      <HintPath>..\..\..\..\..\Downloads\LeagueSharp\Kernel\LeagueSharp.dll</HintPath>
+      <HintPath>..\..\..\..\dlls\LeagueSharp.dll</HintPath>
     </Reference>
-    <Reference Include="LeagueSharp.Common">
-      <HintPath>..\..\..\..\..\Downloads\LeagueSharp\Kernel\LeagueSharp.Common.dll</HintPath>
+    <Reference Include="LeagueSharp.Common, Version=1.0.0.55, Culture=neutral, PublicKeyToken=57a5292ddd39b703">
+      <HintPath>..\..\..\..\dlls\LeagueSharp.Common.dll</HintPath>
     </Reference>
-    <Reference Include="LeagueSharp.Data">
-      <HintPath>..\..\..\..\..\Downloads\LeagueSharp\Kernel\LeagueSharp.Data.dll</HintPath>
+    <Reference Include="LeagueSharp.Data, Version=1.1.0.1, Culture=neutral, PublicKeyToken=7b6e8d26eaf0534f">
+      <HintPath>..\..\..\..\dlls\LeagueSharp.Data.dll</HintPath>
     </Reference>
-    <Reference Include="LeagueSharp.Sandbox">
-      <HintPath>..\..\..\..\..\Downloads\LeagueSharp\Kernel\LeagueSharp.Sandbox.dll</HintPath>
+    <Reference Include="LeagueSharp.Sandbox, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0c92cb9c3763a33b">
+      <HintPath>..\..\..\..\dlls\LeagueSharp.Sandbox.dll</HintPath>
+    </Reference>
+    <Reference Include="LeagueSharp.Wrapper, Version=1.0.0.1, Culture=neutral, PublicKeyToken=e0de6adbc8a415fa">
+      <HintPath>..\..\..\..\dlls\LeagueSharp.dll</HintPath>
     </Reference>
     <Reference Include="netstandard, Version=2.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51">
-      <HintPath>..\..\..\..\..\Downloads\LeagueSharp\Kernel\netstandard.dll</HintPath>
+      <HintPath>..\..\..\..\dlls\netstandard.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\..\..\..\Downloads\LeagueSharp\Kernel\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
+      <HintPath>..\..\..\..\dlls\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="Numpy.Bare, Version=3.7.1.4, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\..\Downloads\LeagueSharp\Kernel\Numpy.Bare.dll</HintPath>
+    <Reference Include="Numpy.Bare, Version=3.7.1.4, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\..\..\dlls\Numpy.Bare.dll</HintPath>
     </Reference>
-    <Reference Include="Python.Runtime, Version=2.5.1.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\..\..\..\..\Downloads\LeagueSharp\Kernel\Python.Runtime.dll</HintPath>
+    <Reference Include="Python.Runtime, Version=2.5.1.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\..\..\dlls\Python.Runtime.dll</HintPath>
     </Reference>
-    <Reference Include="SharpDX">
-      <HintPath>..\..\..\..\..\Downloads\LeagueSharp\Kernel\SharpDX.dll</HintPath>
+    <Reference Include="SharpDX, Version=2.6.3.0, Culture=neutral, PublicKeyToken=345b829e6e492981">
+      <HintPath>..\..\..\..\dlls\SharpDX.dll</HintPath>
     </Reference>
-    <Reference Include="SharpDX.Direct3D9">
-      <HintPath>..\..\..\..\..\Downloads\LeagueSharp\Kernel\SharpDX.Direct3D9.dll</HintPath>
+    <Reference Include="SharpDX.Direct3D9, Version=2.6.3.0, Culture=neutral, PublicKeyToken=345b829e6e492981">
+      <HintPath>..\..\..\..\dlls\SharpDX.Direct3D9.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
