@@ -33,8 +33,8 @@ namespace SebbyLib
 
         static AIPrediction()
         {
-            Model = BaseModel.ModelFromJson(File.ReadAllText(@"c:/test/model.json"));
-            Model.LoadWeight("c:/test/model.h5");
+            Model = BaseModel.ModelFromJson(File.ReadAllText(@"c://test/model.json"));
+            Model.LoadWeight("c://test/model.h5");
         }
 
         public AIPredictionOutput GetPrediction(AIPredictionInput input)

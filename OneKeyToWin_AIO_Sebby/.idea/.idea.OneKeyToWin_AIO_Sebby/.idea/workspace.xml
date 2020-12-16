@@ -22,19 +22,7 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fe3b8615-9b65-4114-9065-c1e16de66297" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/OneKeyToWin_AIO_Sebby/SebbyLib/AIPrediction.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/OneKeyToWin_AIO_Sebby/OneKeyToWin_AIO_Sebby_2.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/OneKeyToWin_AIO_Sebby/OneKeyToWin_AIO_Sebby_2.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/OneKeyToWin_AIO_Sebby/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/OneKeyToWin_AIO_Sebby/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/OneKeyToWin_AIO_Sebby/SebbyLib/PredictionOktw.cs" beforeDir="false" afterPath="$PROJECT_DIR$/OneKeyToWin_AIO_Sebby/SebbyLib/PredictionOktw.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/OneKeyToWin_AIO_Sebby/bin/Release/Python.Runtime.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/OneKeyToWin_AIO_Sebby/obj/Release/OneKeyToWin_AIO_Sebby.Properties.Resources.resources" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/OneKeyToWin_AIO_Sebby/obj/Release/OneKeyToWin_AIO_Sebby.Resource1.resources" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/OneKeyToWin_AIO_Sebby/obj/Release/OneKeyToWin_AIO_Sebby_2.csproj.FileListAbsolute.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/OneKeyToWin_AIO_Sebby/obj/Release/TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/OneKeyToWin_AIO_Sebby/obj/Release/TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/OneKeyToWin_AIO_Sebby/obj/Release/TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs" beforeDir="false" />
-    </list>
+    <list default="true" id="fe3b8615-9b65-4114-9065-c1e16de66297" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -111,7 +99,7 @@
       <workItem from="1608064010546" duration="703000" />
       <workItem from="1608123436689" duration="1669000" />
       <workItem from="1608125481061" duration="32000" />
-      <workItem from="1608126286634" duration="7466000" />
+      <workItem from="1608126286634" duration="7566000" />
     </task>
     <servers />
   </component>
