@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using SharpDX;
 using LeagueSharp;
 using LeagueSharp.Common;
-
 using Keras.Models;
+using Numpy;
+using Python.Runtime;
+using static Keras.Models.Sequential;
 
 namespace SebbyLib.Prediction
 {
@@ -39,15 +42,16 @@ namespace SebbyLib.Prediction
 
     public class PredictionInput
     {
-
         private Vector3 _from;
         private Vector3 _rangeCheckFrom;
         public bool Aoe = false;
         public bool Collision = false;
+
         public CollisionableObjects[] CollisionObjects =
         {
             CollisionableObjects.Minions, CollisionableObjects.YasuoWall
         };
+
         public float Delay;
         public float Radius = 1f;
         public float Range = float.MaxValue;
@@ -117,17 +121,17 @@ namespace SebbyLib.Prediction
     {
         public static PredictionOutput GetPrediction(Obj_AI_Base unit, float delay)
         {
-            return GetPrediction(new PredictionInput { Unit = unit, Delay = delay });
+            return GetPrediction(new PredictionInput {Unit = unit, Delay = delay});
         }
 
         public static PredictionOutput GetPrediction(Obj_AI_Base unit, float delay, float radius)
         {
-            return GetPrediction(new PredictionInput { Unit = unit, Delay = delay, Radius = radius });
+            return GetPrediction(new PredictionInput {Unit = unit, Delay = delay, Radius = radius});
         }
 
         public static PredictionOutput GetPrediction(Obj_AI_Base unit, float delay, float radius, float speed)
         {
-            return GetPrediction(new PredictionInput { Unit = unit, Delay = delay, Radius = radius, Speed = speed });
+            return GetPrediction(new PredictionInput {Unit = unit, Delay = delay, Radius = radius, Speed = speed});
         }
 
         public static PredictionOutput GetPrediction(Obj_AI_Base unit,
@@ -156,7 +160,7 @@ namespace SebbyLib.Prediction
         internal static PredictionOutput GetPrediction(PredictionInput input, bool ft, bool checkCollision)
         {
             PredictionOutput result = null;
-            new Sequential();
+            
             if (!input.Unit.IsValidTarget(float.MaxValue, false))
             {
                 return new PredictionOutput();
@@ -177,7 +181,7 @@ namespace SebbyLib.Prediction
             if (Math.Abs(input.Range - float.MaxValue) > float.Epsilon &&
                 input.Unit.Distance(input.RangeCheckFrom, true) > Math.Pow(input.Range * 1.5, 2))
             {
-                return new PredictionOutput { Input = input };
+                return new PredictionOutput {Input = input};
             }
 
             //Unit is dashing.
@@ -243,7 +247,7 @@ namespace SebbyLib.Prediction
             //Check for collision
             if (checkCollision && input.Collision && result.Hitchance > HitChance.Impossible)
             {
-                var positions = new List<Vector3> { result.CastPosition };
+                var positions = new List<Vector3> {result.CastPosition};
                 if (input.Delay > 0.3)
                     positions.Add(input.Unit.Position);
 
@@ -283,7 +287,8 @@ namespace SebbyLib.Prediction
 
             // CAN'T MOVE SPELLS ///////////////////////////////////////////////////////////////////////////////////
 
-            if (UnitTracker.GetSpecialSpellEndTime(input.Unit) > 100 || input.Unit.HasBuff("Recall") || (UnitTracker.GetLastStopMoveTime(input.Unit) < 100 && input.Unit.IsRooted))
+            if (UnitTracker.GetSpecialSpellEndTime(input.Unit) > 100 || input.Unit.HasBuff("Recall") ||
+                (UnitTracker.GetLastStopMoveTime(input.Unit) < 100 && input.Unit.IsRooted))
             {
                 OktwCommon.debug("CAN'T MOVE SPELLS");
                 result.Hitchance = HitChance.VeryHigh;
@@ -298,6 +303,7 @@ namespace SebbyLib.Prediction
             {
                 lastWaypiont = input.Unit.Position;
             }
+
             var distanceUnitToWaypoint = lastWaypiont.Distance(input.Unit.Position);
             var distanceFromToUnit = input.From.Distance(input.Unit.Position);
             var distanceFromToWaypoint = lastWaypiont.Distance(input.From);
@@ -354,7 +360,7 @@ namespace SebbyLib.Prediction
             }
 
             // INCOMING DAMAGE  ///////////////////////////////////////////////////////////////////////////////////
-            var incoming = OktwCommon.GetIncomingDamage((Obj_AI_Hero)input.Unit);
+            var incoming = OktwCommon.GetIncomingDamage((Obj_AI_Hero) input.Unit);
             if (input.Unit.Health - incoming < HeroManager.Player.MaxHealth * 0.2f && incoming > 10)
             {
                 OktwCommon.debug("PRED VH: LOW HP ENEMY");
@@ -362,7 +368,9 @@ namespace SebbyLib.Prediction
                 return result;
             }
 
-            if (HeroManager.Player.MaxHealth < 20 && HeroManager.Player.Health - OktwCommon.GetIncomingDamage(HeroManager.Player) < HeroManager.Player.MaxHealth * 0.2f)
+            if (HeroManager.Player.MaxHealth < 20 &&
+                HeroManager.Player.Health - OktwCommon.GetIncomingDamage(HeroManager.Player) <
+                HeroManager.Player.MaxHealth * 0.2f)
             {
                 OktwCommon.debug("PRED VH: LOW HP MY HERO");
                 result.Hitchance = HitChance.VeryHigh;
@@ -410,13 +418,15 @@ namespace SebbyLib.Prediction
                 {
                     var acitveSpell = input.Unit.Spellbook;
 
-                    if (acitveSpell.IsCastingSpell && totalDelay < acitveSpell.CastEndTime - Game.Time && !input.Unit.CanMove)
+                    if (acitveSpell.IsCastingSpell && totalDelay < acitveSpell.CastEndTime - Game.Time &&
+                        !input.Unit.CanMove)
                     {
                         OktwCommon.debug("PRED VH: Spell Cast Detection");
                         result.Hitchance = HitChance.VeryHigh;
                         return result;
                     }
-                    else if (!acitveSpell.IsAutoAttacking && acitveSpell.CastEndTime - Game.Time < 0.1 && !input.Unit.CanMove)
+                    else if (!acitveSpell.IsAutoAttacking && acitveSpell.CastEndTime - Game.Time < 0.1 &&
+                             !input.Unit.CanMove)
                     {
                         OktwCommon.debug("PRED M: STOP CAST SPELL SOON ");
                         result.Hitchance = HitChance.Medium;
@@ -494,7 +504,8 @@ namespace SebbyLib.Prediction
                     // RUN IN LANE DETECTION /////////////////////////////////////////////////////////////////////////////////// 
                     foreach (var x in ObjectManager.Get<Obj_AI_Turret>())
                     {
-                        if (x.Team == input.Unit.Team && !x.IsDead && x.Distance(input.From) < 2500 && x.Distance(input.Unit.Position) > 400)
+                        if (x.Team == input.Unit.Team && !x.IsDead && x.Distance(input.From) < 2500 &&
+                            x.Distance(input.Unit.Position) > 400)
                         {
                             var pos3 = x.Position - input.Unit.Position;
                             var getAngle2 = pos1.AngleBetween(pos3.To2D());
@@ -507,6 +518,7 @@ namespace SebbyLib.Prediction
                         }
                     }
                 }
+
                 var inSameDriection = OktwCommon.IsMovingInSameDirection(input.Unit, ObjectManager.Player);
                 if (inSameDriection || distanceUnitToWaypoint > 600)
                 {
@@ -525,6 +537,7 @@ namespace SebbyLib.Prediction
                     return result;
                 }
             }
+
             result.Hitchance = HitChance.High;
             return result;
         }
@@ -532,15 +545,16 @@ namespace SebbyLib.Prediction
         internal static PredictionOutput GetDashingPrediction(PredictionInput input)
         {
             var dashData = input.Unit.GetDashInfo();
-            var result = new PredictionOutput { Input = input };
+            var result = new PredictionOutput {Input = input};
             //Normal dashes.
             if (!dashData.IsBlink)
             {
                 //Mid air:
                 var endP = dashData.Path.Last();
                 var dashPred = GetPositionOnPath(
-                    input, new List<Vector2> { input.Unit.ServerPosition.To2D(), endP }, dashData.Speed);
-                if (dashPred.Hitchance >= HitChance.High && dashPred.UnitPosition.To2D().Distance(input.Unit.Position.To2D(), endP, true) < 200)
+                    input, new List<Vector2> {input.Unit.ServerPosition.To2D(), endP}, dashData.Speed);
+                if (dashPred.Hitchance >= HitChance.High &&
+                    dashPred.UnitPosition.To2D().Distance(input.Unit.Position.To2D(), endP, true) < 200)
                 {
                     dashPred.CastPosition = dashPred.UnitPosition;
                     dashPred.Hitchance = HitChance.Dashing;
@@ -562,6 +576,7 @@ namespace SebbyLib.Prediction
                         };
                     }
                 }
+
                 result.CastPosition = dashData.Path.Last().To3D();
                 result.UnitPosition = result.CastPosition;
 
@@ -618,6 +633,7 @@ namespace SebbyLib.Prediction
                                 first = points[i];
                         }
                     }
+
                     if (last.IsZero)
                     {
                         if (i == 0)
@@ -633,6 +649,7 @@ namespace SebbyLib.Prediction
                     }
                 }
             }
+
             if (!first.IsZero && !last.IsZero)
             {
                 var finnaly = new Vector3((last.X + first.X) / 2, (last.Y + first.Y) / 2, (last.Z + first.Z) / 2);
@@ -646,11 +663,13 @@ namespace SebbyLib.Prediction
         {
             var result =
                 unit.Buffs.Where(
-                    buff =>
-                        buff.IsActive && Game.Time <= buff.EndTime &&
-                        (buff.Type == BuffType.Charm || buff.Type == BuffType.Knockup || buff.Type == BuffType.Stun ||
-                         buff.Type == BuffType.Suppression || buff.Type == BuffType.Snare || buff.Type == BuffType.Fear
-                         || buff.Type == BuffType.Taunt || buff.Type == BuffType.Knockback))
+                        buff =>
+                            buff.IsActive && Game.Time <= buff.EndTime &&
+                            (buff.Type == BuffType.Charm || buff.Type == BuffType.Knockup ||
+                             buff.Type == BuffType.Stun ||
+                             buff.Type == BuffType.Suppression || buff.Type == BuffType.Snare ||
+                             buff.Type == BuffType.Fear
+                             || buff.Type == BuffType.Taunt || buff.Type == BuffType.Knockback))
                     .Aggregate(0d, (current, buff) => Math.Max(current, buff.EndTime));
             return (result - Game.Time);
         }
@@ -734,8 +753,8 @@ namespace SebbyLib.Prediction
                     var direction = (b - a).Normalized();
                     a = a - speed * tT * direction;
                     var sol = Geometry.VectorMovementCollision(a, b, speed, input.From.To2D(), input.Speed, tT);
-                    var t = (float)sol[0];
-                    var pos = (Vector2)sol[1];
+                    var t = (float) sol[0];
+                    var pos = (Vector2) sol[1];
 
                     if (pos.IsValid() && t >= tT && t <= tT + tB)
                     {
@@ -748,7 +767,7 @@ namespace SebbyLib.Prediction
                             var alpha = (input.From.To2D() - p).AngleBetween(a - b);
                             if (alpha > 30 && alpha < 180 - 30)
                             {
-                                var beta = (float)Math.Asin(input.RealRadius / p.Distance(input.From));
+                                var beta = (float) Math.Asin(input.RealRadius / p.Distance(input.From));
                                 var cp1 = input.From.To2D() + (p - input.From.To2D()).Rotated(beta);
                                 var cp2 = input.From.To2D() + (p - input.From.To2D()).Rotated(-beta);
 
@@ -764,6 +783,7 @@ namespace SebbyLib.Prediction
                             Hitchance = HitChance.High
                         };
                     }
+
                     tT += tB;
                 }
             }
@@ -792,6 +812,7 @@ namespace SebbyLib.Prediction
                 case SkillshotType.SkillshotLine:
                     return Line.GetPrediction(input);
             }
+
             return new PredictionOutput();
         }
 
@@ -809,9 +830,10 @@ namespace SebbyLib.Prediction
                 var prediction = Prediction.GetPrediction(input, false, false);
                 if (prediction.Hitchance >= HitChance.High)
                 {
-                    result.Add(new PossibleTarget { Position = prediction.UnitPosition.To2D(), Unit = enemy });
+                    result.Add(new PossibleTarget {Position = prediction.UnitPosition.To2D(), Unit = enemy});
                 }
             }
+
             return result;
         }
 
@@ -822,7 +844,7 @@ namespace SebbyLib.Prediction
                 var mainTargetPrediction = Prediction.GetPrediction(input, false, true);
                 var posibleTargets = new List<PossibleTarget>
                 {
-                    new PossibleTarget { Position = mainTargetPrediction.UnitPosition.To2D(), Unit = input.Unit }
+                    new PossibleTarget {Position = mainTargetPrediction.UnitPosition.To2D(), Unit = input.Unit}
                 };
 
                 if (mainTargetPrediction.Hitchance >= HitChance.Medium)
@@ -841,7 +863,7 @@ namespace SebbyLib.Prediction
                     {
                         return new PredictionOutput
                         {
-                            AoeTargetsHit = posibleTargets.Select(h => (Obj_AI_Hero)h.Unit).ToList(),
+                            AoeTargetsHit = posibleTargets.Select(h => (Obj_AI_Hero) h.Unit).ToList(),
                             CastPosition = mecCircle.Center.To3D(),
                             UnitPosition = mainTargetPrediction.UnitPosition,
                             Hitchance = mainTargetPrediction.Hitchance,
@@ -861,6 +883,7 @@ namespace SebbyLib.Prediction
                             maxdist = distance;
                         }
                     }
+
                     posibleTargets.RemoveAt(maxdistindex);
                 }
 
@@ -873,12 +896,12 @@ namespace SebbyLib.Prediction
             internal static int GetHits(Vector2 end, double range, float angle, List<Vector2> points)
             {
                 return (from point in points
-                        let edge1 = end.Rotated(-angle / 2)
-                        let edge2 = edge1.Rotated(angle)
-                        where
-                            point.Distance(new Vector2(), true) < range * range && edge1.CrossProduct(point) > 0 &&
-                            point.CrossProduct(edge2) > 0
-                        select point).Count();
+                    let edge1 = end.Rotated(-angle / 2)
+                    let edge2 = edge1.Rotated(angle)
+                    where
+                        point.Distance(new Vector2(), true) < range * range && edge1.CrossProduct(point) > 0 &&
+                        point.CrossProduct(edge2) > 0
+                    select point).Count();
             }
 
             public static PredictionOutput GetPrediction(PredictionInput input)
@@ -886,7 +909,7 @@ namespace SebbyLib.Prediction
                 var mainTargetPrediction = Prediction.GetPrediction(input, false, true);
                 var posibleTargets = new List<PossibleTarget>
                 {
-                    new PossibleTarget { Position = mainTargetPrediction.UnitPosition.To2D(), Unit = input.Unit }
+                    new PossibleTarget {Position = mainTargetPrediction.UnitPosition.To2D(), Unit = input.Unit}
                 };
 
                 if (mainTargetPrediction.Hitchance >= HitChance.Medium)
@@ -947,13 +970,15 @@ namespace SebbyLib.Prediction
                         };
                     }
                 }
+
                 return mainTargetPrediction;
             }
         }
 
         public static class Line
         {
-            internal static IEnumerable<Vector2> GetHits(Vector2 start, Vector2 end, double radius, List<Vector2> points)
+            internal static IEnumerable<Vector2> GetHits(Vector2 start, Vector2 end, double radius,
+                List<Vector2> points)
             {
                 return points.Where(p => p.Distance(start, end, true, true) <= radius * radius);
             }
@@ -972,7 +997,7 @@ namespace SebbyLib.Prediction
                     c1 = from + range * (to - c1).Normalized();
                     c2 = from + range * (to - c2).Normalized();
 
-                    return new[] { c1, c2 };
+                    return new[] {c1, c2};
                 }
 
                 return new Vector2[] { };
@@ -983,7 +1008,7 @@ namespace SebbyLib.Prediction
                 var mainTargetPrediction = Prediction.GetPrediction(input, false, true);
                 var posibleTargets = new List<PossibleTarget>
                 {
-                    new PossibleTarget { Position = mainTargetPrediction.UnitPosition.To2D(), Unit = input.Unit }
+                    new PossibleTarget {Position = mainTargetPrediction.UnitPosition.To2D(), Unit = input.Unit}
                 };
                 if (mainTargetPrediction.Hitchance >= HitChance.Medium)
                 {
@@ -1011,7 +1036,7 @@ namespace SebbyLib.Prediction
                         if (
                             GetHits(
                                 input.From.To2D(), candidate, (input.Radius + input.Unit.BoundingRadius / 3 - 10),
-                                new List<Vector2> { posibleTargets[0].Position }).Count() == 1)
+                                new List<Vector2> {posibleTargets[0].Position}).Count() == 1)
                         {
                             var hits = GetHits(input.From.To2D(), candidate, input.Radius, positionsList).ToList();
                             var hitsCount = hits.Count;
@@ -1077,7 +1102,6 @@ namespace SebbyLib.Prediction
     {
         static Collision()
         {
-
         }
 
         private static bool MinionIsDead(PredictionInput input, Obj_AI_Base minion, float distance)
@@ -1087,7 +1111,7 @@ namespace SebbyLib.Prediction
             if (Math.Abs(input.Speed - float.MaxValue) < float.Epsilon)
                 delay = input.Delay;
 
-            int convert = (int)(delay * 1000) - Game.Ping;
+            int convert = (int) (delay * 1000) - Game.Ping;
 
             if (HealthPrediction.LaneClearHealthPrediction(minion, convert, 0) <= 0)
             {
@@ -1108,9 +1132,9 @@ namespace SebbyLib.Prediction
                     switch (objectType)
                     {
                         case CollisionableObjects.Minions:
-                            foreach (var minion in Cache.GetMinions(input.From, Math.Min(input.Range + input.Radius + 100, 2000)))
+                            foreach (var minion in Cache.GetMinions(input.From,
+                                Math.Min(input.Range + input.Radius + 100, 2000)))
                             {
-
                                 var distanceFromToUnit = minion.ServerPosition.Distance(input.From);
                                 var bOffset = minion.BoundingRadius + input.Unit.BoundingRadius;
                                 if (distanceFromToUnit < bOffset)
@@ -1152,10 +1176,11 @@ namespace SebbyLib.Prediction
                                             Type = input.Type
                                         };
                                         minionPos = Prediction.GetPrediction(predInput2).CastPosition;
-                                        bonusRadius = 50 + (int)input.Radius;
+                                        bonusRadius = 50 + (int) input.Radius;
                                     }
 
-                                    if (minionPos.To2D().Distance(input.From.To2D(), position.To2D(), true, true) <= Math.Pow((input.Radius + bonusRadius + minion.BoundingRadius), 2))
+                                    if (minionPos.To2D().Distance(input.From.To2D(), position.To2D(), true, true) <=
+                                        Math.Pow((input.Radius + bonusRadius + minion.BoundingRadius), 2))
                                     {
                                         if (MinionIsDead(input, minion, distanceFromToUnit))
                                             continue;
@@ -1164,14 +1189,16 @@ namespace SebbyLib.Prediction
                                     }
                                 }
                             }
+
                             break;
                         case CollisionableObjects.Heroes:
                             foreach (var hero in
                                 HeroManager.Enemies.FindAll(
                                     hero =>
                                         hero.IsValidTarget(
-                                            Math.Min(input.Range + input.Radius + 100, 2000), true, input.RangeCheckFrom))
-                                )
+                                            Math.Min(input.Range + input.Radius + 100, 2000), true,
+                                            input.RangeCheckFrom))
+                            )
                             {
                                 input.Unit = hero;
                                 var prediction = Prediction.GetPrediction(input, false, false);
@@ -1183,6 +1210,7 @@ namespace SebbyLib.Prediction
                                     return true;
                                 }
                             }
+
                             break;
 
                         case CollisionableObjects.Walls:
@@ -1195,10 +1223,12 @@ namespace SebbyLib.Prediction
                                     return true;
                                 }
                             }
+
                             break;
                     }
                 }
             }
+
             return false;
         }
     }
@@ -1233,38 +1263,47 @@ namespace SebbyLib.Prediction
         private static List<Obj_AI_Hero> Champion = new List<Obj_AI_Hero>();
         private static List<Spells> spells = new List<Spells>();
         private static List<PathInfo> PathBank = new List<PathInfo>();
+
         static UnitTracker()
         {
-            spells.Add(new Spells() { name = "katarinar", duration = 1 }); //Katarinas R
-            spells.Add(new Spells() { name = "drain", duration = 1 }); //Fiddle W
-            spells.Add(new Spells() { name = "crowstorm", duration = 1 }); //Fiddle R
-            spells.Add(new Spells() { name = "consume", duration = 0.5 }); //Nunu Q
-            spells.Add(new Spells() { name = "absolutezero", duration = 1 }); //Nunu R
-            spells.Add(new Spells() { name = "staticfield", duration = 0.5 }); //Blitzcrank R
-            spells.Add(new Spells() { name = "cassiopeiapetrifyinggaze", duration = 0.5 }); //Cassio's R
-            spells.Add(new Spells() { name = "ezrealtrueshotbarrage", duration = 1 }); //Ezreal's R
-            spells.Add(new Spells() { name = "galioidolofdurand", duration = 1 }); //Ezreal's R                                                                   
-            spells.Add(new Spells() { name = "luxmalicecannon", duration = 1 }); //Lux R
-            spells.Add(new Spells() { name = "reapthewhirlwind", duration = 1 }); //Jannas R
-            spells.Add(new Spells() { name = "jinxw", duration = 0.6 }); //jinxW
-            spells.Add(new Spells() { name = "jinxr", duration = 0.6 }); //jinxR
-            spells.Add(new Spells() { name = "missfortunebullettime", duration = 1 }); //MissFortuneR
-            spells.Add(new Spells() { name = "shenstandunited", duration = 1 }); //ShenR
-            spells.Add(new Spells() { name = "threshe", duration = 0.4 }); //ThreshE
-            spells.Add(new Spells() { name = "threshrpenta", duration = 0.75 }); //ThreshR
-            spells.Add(new Spells() { name = "threshq", duration = 0.75 }); //ThreshQ
-            spells.Add(new Spells() { name = "infiniteduress", duration = 1 }); //Warwick R
-            spells.Add(new Spells() { name = "meditate", duration = 1 }); //yi W
-            spells.Add(new Spells() { name = "alzaharnethergrasp", duration = 1 }); //Malza R
-            spells.Add(new Spells() { name = "lucianq", duration = 0.5 }); //Lucian Q
-            spells.Add(new Spells() { name = "caitlynpiltoverpeacemaker", duration = 0.5 }); //Caitlyn Q
-            spells.Add(new Spells() { name = "velkozr", duration = 0.5 }); //Velkoz R 
-            spells.Add(new Spells() { name = "jhinr", duration = 2 }); //Velkoz R 
+            spells.Add(new Spells() {name = "katarinar", duration = 1}); //Katarinas R
+            spells.Add(new Spells() {name = "drain", duration = 1}); //Fiddle W
+            spells.Add(new Spells() {name = "crowstorm", duration = 1}); //Fiddle R
+            spells.Add(new Spells() {name = "consume", duration = 0.5}); //Nunu Q
+            spells.Add(new Spells() {name = "absolutezero", duration = 1}); //Nunu R
+            spells.Add(new Spells() {name = "staticfield", duration = 0.5}); //Blitzcrank R
+            spells.Add(new Spells() {name = "cassiopeiapetrifyinggaze", duration = 0.5}); //Cassio's R
+            spells.Add(new Spells() {name = "ezrealtrueshotbarrage", duration = 1}); //Ezreal's R
+            spells.Add(new Spells()
+            {
+                name = "galioidolofdurand", duration = 1
+            }); //Ezreal's R                                                                   
+            spells.Add(new Spells() {name = "luxmalicecannon", duration = 1}); //Lux R
+            spells.Add(new Spells() {name = "reapthewhirlwind", duration = 1}); //Jannas R
+            spells.Add(new Spells() {name = "jinxw", duration = 0.6}); //jinxW
+            spells.Add(new Spells() {name = "jinxr", duration = 0.6}); //jinxR
+            spells.Add(new Spells() {name = "missfortunebullettime", duration = 1}); //MissFortuneR
+            spells.Add(new Spells() {name = "shenstandunited", duration = 1}); //ShenR
+            spells.Add(new Spells() {name = "threshe", duration = 0.4}); //ThreshE
+            spells.Add(new Spells() {name = "threshrpenta", duration = 0.75}); //ThreshR
+            spells.Add(new Spells() {name = "threshq", duration = 0.75}); //ThreshQ
+            spells.Add(new Spells() {name = "infiniteduress", duration = 1}); //Warwick R
+            spells.Add(new Spells() {name = "meditate", duration = 1}); //yi W
+            spells.Add(new Spells() {name = "alzaharnethergrasp", duration = 1}); //Malza R
+            spells.Add(new Spells() {name = "lucianq", duration = 0.5}); //Lucian Q
+            spells.Add(new Spells() {name = "caitlynpiltoverpeacemaker", duration = 0.5}); //Caitlyn Q
+            spells.Add(new Spells() {name = "velkozr", duration = 0.5}); //Velkoz R 
+            spells.Add(new Spells() {name = "jhinr", duration = 2}); //Velkoz R 
 
             foreach (var hero in ObjectManager.Get<Obj_AI_Hero>())
             {
                 Champion.Add(hero);
-                UnitTrackerInfoList.Add(new UnitTrackerInfo() { NetworkId = hero.NetworkId, AaTick = Utils.TickCount, StopMoveTick = Utils.TickCount, NewPathTick = Utils.TickCount, SpecialSpellFinishTick = Utils.TickCount, LastInvisableTick = Utils.TickCount });
+                UnitTrackerInfoList.Add(new UnitTrackerInfo()
+                {
+                    NetworkId = hero.NetworkId, AaTick = Utils.TickCount, StopMoveTick = Utils.TickCount,
+                    NewPathTick = Utils.TickCount, SpecialSpellFinishTick = Utils.TickCount,
+                    LastInvisableTick = Utils.TickCount
+                });
             }
 
             Obj_AI_Base.OnProcessSpellCast += Obj_AI_Base_OnProcessSpellCast;
@@ -1295,20 +1334,23 @@ namespace SebbyLib.Prediction
                         sum += time0;
                         i++;
                     }
+
                     if (time1 < 400 && x.PathBank[2].Position.Count() > 1)
                     {
                         sum += time1;
                         i++;
                     }
+
                     if (time2 < 400 && x.PathBank[1].Position.Count() > 1)
                     {
                         sum += time2;
                         i++;
                     }
+
                     x.ClickAvarageTime = (x.ClickAvarageTime + sum) / i;
                 }
 
-                x.PathBank.Add(new PathInfo() { Position = args.Path, Time = Utils.TickCount });
+                x.PathBank.Add(new PathInfo() {Position = args.Path, Time = Utils.TickCount});
 
                 if (x.PathBank.Count > 3)
                     x.PathBank.RemoveAt(0);
@@ -1317,7 +1359,6 @@ namespace SebbyLib.Prediction
                     x.NewPathTick = Utils.TickCount;
                 else
                     x.StopMoveTick = Utils.TickCount;
-
             }
         }
 
@@ -1329,15 +1370,16 @@ namespace SebbyLib.Prediction
                     UnitTrackerInfoList.Find(x => x.NetworkId == sender.NetworkId).AaTick = Utils.TickCount;
                 else
                 {
-
                     var foundSpell = spells.Find(x => args.SData.Name.ToLower() == x.name.ToLower());
                     if (foundSpell != null)
                     {
-                        UnitTrackerInfoList.Find(x => x.NetworkId == sender.NetworkId).SpecialSpellFinishTick = Utils.TickCount + (int)(foundSpell.duration * 1000);
+                        UnitTrackerInfoList.Find(x => x.NetworkId == sender.NetworkId).SpecialSpellFinishTick =
+                            Utils.TickCount + (int) (foundSpell.duration * 1000);
                     }
                     else if (sender.IsWindingUp || sender.IsRooted || !sender.CanMove)
                     {
-                        UnitTrackerInfoList.Find(x => x.NetworkId == sender.NetworkId).SpecialSpellFinishTick = Utils.TickCount + 100;
+                        UnitTrackerInfoList.Find(x => x.NetworkId == sender.NetworkId).SpecialSpellFinishTick =
+                            Utils.TickCount + 100;
                     }
                 }
             }
@@ -1354,7 +1396,8 @@ namespace SebbyLib.Prediction
             if (pathBank.Count < 3)
                 return false;
 
-            if (pathBank[0].Position.Count() < 2 || pathBank[1].Position.Count() < 2 || pathBank[2].Position.Count() < 2)
+            if (pathBank[0].Position.Count() < 2 || pathBank[1].Position.Count() < 2 ||
+                pathBank[2].Position.Count() < 2)
                 return false;
 
             var fixDelay = radius * 2 - unit.MoveSpeed * delay;

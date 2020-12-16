@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ContentModelStore">
+    <e p="C:\Users\Damian\AppData\Local\JetBrains\Rider2020.2\extResources" t="IncludeRecursive" />
+    <e p="C:\Users\Damian\AppData\Local\JetBrains\Rider2020.2\resharper-host\Local\Transient\Rider\v202\SolutionCaches\_OneKeyToWin_AIO_Sebby.-1432604198.00" t="ExcludeRecursive" />
+    <e p="C:\Users\Damian\Desktop\temp\OKTW2\OneKeyToWin_AIO_Sebby" t="IncludeFlat">
+      <e p="OneKeyToWin_AIO_Sebby" t="IncludeRecursive">
+        <e p="App.config" t="Include" />
+        <e p="Base.cs" t="Include" />
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="Champions" t="Include">
+          <e p="Ahri.cs" t="Include" />
+          <e p="Anivia.cs" t="Include" />
+          <e p="Annie.cs" t="Include" />
+          <e p="Ashe.cs" t="Include" />
+          <e p="Blitzcrank.cs" t="Include" />
+          <e p="Brand.cs" t="Include" />
+          <e p="Braum.cs" t="Include" />
+          <e p="Caitlyn.cs" t="Include" />
+          <e p="Corki.cs" t="Include" />
+          <e p="Darius.cs" t="Include" />
+          <e p="Draven.cs" t="Include" />
+          <e p="Ekko.cs" t="Include" />
+          <e p="Evelynn.cs" t="Include" />
+          <e p="Ezreal.cs" t="Include" />
+          <e p="Graves.cs" t="Include" />
+          <e p="Jayce.cs" t="Include" />
+          <e p="Jhin.cs" t="Include" />
+          <e p="Jinx.cs" t="Include" />
+          <e p="Kalista.cs" t="Include" />
+          <e p="Karthus.cs" t="Include" />
+          <e p="Kayle.cs" t="Include" />
+          <e p="Kindred.cs" t="Include" />
+          <e p="KogMaw.cs" t="Include" />
+          <e p="Lucian.cs" t="Include" />
+          <e p="Lux.cs" t="Include" />
+          <e p="Malzahar.cs" t="Include" />
+          <e p="MissFortune.cs" t="Include" />
+          <e p="Morgana.cs" t="Include" />
+          <e p="Orianna.cs" t="Include" />
+          <e p="Quinn.cs" t="Include" />
+          <e p="Sivir.cs" t="Include" />
+          <e p="Swain.cs" t="Include" />
+          <e p="Syndra.cs" t="Include" />
+          <e p="Teemo.cs" t="Include" />
+          <e p="Thresh.cs" t="Include" />
+          <e p="Tristana.cs" t="Include" />
+          <e p="TwistedFate.cs" t="Include" />
+          <e p="Twitch.cs" t="Include" />
+          <e p="Urgot.cs" t="Include" />
+          <e p="Varus.cs" t="Include" />
+          <e p="Vayne.cs" t="Include" />
+          <e p="Velkoz.cs" t="Include" />
+          <e p="Xerath.cs" t="Include" />
+        </e>
+        <e p="Core" t="Include">
+          <e p="Activator.cs" t="Include" />
+          <e p="AutoLvlUp.cs" t="Include" />
+          <e p="ImageLoader.cs" t="Include" />
+          <e p="MissileReturn.cs" t="Include" />
+          <e p="OKTWdash.cs" t="Include" />
+          <e p="OKTWdraws.cs" t="Include" />
+          <e p="OKTWlab.cs" t="Include" />
+          <e p="OKTWtracker.cs" t="Include" />
+          <e p="OktwTs.cs" t="Include" />
+          <e p="OKTWward.cs" t="Include" />
+        </e>
+        <e p="obj" t="ExcludeRecursive" />
+        <e p="OneKeyToWin_AIO_Sebby_2.csproj" t="IncludeRecursive" />
+        <e p="packages.config" t="Include" />
+        <e p="Program.cs" t="Include" />
+        <e p="Properties" t="Include">
+          <e p="AssemblyInfo.cs" t="Include" />
+          <e p="Resources.Designer.cs" t="Include" />
+          <e p="Resources.resx" t="Include" />
+        </e>
+        <e p="Resource1.Designer.cs" t="Include" />
+        <e p="Resource1.resx" t="Include" />
+        <e p="Resources" t="Include">
+          <e p="ball.png" t="Include" />
+          <e p="Default.png" t="Include" />
+          <e p="intro.png" t="Include" />
+          <e p="isready.png" t="Include" />
+          <e p="lost.png" t="Include" />
+          <e p="not.png" t="Include" />
+          <e p="pink.png" t="Include" />
+          <e p="r.png" t="Include" />
+          <e p="Voidgate_Square_0.png" t="Include" />
+          <e p="Voidspawn_Square_0.png" t="Include" />
+          <e p="ward.png" t="Include" />
+          <e p="WT_Green.png" t="Include" />
+          <e p="WT_Pink.png" t="Include" />
+        </e>
+        <e p="SebbyLib" t="Include">
+          <e p="AIPrediction.cs" t="Include" />
+          <e p="Cache.cs" t="Include" />
+          <e p="HealthPrediction.cs" t="Include" />
+          <e p="Movement.cs" t="Include" />
+          <e p="OktwCommon.cs" t="Include" />
+          <e p="PredictionOktw.cs" t="Include" />
+        </e>
+      </e>
+      <e p="OneKeyToWin_AIO_Sebby.sln" t="IncludeFlat" />
+      <e p="packages" t="ExcludeRecursive" />
+    </e>
+  </component>
+</project>

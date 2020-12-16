@@ -2,6 +2,7 @@
 using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
+using Python.Runtime;
 using SharpDX;
 using SebbyLib;
 
@@ -35,7 +36,12 @@ namespace OneKeyToWin_AIO_Sebby
         public static bool SPredictionLoad = false;
         public static bool LaneClear = false, None = false, Harass = false, Combo = false, Farm = false;
         private static float dodgeTime = Game.Time;
-        static void Main(string[] args) { CustomEvents.Game.OnGameLoad += GameOnOnGameLoad; }
+
+        static void Main(string[] args)
+        {
+            PythonEngine.PythonHome = @"C:\Python38";
+            CustomEvents.Game.OnGameLoad += GameOnOnGameLoad;
+        }
 
         private static void GameOnOnGameLoad(EventArgs args)
         {

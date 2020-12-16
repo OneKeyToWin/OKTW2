@@ -37,37 +37,40 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="clipper_library">
-      <HintPath>..\..\..\..\..\Desktop\LeagueSharp\Kernel\clipper_library.dll</HintPath>
+      <HintPath>..\..\..\..\..\Downloads\LeagueSharp\Kernel\clipper_library.dll</HintPath>
     </Reference>
     <Reference Include="Keras, Version=3.8.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Keras.NET.3.8.5\lib\netstandard2.0\Keras.dll</HintPath>
+      <HintPath>..\..\..\..\..\Downloads\LeagueSharp\Kernel\Keras.dll</HintPath>
     </Reference>
     <Reference Include="LeagueSharp">
-      <HintPath>..\..\..\..\..\Desktop\LeagueSharp\Kernel\LeagueSharp.dll</HintPath>
+      <HintPath>..\..\..\..\..\Downloads\LeagueSharp\Kernel\LeagueSharp.dll</HintPath>
     </Reference>
     <Reference Include="LeagueSharp.Common">
-      <HintPath>..\..\..\..\..\Desktop\LeagueSharp\Kernel\LeagueSharp.Common.dll</HintPath>
+      <HintPath>..\..\..\..\..\Downloads\LeagueSharp\Kernel\LeagueSharp.Common.dll</HintPath>
     </Reference>
     <Reference Include="LeagueSharp.Data">
-      <HintPath>..\..\..\..\..\Desktop\LeagueSharp\Kernel\LeagueSharp.Data.dll</HintPath>
+      <HintPath>..\..\..\..\..\Downloads\LeagueSharp\Kernel\LeagueSharp.Data.dll</HintPath>
     </Reference>
     <Reference Include="LeagueSharp.Sandbox">
-      <HintPath>..\..\..\..\..\Desktop\LeagueSharp\Kernel\LeagueSharp.Sandbox.dll</HintPath>
+      <HintPath>..\..\..\..\..\Downloads\LeagueSharp\Kernel\LeagueSharp.Sandbox.dll</HintPath>
+    </Reference>
+    <Reference Include="netstandard, Version=2.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51">
+      <HintPath>..\..\..\..\..\Downloads\LeagueSharp\Kernel\netstandard.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\..\..\..\Desktop\LeagueSharp\Kernel\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\..\..\..\Downloads\LeagueSharp\Kernel\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Numpy.Bare, Version=3.7.1.4, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Numpy.Bare.3.8.1.25\lib\netstandard2.0\Numpy.Bare.dll</HintPath>
+      <HintPath>..\..\..\..\..\Downloads\LeagueSharp\Kernel\Numpy.Bare.dll</HintPath>
     </Reference>
     <Reference Include="Python.Runtime, Version=2.5.1.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\pythonnet_netstandard_py38_win.2.5.1\lib\netstandard2.0\Python.Runtime.dll</HintPath>
+      <HintPath>..\..\..\..\..\Downloads\LeagueSharp\Kernel\Python.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX">
-      <HintPath>..\..\..\..\..\Desktop\LeagueSharp\Kernel\SharpDX.dll</HintPath>
+      <HintPath>..\..\..\..\..\Downloads\LeagueSharp\Kernel\SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.Direct3D9">
-      <HintPath>..\..\..\..\..\Desktop\LeagueSharp\Kernel\SharpDX.Direct3D9.dll</HintPath>
+      <HintPath>..\..\..\..\..\Downloads\LeagueSharp\Kernel\SharpDX.Direct3D9.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -145,6 +148,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource1.resx</DependentUpon>
     </Compile>
+    <Compile Include="SebbyLib\AIPrediction.cs" />
     <Compile Include="SebbyLib\Cache.cs" />
     <Compile Include="SebbyLib\HealthPrediction.cs" />
     <Compile Include="SebbyLib\Movement.cs" />
@@ -187,6 +191,15 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\Microsoft.Packaging.Tools.1.0.0-preview2-25401-01\build\Microsoft.Packaging.Tools.targets" Condition="Exists('..\packages\Microsoft.Packaging.Tools.1.0.0-preview2-25401-01\build\Microsoft.Packaging.Tools.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105.The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.Packaging.Tools.1.0.0-preview2-25401-01\build\Microsoft.Packaging.Tools.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Packaging.Tools.1.0.0-preview2-25401-01\build\Microsoft.Packaging.Tools.targets'))" />
+    <Error Condition="!Exists('..\packages\NETStandard.Library.2.0.0-preview2-25401-01\build\netstandard2.0\NETStandard.Library.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NETStandard.Library.2.0.0-preview2-25401-01\build\netstandard2.0\NETStandard.Library.targets'))" />
+  </Target>
+  <Import Project="..\packages\NETStandard.Library.2.0.0-preview2-25401-01\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\packages\NETStandard.Library.2.0.0-preview2-25401-01\build\netstandard2.0\NETStandard.Library.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
