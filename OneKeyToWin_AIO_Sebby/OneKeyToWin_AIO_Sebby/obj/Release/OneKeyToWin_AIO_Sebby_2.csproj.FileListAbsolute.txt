@@ -1,0 +1,12 @@
+C:\Users\Sebby\Documents\GitHub\OKTW2\OneKeyToWin_AIO_Sebby\OneKeyToWin_AIO_Sebby\obj\Release\OneKeyToWin_AIO_Sebby.exe
+C:\Users\Sebby\Documents\GitHub\OKTW2\OneKeyToWin_AIO_Sebby\OneKeyToWin_AIO_Sebby\obj\Release\OneKeyToWin_AIO_Sebby.pdb
+C:\Users\Sebby\Documents\GitHub\OKTW2\OneKeyToWin_AIO_Sebby\OneKeyToWin_AIO_Sebby\obj\Release\OneKeyToWin_AIO_Sebby_2.csprojAssemblyReference.cache
+C:\Users\Sebby\Documents\GitHub\OKTW2\OneKeyToWin_AIO_Sebby\OneKeyToWin_AIO_Sebby\obj\Release\OneKeyToWin_AIO_Sebby.Properties.Resources.resources
+C:\Users\Sebby\Documents\GitHub\OKTW2\OneKeyToWin_AIO_Sebby\OneKeyToWin_AIO_Sebby\obj\Release\OneKeyToWin_AIO_Sebby.Resource1.resources
+C:\Users\Sebby\Documents\GitHub\OKTW2\OneKeyToWin_AIO_Sebby\OneKeyToWin_AIO_Sebby\obj\Release\OneKeyToWin_AIO_Sebby_2.csproj.GenerateResource.cache
+C:\Users\Sebby\Documents\GitHub\OKTW2\OneKeyToWin_AIO_Sebby\OneKeyToWin_AIO_Sebby\obj\Release\OneKeyToWin_AIO_Sebby_2.csproj.CoreCompileInputs.cache
+C:\Users\Sebby\Documents\GitHub\OKTW2\OneKeyToWin_AIO_Sebby\OneKeyToWin_AIO_Sebby\bin\Release\OneKeyToWin_AIO_Sebby.exe.config
+C:\Users\Sebby\Documents\GitHub\OKTW2\OneKeyToWin_AIO_Sebby\OneKeyToWin_AIO_Sebby\bin\Release\OneKeyToWin_AIO_Sebby.exe
+C:\Users\Sebby\Documents\GitHub\OKTW2\OneKeyToWin_AIO_Sebby\OneKeyToWin_AIO_Sebby\bin\Release\OneKeyToWin_AIO_Sebby.pdb
+C:\Users\Sebby\Documents\GitHub\OKTW2\OneKeyToWin_AIO_Sebby\OneKeyToWin_AIO_Sebby\bin\Release\LeagueSharp.dll
+C:\Users\Sebby\Documents\GitHub\OKTW2\OneKeyToWin_AIO_Sebby\OneKeyToWin_AIO_Sebby\obj\Release\OneKeyToWin_AIO_Sebby_2.csproj.CopyComplete
