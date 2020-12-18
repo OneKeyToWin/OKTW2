@@ -168,20 +168,49 @@ namespace SebbyLib
             ["Zyra"] = 143,
         };
 
+        private static int[] BuffTypes = new[]
+        {
+            1,
+            3,
+            26,
+            2,
+            10,
+            13,
+            14,
+            12,
+            5,
+            29,
+            27,
+            30,
+            21,
+            28,
+            11,
+            22,
+            17,
+            19,
+            4,
+            15,
+            9,
+            31,
+            7,
+            34,
+            18,
+            32,
+            23,
+            24,
+            6,
+            33,
+            8,
+            25,
+            20
+        };
+
         public float Delay;
         public Obj_AI_Hero Source;
         public int SourceSpellSlot;
         public Obj_AI_Hero Target;
-        public float MoveArea;
-        public float GameTime;
-        public bool IsDash;
-        public float Health;
-        public float LastPathTime;
-        public float CurrentPathLength;
-        public float AngleBetweenLastPathAndPosition;
-        public float LengthFromCasterToUnit;
 
-        private static float SpeedFromVelocity(Vector3 velocity)
+        public static float SpeedFromVelocity(Vector3 velocity)
         {
             var realVelocity = new Vector3
             {
@@ -204,28 +233,26 @@ namespace SebbyLib
             target.Add(spell.CooldownExpiresEx);
         }
 
-        private void PutHistoryPath(ICollection<float> target, Vector3[] path)
+        private void PutHistoryPath(ICollection<float> target, OnNewPathEvent @event, Obj_AI_Hero hero)
         {
-            target.Add(path.Select(vector => new Vector2
-            {
-                X = vector.X,
-                Y = vector.Y
-            }).ToList().PathLength()); // length
-            target.Add(path.Length == 0 ? 0.0f : Source.Direction.To2D().AngleBetween(path[0].To2D()));
-            target.Add(Game.Time - 0.0f); // TODO: time ago
+            var pathLength = @event.Path.Select(vector => vector.To2D()).ToList().PathLength();
+            target.Add(pathLength); // length
+            target.Add(pathLength == 0 ? 0.0f : Source.Direction.To2D().AngleBetween(@event.Path[0].To2D()));
+            target.Add((float) (Game.TimePrec - @event.GameTime)); // time ago
+            target.Add(@event.Path.Length > 0 ? hero.Distance(@event.Path[0]) : 0.0f);
         }
 
         private void PutBuffData(ICollection<float> target, BuffInstance[] buffs)
         {
             var gameTime = Game.TimePrec;
-            foreach (var buffType in (BuffType[]) Enum.GetValues(typeof(BuffType)))
+            foreach (var buffType in BuffTypes)
             {
-                var maxBuff = buffs.Where(buff => buffType == buff.Type)
-                    .OrderByDescending(buff => gameTime - buff.EndTime).First();
+                var maxBuff = buffs.Where(buff => (BuffType) buffType == buff.Type)
+                    .OrderByDescending(buff => buff.EndTime - gameTime).FirstOrDefault();
 
                 if (maxBuff != null)
                 {
-                    target.Add((float) gameTime - maxBuff.EndTime);
+                    target.Add((float) (maxBuff.EndTime - gameTime));
                 }
                 else
                 {
@@ -236,30 +263,25 @@ namespace SebbyLib
 
         public float[] GetValues()
         {
-            var pathLength = Target.Path.Select(path => new Vector2
-            {
-                X = path.X,
-                Y = path.Y
-            }).ToList().PathLength();
-
             var values = new List<float>();
             values.Add(ChampionToId[Source.ChampionName]); // source champ
             values.Add(ChampionToId[Target.ChampionName]); // target champ
             values.Add(SourceSpellSlot); // source spell slot
             values.Add(Target.Direction.X); // target direction x
             values.Add(Target.Direction.Y); // target direction y
-            values.Add(Target.Direction.Z); // target direction z
+            values.Add(Source.Direction.X); // source direction x
+            values.Add(Source.Direction.Y); // source direction y
             values.Add(Delay); // delay
             values.Add(SpeedFromVelocity(Target.Velocity)); // speed
             values.Add(Delay * SpeedFromVelocity(Target.Velocity)); // move area
             values.Add((float) Game.TimePrec); // game time
-            values.Add(-1.0f); // is dash TODO
+            values.Add(Target.IsDashing() ? 1.0f : -1.0f); // is dash
             values.Add(Target.Health / Target.MaxHealth); // health
-            values.Add(0.0f); // last path time TODO
-            values.Add(pathLength); // current path length
+            values.Add(Target.Path.Select(vector => vector.To2D()).ToList().PathLength()); // current path length
             values.Add(Target.Direction.To2D()
-                .AngleBetween(Source.ServerPosition.To2D())); // angle_between_last_path_and_position
-            values.Add(Target.ServerPosition.Distance(Source.ServerPosition));
+                .AngleBetween(Source.Direction.To2D())); // angle_between_last_path_and_position
+            values.Add(Source.ServerPosition.Distance(Target.ServerPosition));
+            values.Add(Target.Mana);
 
             PutSpellData(values, Target.GetSpell(SpellSlot.Q));
             PutSpellData(values, Target.GetSpell(SpellSlot.W));
@@ -267,9 +289,34 @@ namespace SebbyLib
             PutSpellData(values, Target.GetSpell(SpellSlot.R));
             PutSpellData(values, Target.GetSpell(SpellSlot.Summoner1));
             PutSpellData(values, Target.GetSpell(SpellSlot.Summoner2));
-            PutHistoryPath(values, Target.Path);
+
+            var amountOfPaths = 0;
+
+            try
+            {
+                var lastPathes = OktwCommon.LastNewPathes[Target.NetworkId];
+                amountOfPaths = lastPathes.Count;
+                IEnumerable<OnNewPathEvent> lastNewPathesEnumerable = lastPathes;
+
+                foreach (var path in lastNewPathesEnumerable.Reverse().Take(10))
+                {
+                    PutHistoryPath(values, path, Target);
+                }
+            }
+            catch (KeyNotFoundException)
+            {
+            }
+
+            for (var i = 0; i < 10 - amountOfPaths; i++)
+            {
+                values.Add(0.0f);
+                values.Add(0.0f);
+                values.Add(0.0f);
+                values.Add(0.0f);
+            }
+
             PutBuffData(values, Target.Buffs);
-            
+
             return values.ToArray();
         }
     }
@@ -289,34 +336,20 @@ namespace SebbyLib
             Model.LoadWeight("c://test/model.h5");
         }
 
-        public AIPredictionOutput GetPrediction(AIPredictionInput input)
+        public static AIPredictionOutput GetPrediction(AIPredictionInput input)
         {
-            NDarray x = np.array(new[,]
+            var values = input.GetValues();
+
+            var firstLevel = new float[1, 102];
+            for (var i = 0; i < 102; i++)
             {
-                {
-                    4.00000000e+00f, 1.31000000e+02f, 0.00000000e+00f, 4.63506880e-02f,
-                    0.00000000e+00f, 9.98925100e-01f, 5.95336914e-01f, 0.00000000e+00f,
-                    0.00000000e+00f, 7.75109863e+02f, -1.00000000e+00f, 9.72130300e-01f,
-                    7.74878784e+02f, 0.00000000e+00f, 4.08477480e+01f, 6.68253400e+02f,
-                    5.00000000e+00f, 3.00000000e+00f, 0.00000000e+00f, 3.00000000e+00f,
-                    8.40000000e+01f, 5.00000000e+00f, 1.79626460e+00f, 2.00000000e+00f, 0.00000000e+00f,
-                    1.00000000e+00f, 0.00000000e+00f, 1.00000000e+00f, 0.00000000e+00f, 1.00000000e+00f,
-                    1.96012820e+02f, 1.00000000e+00f, 0.00000000e+00f, 0.00000000e+00f, 1.36349780e+02f,
-                    2.31079102e-01f, 0.00000000e+00f, 1.36349780e+02f, 2.64099121e-01f, 8.62927550e+02f,
-                    1.37484570e+02f, 8.58459473e-01f, 8.48942900e+02f, 1.37812590e+02f, 1.02355957e+00f,
-                    4.87372070e+02f, 1.38885160e+02f, 1.48681641e+00f, 6.67186300e+02f, 1.39394850e+02f,
-                    1.65191650e+00f, 7.09529400e+02f, 1.41762190e+02f, 2.44433594e+00f, 7.38335940e+02f,
-                    1.39717530e+02f, 2.97460938e+00f, 3.18056600e+02f, 1.40078920e+02f, 3.27178955e+00f,
-                    9.95389400e+01f, 1.40255980e+02f, 3.43688965e+00f, 2.48040060e+04f, 1.24202880e+01f,
-                    0.00000000e+00f, 2.28680420e+00f, 0.00000000e+00f, 0.00000000e+00f, 0.00000000e+00f,
-                    0.00000000e+00f, 1.07281500e+00f, 0.00000000e+00f, 0.00000000e+00f, 0.00000000e+00f,
-                    0.00000000e+00f, 0.00000000e+00f, 0.00000000e+00f, 0.00000000e+00f, 0.00000000e+00f,
-                    0.00000000e+00f, 0.00000000e+00f, 0.00000000e+00f, 0.00000000e+00f, 0.00000000e+00f,
-                    0.00000000e+00f, 0.00000000e+00f, 0.00000000e+00f, 0.00000000e+00f, 0.00000000e+00f,
-                    0.00000000e+00f, 0.00000000e+00f, 0.00000000e+00f, 0.00000000e+00f, 0.00000000e+00f,
-                    0.00000000e+00f
-                }
-            });
+                // Console.Write(values[i] + ", ");
+                firstLevel[0, i] = values[i];
+            }
+
+            // Console.WriteLine();
+
+            var x = np.array(firstLevel);
 
             var output = Model.Predict(new List<NDarray> {x}, verbose: 0);
 

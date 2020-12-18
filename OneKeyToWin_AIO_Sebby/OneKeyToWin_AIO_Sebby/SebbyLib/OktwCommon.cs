@@ -9,17 +9,19 @@ namespace SebbyLib
 {
     public class OnNewPathEvent
     {
-        public double game_time;
-        public List<Vector2> path;
+        public double GameTime;
+        public Vector3[] Path;
+        public bool IsDash;
     }
 
     public class OktwCommon
     {
         private static Obj_AI_Hero Player => ObjectManager.Player;
-        private static List<OnNewPathEvent> lastNewPathes;
+
+        public static Dictionary<int, List<OnNewPathEvent>> LastNewPathes =
+            new Dictionary<int, List<OnNewPathEvent>>();
 
         private static int LastAATick = Utils.GameTimeTickCount;
-        private static List<OnNewPathEvent> newPathes = new List<OnNewPathEvent>();
         public static bool YasuoInGame = false;
         public static bool Thunderlord = false;
 
@@ -51,11 +53,24 @@ namespace SebbyLib
 
         private static void Obj_AI_BaseOnOnNewPath(Obj_AI_Base sender, GameObjectNewPathEventArgs args)
         {
-            lastNewPathes.Add(new OnNewPathEvent
+            if (!LastNewPathes.ContainsKey(sender.NetworkId))
             {
-                path = args.Path.Select(vector => vector.To2D()).ToList(),
-                game_time = Game.TimePrec
+                LastNewPathes[sender.NetworkId] = new List<OnNewPathEvent>();
+            }
+            
+            var champArray = LastNewPathes[sender.NetworkId];
+
+            champArray.Add(new OnNewPathEvent
+            {
+                Path = args.Path,
+                GameTime = Game.TimePrec,
+                IsDash = args.IsDash
             });
+
+            while (champArray.Count > 10)
+            {
+                champArray.RemoveAt(0);
+            }
         }
 
         public static void debug(string msg)

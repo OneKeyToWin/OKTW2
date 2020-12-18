@@ -160,7 +160,7 @@ namespace SebbyLib.Prediction
         internal static PredictionOutput GetPrediction(PredictionInput input, bool ft, bool checkCollision)
         {
             PredictionOutput result = null;
-            
+
             if (!input.Unit.IsValidTarget(float.MaxValue, false))
             {
                 return new PredictionOutput();
@@ -202,7 +202,8 @@ namespace SebbyLib.Prediction
             //Normal prediction
             if (result == null)
             {
-                result = GetPositionOnPath(input, input.Unit.GetWaypoints(), input.Unit.MoveSpeed);
+                result = GetPositionOnPath(input, input.Unit.GetWaypoints(),
+                    AIPredictionInput.SpeedFromVelocity(input.Unit.Velocity));
             }
 
             //Check if the unit position is in range
@@ -237,13 +238,6 @@ namespace SebbyLib.Prediction
                 }
             }
 
-            //Set hit chance
-            if (result.Hitchance == HitChance.High)
-            {
-                result = WayPointAnalysis(result, input);
-                //.debug(input.Unit.BaseSkinName + result.Hitchance);
-            }
-
             //Check for collision
             if (checkCollision && input.Collision && result.Hitchance > HitChance.Impossible)
             {
@@ -254,6 +248,40 @@ namespace SebbyLib.Prediction
                 var originalUnit = input.Unit;
                 if (Collision.GetCollision(positions, input))
                     result.Hitchance = HitChance.Collision;
+            }
+
+            if (input.Source.IsChampion() && input.Unit.IsChampion())
+            {
+                var targetHitchance = 0.30;
+                if (input.Range > 2000)
+                {
+                    targetHitchance = 0.9;
+                }
+
+                if (input.Range > 1125)
+                {
+                    targetHitchance = 0.32;
+                }
+
+                var delay = input.Delay + input.Source.Distance(input.Unit) / input.Speed;
+                var hitchance = AIPrediction.GetPrediction(new AIPredictionInput
+                {
+                    Source = (Obj_AI_Hero) input.Source,
+                    Target = (Obj_AI_Hero) input.Unit,
+                    Delay = delay,
+                    SourceSpellSlot = 0
+                }).Hitchance;
+
+                Console.WriteLine(hitchance + " || " + delay + " || " + input.Range);
+
+                if (hitchance > targetHitchance && (result.Hitchance == HitChance.Low ||
+                                                    result.Hitchance == HitChance.Medium ||
+                                                    result.Hitchance == HitChance.High ||
+                                                    result.Hitchance == HitChance.VeryHigh))
+                {
+                    result.Hitchance = HitChance.VeryHigh;
+                    return result;
+                }
             }
 
             return result;
