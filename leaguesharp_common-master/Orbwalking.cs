@@ -6,6 +6,19 @@ namespace LeagueSharp.Common
     using SharpDX;
     using Color = System.Drawing.Color;
 
+    class YasuoWall
+    {
+        public Vector3 YasuoPosition { get; set; }
+        public float CastTime { get; set; }
+        public Vector3 CastPosition { get; set; }
+        public float WallLvl { get; set; }
+        
+        public YasuoWall()
+        {
+            CastTime = 0;
+        }
+    }
+
     public static class Orbwalking
     {
         public static int[] LastTargets = new int[] { 0, 0, 0 };
@@ -13,7 +26,8 @@ namespace LeagueSharp.Common
         public static bool DisableNextAttack;
         private static int _ApheliosChakramAATick;
         private static int _LastAATick;
-
+        private static YasuoWall yasuoWall = new YasuoWall();
+        public static bool YasuoInGame = false;
         public static int LastAATick
         {
             get
@@ -125,6 +139,11 @@ namespace LeagueSharp.Common
             if (Player.ChampionName == "Aphelios")
             {
                 GameObject.OnDelete += GameObject_OnDelete;
+            }
+            foreach (var hero in ObjectManager.Get<Obj_AI_Hero>())
+            {
+                if (hero.IsEnemy && hero.ChampionName == "Yasuo")
+                    YasuoInGame = true;
             }
 
             /*
@@ -359,6 +378,27 @@ namespace LeagueSharp.Common
             return (name.ToLower().Contains("attack") && !NoAttacks.Contains(name.ToLower())) || Attacks.Contains(name.ToLower());
         }
 
+        public static bool CollisionYasuo(Vector3 from, Vector3 to)
+        {
+            if (!YasuoInGame)
+                return false;
+
+            if (Game.Time - yasuoWall.CastTime > 4)
+                return false;
+
+            var level = yasuoWall.WallLvl;
+            var wallWidth = (350 + 50 * level);
+            var wallDirection = (yasuoWall.CastPosition.To2D() - yasuoWall.YasuoPosition.To2D()).Normalized().Perpendicular();
+            var wallStart = yasuoWall.CastPosition.To2D() + wallWidth / 2f * wallDirection;
+            var wallEnd = wallStart - wallWidth * wallDirection;
+
+            if (wallStart.Intersection(wallEnd, to.To2D(), from.To2D()).Intersects)
+            {
+                return true;
+            }
+            return false;
+        }
+
         public static bool IsAutoAttackReset(string name)
         {
             return AttackResets.Contains(name.ToLower());
@@ -566,6 +606,7 @@ namespace LeagueSharp.Common
         {
             try
             {
+
                 if (unit.IsMe)
                 {
                     var spellName = Spell.SData.Name;
@@ -602,6 +643,30 @@ namespace LeagueSharp.Common
                     }
                 }
                 FireOnAttack(unit, _lastTarget);
+
+                if (Spell.SData == null)
+                {
+                    return;
+                }
+
+                var targed = Spell.Target as Obj_AI_Base;
+
+                if (targed == null)
+                {
+                    if (!YasuoInGame)
+                        return;
+
+                    if (!YasuoInGame || !unit.IsEnemy || unit.IsMinion || Spell.SData.IsAutoAttack() || unit.Type != GameObjectType.obj_AI_Hero)
+                        return;
+
+                    if (Spell.SData.Name.Contains("YasuoWMovingWall"))
+                    {
+                        yasuoWall.CastTime = Game.Time;
+                        yasuoWall.CastPosition = unit.Position.Extend(Spell.End, 400);
+                        yasuoWall.YasuoPosition = unit.Position;
+                        yasuoWall.WallLvl = unit.Spellbook.Spells[1].Level;
+                    }
+                }
             }
             catch (Exception e)
             {
@@ -1070,6 +1135,8 @@ namespace LeagueSharp.Common
                 this._orbwalkingPoint = point;
             }
 
+
+
             public bool ShouldWait()
             {
                 if (Player.Level > 15)
@@ -1212,6 +1279,7 @@ namespace LeagueSharp.Common
                                           / this.Player.BasicAttack.MissileSpeed)),
                                 this.FarmDelay) <= this.Player.GetAutoAttackDamage(minion));
             }
+            
         }
     }
 }
