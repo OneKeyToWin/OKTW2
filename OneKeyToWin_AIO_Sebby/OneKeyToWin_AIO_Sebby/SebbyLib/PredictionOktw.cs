@@ -5,8 +5,6 @@ using SharpDX;
 using LeagueSharp;
 using LeagueSharp.Common;
 
-using Keras.Models;
-
 namespace SebbyLib.Prediction
 {
     public enum HitChance
@@ -156,7 +154,6 @@ namespace SebbyLib.Prediction
         internal static PredictionOutput GetPrediction(PredictionInput input, bool ft, bool checkCollision)
         {
             PredictionOutput result = null;
-            new Sequential();
             if (!input.Unit.IsValidTarget(float.MaxValue, false))
             {
                 return new PredictionOutput();
