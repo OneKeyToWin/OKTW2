@@ -976,7 +976,7 @@ namespace Evade
         public static Vector2 GetPathFinderPoint()
         {
             var gameCursorVec2 = Game.CursorPos.To2D();
-            var Points = Utils.CirclePoints(20, 300, ObjectManager.Player.Position.To2D());
+            var Points = Utils.CirclePoints(36, 300, ObjectManager.Player.Position.To2D());
             Points = Points.OrderBy(x => x.Distance(gameCursorVec2, true)).ToArray();
 
             foreach (var vector2 in Points)

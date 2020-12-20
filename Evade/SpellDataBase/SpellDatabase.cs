@@ -631,8 +631,10 @@ namespace Evade
                     Slot = SpellSlot.W,
                     Type = SkillShotType.SkillshotCircle,
                     Delay = 1350,
+                    ExtraDuration = 30000,
+                    DontAddExtraDuration = true,
                     Range = 800,
-                    Radius = 70,
+                    Radius = 60,
                     MissileSpeed = int.MaxValue,
                     FixedRange = false,
                     AddHitbox = true,
@@ -798,6 +800,30 @@ namespace Evade
                 });
 
             #endregion Corki
+
+            //#region Jax
+
+            //Spells.Add(
+            //    new SpellData
+            //    {
+            //        ChampionName = "Jax",
+            //        SpellName = "JaxE",
+            //        Slot = SpellSlot.E,
+            //        Type = SkillShotType.SkillshotCircle,
+            //        Delay = 750,
+            //        Range = 0,
+            //        Radius = 425 - 50,
+            //        MissileSpeed = int.MaxValue,
+            //        FixedRange = true,
+            //        AddHitbox = true,
+            //        DangerValue = 3,
+            //        IsDangerous = false,
+            //        FollowCaster = true,
+            //        DisabledByDefault = true,
+            //        ToggleParticleName = "Jax_base_E_buf"
+            //    });
+
+            //#endregion Jax
 
             #region Darius
 
@@ -1098,9 +1124,9 @@ namespace Evade
                     SpellName = "EzrealQ",
                     Slot = SpellSlot.Q,
                     Type = SkillShotType.SkillshotMissileLine,
-                    Delay = 250,
-                    Range = 1200,
-                    Radius = 80,
+                    Delay = 260,
+                    Range = 1250,
+                    Radius = 70,
                     MissileSpeed = 2000,
                     FixedRange = true,
                     AddHitbox = true,
@@ -1122,9 +1148,9 @@ namespace Evade
                     SpellName = "EzrealW",
                     Slot = SpellSlot.W,
                     Type = SkillShotType.SkillshotMissileLine,
-                    Delay = 250,
-                    Range = 1200,
-                    Radius = 80,
+                    Delay = 260,
+                    Range = 1250,
+                    Radius = 70,
                     MissileSpeed = 2000,
                     FixedRange = true,
                     AddHitbox = true,
