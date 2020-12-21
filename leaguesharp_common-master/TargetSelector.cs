@@ -220,7 +220,7 @@
                         ignoredChamps.All(ignored => ignored.NetworkId != hero.NetworkId)
                         && IsValidTarget(hero, range, type, ignoreShieldSpells, rangeCheckFrom)
                         && (conditions == null || conditions(hero))
-                        && (!Orbwalking.YasuoInGame || range > 0 || ObjectManager.Player.IsMelee || Orbwalking.CollisionYasuo(ObjectManager.Player.Position, hero.Position)));
+                        && (!Orbwalking.YasuoInGame || range > 0 || ObjectManager.Player.IsMelee || !Orbwalking.CollisionYasuo(ObjectManager.Player.Position, hero.Position)));
                 switch (Mode)
                 {
                     case TargetingMode.LowHP:
