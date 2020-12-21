@@ -799,13 +799,9 @@ namespace Evade
                 if (dangerSkillMenu != null)
                     dangerValue = dangerSkillMenu.GetValue<Slider>().Value;
 
-                if (skillshot.Evade() && skillshot.IsDanger(PlayerPosition) && dangerValue <= Config.Menu.Item("AllowAaLevel").GetValue<Slider>().Value)
-                {
-                    if (dangerValue > Config.Menu.Item("AllowAaLevel").GetValue<Slider>().Value)
-                        canAttack = false;
-                }
+                if (skillshot.Evade() && skillshot.IsDanger(PlayerPosition) && dangerValue > Config.Menu.Item("AllowAaLevel").GetValue<Slider>().Value)
+                    canAttack = false;
             }
-
             return canAttack;
         }
 
@@ -986,12 +982,14 @@ namespace Evade
                 if (!IsSafe(truePosition).IsSafe)
                     continue;
 
+                if (ObjectManager.Player.Distance(truePosition, true) < 100 * 100)
+                    continue;
+
                 var safeResult = IsSafePath(ObjectManager.Player.GetPath(truePosition.To3D()).To2DList(), Config.CrossingTimeOffset);
                 if (!safeResult.IsSafe || safeResult.Intersection.Valid)
                     continue;
                 
-                if (ObjectManager.Player.Distance(truePosition, true) < 100 * 100)
-                    continue;
+                
 
                 if (ObjectManager.Player.Direction.To2D().AngleBetween(truePosition - PlayerPosition) < 120)
                     return truePosition;

@@ -53,11 +53,19 @@ namespace Evade
 
         private static List<hiu_structure> hius = new SpellList<hiu_structure>();
 
+        private static Obj_AI_Hero Jhin = null;
+        private static Vector3 JhinLastRDirection;
+        private static int JhinLastTimeR = 0;
         static SkillshotDetector()
         {
-            //Detect when the skillshots are created.
-            //Game.OnProcessPacket += GameOnOnGameProcessPacket; // Used only for viktor's Laser :^)
-            Obj_AI_Base.OnProcessSpellCast += ObjAiHeroOnOnProcessSpellCast;
+            foreach (var hero in ObjectManager.Get<Obj_AI_Hero>())
+            {
+                if (hero.ChampionName == "Jhin")
+                    Jhin = hero;
+            }
+                //Detect when the skillshots are created.
+                //Game.OnProcessPacket += GameOnOnGameProcessPacket; // Used only for viktor's Laser :^)
+                Obj_AI_Base.OnProcessSpellCast += ObjAiHeroOnOnProcessSpellCast;
             Obj_AI_Base.OnNewPath += Obj_AI_Base_OnNewPath;
             Game.OnUpdate += Game_OnUpdate;
 
@@ -68,8 +76,61 @@ namespace Evade
             GameObject.OnDelete += GameObject_OnDelete;
         }
 
+       
         private static void Game_OnUpdate(EventArgs args)
         {
+            if(Jhin != null)
+            {
+                if (Jhin.Spellbook.GetSpell(SpellSlot.R).Name == "JhinRShot")
+                {
+                    if (!JhinLastRDirection.Equals(Jhin.Direction) && Utils.TickCount - JhinLastTimeR > 1500 )
+                    {
+                        var sd = SpellDatabase.GetByName("JhinRShot");  
+                        if (sd != null)
+                        {
+                            Console.WriteLine(Utils.TickCount + " test2 ");
+                            var startTime = Utils.TickCount - Game.Ping / 2;
+                            var startPos = Jhin.ServerPosition.To2D();
+                            var endPos = Jhin.ServerPosition.To2D() + 3000 * Jhin.Direction.To2D().Rotated(-1.5707f).Perpendicular();
+                            var direction = (endPos - startPos).Normalized();
+
+                            if (sd.BehindStart != -1)
+                            {
+                                startPos = startPos - direction * sd.BehindStart;
+                            }
+
+                            if (sd.MinimalRange != -1)
+                            {
+                                if (startPos.Distance(endPos) < sd.MinimalRange)
+                                {
+                                    endPos = startPos + direction * sd.MinimalRange;
+                                }
+                            }
+
+                            if (startPos.Distance(endPos) > sd.Range || sd.FixedRange)
+                            {
+                                endPos = startPos + direction * sd.Range;
+                            }
+
+                            if (sd.ExtraRange != -1)
+                            {
+                                endPos = endPos +
+                                         Math.Min(sd.ExtraRange, sd.Range - endPos.Distance(startPos)) * direction;
+                            }
+                            TriggerOnDetectSkillshot(DetectionType.ProcessSpell, sd, startTime, startPos, endPos, endPos, Jhin);
+                        }
+
+                       
+                    }
+                    JhinLastRDirection = Jhin.Direction;
+                }
+                else
+                {
+                    JhinLastTimeR = Utils.TickCount;
+                    JhinLastRDirection = new Vector3();
+                }
+            }
+
             hius.RemoveAll(x => x.created_at + 2000 < Utils.TickCount);
             //Get the skillshot data.
             var spellData = SpellDatabase.GetByName(ObjectManager.Player.Spellbook.GetSpell(SpellSlot.Q).SData.Name);
@@ -178,7 +239,19 @@ namespace Evade
         {
             if (Config.PrintSpellData && !(sender is MissileClient) && ObjectManager.Player.Distance(sender.Position) < 1000)
             {
-                Console.WriteLine(Utils.TickCount + " GameObject_OnCreate " + sender.Name + " " + sender.IsAlly + " " + sender.Type);
+                //var jhin = ObjectManager.Get<Obj_AI_Hero>().FirstOrDefault();
+                //if (jhin != null && sender.Name == "Jhin_Base_R_small_mis")
+                //{
+                //    Console.WriteLine(Utils.TickCount + " GameObject_OnCreate " + sender.Name + " " + sender.IsAlly + " " + sender.Type + " range : " + jhin.Distance(sender.Position));
+                //    ObjectManager.Player.ForceIssueOrder(GameObjectOrder.MoveTo, sender.Position.Extend(jhin.Position, 1000));
+                //    if(ObjectManager.Player.Spellbook.CastSpell(SpellSlot.E, sender.Position.Extend(jhin.Position, 1000)))
+                //    {
+
+                //    }
+                //    else
+                //        ObjectManager.Player.Spellbook.CastSpell(SpellSlot.Trinket, sender.Position.Extend(jhin.Position, 1000));
+                //}
+                Console.WriteLine(Utils.TickCount + " GameObject_OnCreate " + sender.Name + " " + sender.IsAlly + " " + sender.Type );
             }
 
             var minion = sender as Obj_AI_Minion;

@@ -25,7 +25,6 @@ namespace Evade
             var polygonList = new List<Geometry.Polygon>();
 
             var takeClosestPath = false;
-            Console.WriteLine("skillshot: " + Program.DetectedSkillshots.Count);
             foreach (var skillshot in Program.DetectedSkillshots)
             {
                 if (skillshot.Evade())
