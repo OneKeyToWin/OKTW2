@@ -163,9 +163,12 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             else if (wCastPos != Vector3.Zero)
             {
                 //Player.Spellbook.CastSpell(SpellSlot.Item1, wCastPos);
-                var galeforce = new Items.Item(6671, 800);
-                galeforce.Cast(wCastPos);
-                W.Cast(wCastPos);
+                if (wCastPos.CountEnemiesInRange(800) < 3)
+                {
+                    var galeforce = new Items.Item(6671, 800);
+                    galeforce.Cast(wCastPos);
+                    W.Cast(wCastPos);
+                }
             }
 
             if (Config.Item("useR", true).GetValue<KeyBind>().Active && R.IsReady())
