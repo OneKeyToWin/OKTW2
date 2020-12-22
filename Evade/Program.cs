@@ -812,7 +812,7 @@ namespace Evade
                 //if (args.Slot == SpellSlot.Recall)
                 //    EvadeToPoint = new Vector2();
 
-                if (Evading)
+                if (Evading || !IsSafe(PlayerPosition).IsSafe)
                 {
                     var blockLevel = Config.Menu.Item("BlockSpells").GetValue<StringList>().SelectedIndex;
 

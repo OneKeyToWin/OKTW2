@@ -638,8 +638,7 @@ namespace Evade
                 return false;
             }
 
-            if (spellToCast == SpellSlot.Q || spellToCast == SpellSlot.W || spellToCast == SpellSlot.E ||
-                spellToCast == SpellSlot.R)
+            if (spellToCast == SpellSlot.Q || spellToCast == SpellSlot.W || spellToCast == SpellSlot.E || spellToCast == SpellSlot.R)
             {
                 return true;  
             }
