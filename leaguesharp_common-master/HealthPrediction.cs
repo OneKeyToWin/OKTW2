@@ -4,20 +4,11 @@
     using System.Collections.Generic;
     using System.Linq;
 
-    /// <summary>
-    ///     This class allows you to calculate the health of units after a set time. Only works on minions and only taking into
-    ///     account the auto-attack damage.
-    /// </summary>
     public class HealthPrediction
     {
-        #region Static Fields
 
-        /// <summary>
-        ///     The active attacks
-        /// </summary>
         private static readonly Dictionary<int, PredictedDamage> ActiveAttacks = new Dictionary<int, PredictedDamage>();
 
-        #endregion
 
         #region Constructors and Destructors
 
@@ -35,13 +26,7 @@
 
         #endregion
 
-        #region Public Methods and Operators
 
-        /// <summary>
-        ///     Return the Attacking turret.
-        /// </summary>
-        /// <param name="minion"></param>
-        /// <returns></returns>
         public static Obj_AI_Base GetAggroTurret(Obj_AI_Minion minion)
         {
             var ActiveTurret =
@@ -50,13 +35,7 @@
             return ActiveTurret != null ? ActiveTurret.Source : null;
         }
 
-        /// <summary>
-        ///     Returns the unit health after a set time milliseconds.
-        /// </summary>
-        /// <param name="unit">The unit.</param>
-        /// <param name="time">The time.</param>
-        /// <param name="delay">The delay.</param>
-        /// <returns></returns>
+
         public static float GetHealthPrediction(Obj_AI_Base unit, int time, int delay = 70)
         {
             var predictedDamage = 0f;
@@ -71,7 +50,7 @@
                                    + 1000 * Math.Max(0, unit.Distance(attack.Source) - attack.Source.BoundingRadius)
                                    / attack.ProjectileSpeed + delay;
 
-                    if ( /*Utils.GameTimeTickCount < landTime - delay &&*/ landTime < Utils.GameTimeTickCount + time)
+                    if (landTime < Utils.GameTimeTickCount + time)
                     {
                         attackDamage = attack.Damage;
                     }
@@ -82,34 +61,16 @@
 
             return unit.Health - predictedDamage;
         }
-
-        /// <summary>
-        ///     Determines whether the specified minion has minion aggro.
-        /// </summary>
-        /// <param name="minion">The minion.</param>
-        /// <returns></returns>
         public static bool HasMinionAggro(Obj_AI_Minion minion)
         {
             return ActiveAttacks.Values.Any(m => (m.Source is Obj_AI_Minion) && m.Target.NetworkId == minion.NetworkId);
         }
 
-        /// <summary>
-        ///     Determines whether the specified minion has turret aggro.
-        /// </summary>
-        /// <param name="minion">The minion</param>
-        /// <returns></returns>
         public static bool HasTurretAggro(Obj_AI_Minion minion)
         {
             return ActiveAttacks.Values.Any(m => (m.Source is Obj_AI_Turret) && m.Target.NetworkId == minion.NetworkId);
         }
 
-        /// <summary>
-        ///     Returns the unit health after time milliseconds assuming that the past auto-attacks are periodic.
-        /// </summary>
-        /// <param name="unit">The unit.</param>
-        /// <param name="time">The time.</param>
-        /// <param name="delay">The delay.</param>
-        /// <returns></returns>
         public static float LaneClearHealthPrediction(Obj_AI_Base unit, int time, int delay = 70)
         {
             var predictedDamage = 0f;
@@ -142,11 +103,6 @@
             return unit.Health - predictedDamage;
         }
 
-        /// <summary>
-        ///     Return the starttick of the attacking turret.
-        /// </summary>
-        /// <param name="minion"></param>
-        /// <returns></returns>
         public static int TurretAggroStartTick(Obj_AI_Minion minion)
         {
             var ActiveTurret =
@@ -155,14 +111,8 @@
             return ActiveTurret != null ? ActiveTurret.StartTick : 0;
         }
 
-        #endregion
 
-        #region Methods
 
-        /// <summary>
-        ///     Fired when the game is updated.
-        /// </summary>
-        /// <param name="args">The <see cref="EventArgs" /> instance containing the event data.</param>
         private static void Game_OnGameUpdate(EventArgs args)
         {
             ActiveAttacks.ToList()
@@ -171,11 +121,7 @@
                 .ForEach(pair => ActiveAttacks.Remove(pair.Key));
         }
 
-        /// <summary>
-        ///     Fired when a <see cref="MissileClient" /> is deleted from the game.
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="args">The <see cref="EventArgs" /> instance containing the event data.</param>
+
         static void MissileClient_OnDelete(GameObject sender, EventArgs args)
         {
             var missile = sender as MissileClient;
@@ -192,11 +138,6 @@
             }
         }
 
-        /// <summary>
-        ///     Fired when a unit does an auto attack.
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="args">The <see cref="GameObjectProcessSpellCastEventArgs" /> instance containing the event data.</param>
         private static void Obj_AI_Base_OnDoCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
             if (ActiveAttacks.ContainsKey(sender.NetworkId) && sender.IsMelee)
@@ -205,14 +146,9 @@
             }
         }
 
-        /// <summary>
-        ///     Fired when the game processes a spell cast.
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="args">The <see cref="GameObjectProcessSpellCastEventArgs" /> instance containing the event data.</param>
         private static void ObjAiBaseOnOnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
-            if (!sender.IsValidTarget(3000, false) || sender.Team != ObjectManager.Player.Team || sender is Obj_AI_Hero
+            if (!sender.IsValidTarget(3000, false) || sender.Team != ObjectManager.Player.Team || sender.IsMe
                 || !Orbwalking.IsAutoAttack(args.SData.Name) || !(args.Target is Obj_AI_Base))
             {
                 return;
@@ -226,17 +162,13 @@
                 target,
                 Utils.GameTimeTickCount - Game.Ping / 2,
                 sender.AttackCastDelay * 1000,
-                sender.AttackDelay * 1000 - (sender is Obj_AI_Turret ? 70 : 0),
+                sender.AttackDelay * 1000 /*- (sender is Obj_AI_Turret ? 70 : 0)*/,
                 sender.IsMelee() ? int.MaxValue : (int)args.SData.MissileSpeed,
                 (float)sender.GetAutoAttackDamage(target, true));
             ActiveAttacks.Add(sender.NetworkId, attackData);
         }
 
-        /// <summary>
-        ///     Fired when the spellbooks stops a cast.
-        /// </summary>
-        /// <param name="spellbook">The spellbook.</param>
-        /// <param name="args">The <see cref="SpellbookStopCastEventArgs" /> instance containing the event data.</param>
+
         private static void SpellbookOnStopCast(Spellbook spellbook, SpellbookStopCastEventArgs args)
         {
             if (spellbook.Owner.IsValid && args.StopAnimation)
@@ -248,11 +180,6 @@
             }
         }
 
-        #endregion
-
-        /// <summary>
-        ///     Represetns predicted damage.
-        /// </summary>
         private class PredictedDamage
         {
             #region Fields

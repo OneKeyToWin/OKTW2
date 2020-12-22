@@ -426,6 +426,9 @@ namespace LeagueSharp.Common
 
             var point = position;
 
+            if (Player.Distance(point, true) > 500 * 500)
+                point = playerPosition.Extend(position, randomizeMinDistance ? (_random.NextFloat(0.6f, 1)) * 800 : 800);
+
             var angle = 0f;
             var currentPath = Player.GetWaypoints();
             if (currentPath.Count > 1 && currentPath.PathLength() > 100)
@@ -439,10 +442,8 @@ namespace LeagueSharp.Common
                     angle = v1.AngleBetween(v2.To2D());
                     var distance = movePath.Last().To2D().Distance(currentPath.Last(), true);
 
-                    if ((angle < 10 && distance < 500 * 500) || distance < 50 * 50)
-                    {
+                    if (angle < 10 || distance < 100 * 100)
                         return;
-                    }
                 }
             }
 
@@ -451,9 +452,6 @@ namespace LeagueSharp.Common
 
             if (angle >= 60 && Utils.GameTimeTickCount - LastMoveCommandT < 60)
                 return;
-
-            if (Player.Distance(point, true) > 500 * 500)
-                point = playerPosition.Extend(position, randomizeMinDistance ? (_random.NextFloat(0.6f, 1)) * 800 : 800);
 
             Player.ForceIssueOrder(GameObjectOrder.MoveTo, point);
             LastMoveCommandPosition = point;
@@ -606,7 +604,6 @@ namespace LeagueSharp.Common
         {
             try
             {
-
                 if (unit.IsMe)
                 {
                     var spellName = Spell.SData.Name;
@@ -1039,7 +1036,6 @@ namespace LeagueSharp.Common
                             if (nextMinion != null)
                             {
                                 var damageOnMinion = closestTower.GetAutoAttackDamage(nextMinion, true);
-
                                 var minionHpPred = HealthPrediction.GetHealthPrediction(nextMinion, 1500) - damageOnMinion;
                                 if (minionHpPred > Player.GetAutoAttackDamage(nextMinion, true) && minionHpPred < damageOnMinion)
                                     return nextMinion;
@@ -1055,18 +1051,18 @@ namespace LeagueSharp.Common
                 {
                     if (!this.ShouldWait())
                     {
-                        if (this._prevMinion.IsValidTarget() && this.InAutoAttackRange(this._prevMinion))
-                        {
-                            var predHealth = HealthPrediction.LaneClearHealthPrediction(
-                                this._prevMinion,
-                                (int)(this.Player.AttackDelay * 1000 * LaneClearWaitTimeMod),
-                                this.FarmDelay);
-                            if (predHealth >= 2 * this.Player.GetAutoAttackDamage(this._prevMinion)
-                                || Math.Abs(predHealth - this._prevMinion.Health) < float.Epsilon)
-                            {
-                                return this._prevMinion;
-                            }
-                        }
+                        //if (this._prevMinion.IsValidTarget() && this.InAutoAttackRange(this._prevMinion))
+                        //{
+                        //    var predHealth = HealthPrediction.LaneClearHealthPrediction(
+                        //        this._prevMinion,
+                        //        (int)(this.Player.AttackDelay * 1000 * LaneClearWaitTimeMod),
+                        //        this.FarmDelay);
+                        //    if (predHealth >= 2 * this.Player.GetAutoAttackDamage(this._prevMinion)
+                        //        || Math.Abs(predHealth - this._prevMinion.Health) < float.Epsilon)
+                        //    {
+                        //        return this._prevMinion;
+                        //    }
+                        //}
 
                         var results = (from minion in
                             ObjectManager.Get<Obj_AI_Minion>()
@@ -1139,7 +1135,7 @@ namespace LeagueSharp.Common
 
             public bool ShouldWait()
             {
-                if (Player.Level > 15)
+                if (Player.Level > 13)
                     return false;
 
                 var minionListAA = ObjectManager.Get<Obj_AI_Minion>().Where(minion => minion.IsValidTarget()
