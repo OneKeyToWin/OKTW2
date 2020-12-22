@@ -206,20 +206,26 @@ namespace SebbyLib
 
         public static Vector3 GetTrapPos(float range)
         {
-            foreach (var enemy in HeroManager.Enemies.Where(enemy => enemy.IsValid && enemy.Distance(Player.Position) < range && (enemy.HasBuff("BardRStasis") || enemy.HasBuffOfType(BuffType.Invulnerability))))
+            foreach (var enemy in HeroManager.Enemies.Where(enemy => enemy.IsValid && enemy.Distance(Player.Position) < range ))
             {
-                return enemy.Position;
+                if(enemy.HasBuffOfType(BuffType.Invulnerability))
+                    return enemy.Position;
+
+                if(enemy.HasBuff("BardRStasis") || enemy.HasBuff("zhonyasringshield") || enemy.HasBuff("Meditate"))
+                    return enemy.Position;
             }
 
             foreach (var obj in ObjectManager.Get<Obj_GeneralParticleEmitter>().Where(obj => obj.IsValid && obj.Position.Distance(Player.Position) < range ))
             {
                 var name = obj.Name.ToLower();
                 
-                if (name.Contains("GateMarker_red.troy".ToLower()) || name.Contains("global_ss_teleport_target_red.troy".ToLower())
-                    || name.Contains("R_indicator_red.troy".ToLower()))
+                if (name.Contains("GateMarker_red.troy".ToLower()) || name.Contains("global_ss_teleport_target_red.troy".ToLower()) || name.Contains("R_indicator_red.troy".ToLower()))
                     return obj.Position;
-            }
 
+                if (name.Contains("3026_Buff_Revive".ToLower()))
+                    foreach (var enemy in HeroManager.Enemies.Where(enemy => enemy.IsValid && enemy.Distance(obj.Position) < 100))
+                        return obj.Position;
+            }
             return Vector3.Zero;
         }
 
@@ -264,7 +270,6 @@ namespace SebbyLib
                 return true;
             }
             return false;
-            
         }
 
         public static void DrawTriangleOKTW(float radius, Vector3 position, System.Drawing.Color color, float bold = 1)
