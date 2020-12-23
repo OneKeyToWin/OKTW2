@@ -701,7 +701,7 @@ namespace LeagueSharp.Common
 
         public class Orbwalker : IDisposable
         {
-            private const float LaneClearWaitTimeMod = 2.5f;
+            private const float LaneClearWaitTimeMod = 2.0f;
             public static List<Orbwalker> Instances = new List<Orbwalker>();
             private static Menu _config;
             private readonly Obj_AI_Hero Player;

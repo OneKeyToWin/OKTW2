@@ -5051,7 +5051,7 @@ namespace Evade
 
             #endregion Pyke
 
-            #region Warwick
+            #region rwick
 
             Spells.Add(
                 new SpellData
@@ -5062,14 +5062,14 @@ namespace Evade
                     Type = SkillShotType.SkillshotMissileLine,
                     Delay = 100,
                     Range = 2000,
-                    Radius = 150,
+                    Radius = 100,
                     ExtraRange = 100,
                     MissileSpeed = 1500,
                     FixedRange = true,
                     AddHitbox = true,
                     DangerValue = 5,
                     IsDangerous = true,
-                    MissileSpellName = "PykeQRange",
+                    MissileSpellName = "",
                     CollisionObjects = new[] { CollisionObjectTypes.YasuoWall, CollisionObjectTypes.Champions },
                 });
 
