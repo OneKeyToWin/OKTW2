@@ -268,23 +268,65 @@ namespace Evade
                 new SpellData
                 {
                     ChampionName = "Anivia",
-                    SpellName = "FlashFrost",
+                    SpellName = "FlashFrostSpell",
                     Slot = SpellSlot.Q,
                     Type = SkillShotType.SkillshotMissileLine,
-                    Delay = 250,
-                    Range = 1100,
-                    Radius = 110,
-                    MissileSpeed = 850,
+                    Delay = 350,
+                    Range = 1350,
+                    Radius = 200,
+                    MissileSpeed = 950,
                     FixedRange = true,
                     AddHitbox = true,
                     DangerValue = 3,
                     IsDangerous = true,
                     MissileSpellName = "FlashFrostSpell",
-                    EarlyEvade = new[] {EarlyObjects.Allies, EarlyObjects.AllyObjects},
                     CanBeRemoved = true,
                     CollisionObjects = new[] {CollisionObjectTypes.YasuoWall}
                 });
-
+            Spells.Add(
+               new SpellData
+               {
+                   ChampionName = "Anivia",
+                   SpellName = "AniviaR",
+                   Slot = SpellSlot.R,
+                   Type = SkillShotType.SkillshotCircle,
+                   Delay = 1000,
+                   //ExtraDuration = 5500,
+                   //DontAddExtraDuration = true,
+                   Range = 1100,
+                   Radius = 275,
+                   MissileSpeed = 1300,
+                   FixedRange = false,
+                   AddHitbox = true,
+                   IsDangerous = true,
+                   DontCross = true,
+                   ToggleParticleName = "anivia_.+_r_full",
+                   EndAtParticle = "anivia_.+_r_aoe_",
+                   SourceObjectName = "anivia_.+_r_aoe_",
+                   DangerValue = 2,
+ 
+               });
+            Spells.Add(
+              new SpellData
+              {
+                  ChampionName = "Anivia",
+                  SpellName = "AniviaR2",
+                  Slot = SpellSlot.R,
+                  Type = SkillShotType.SkillshotCircle,
+                  Delay = 1000,
+                  ExtraDuration = 400,
+                   //DontAddExtraDuration = true,
+                  Range = 1100,
+                  Radius = 350,
+                  MissileSpeed = 1300,
+                  FixedRange = false,
+                  AddHitbox = true,
+                  IsDangerous = true,
+                  DontCross = true,
+                  ToggleParticleName = "anivia_.+_r_full",
+                  SourceObjectName = "anivia_.+_r_full",
+                  DangerValue = 2,
+              });
             #endregion Anivia
 
             #region Annie
@@ -302,7 +344,7 @@ namespace Evade
                     MissileSpeed = int.MaxValue,
                     FixedRange = false,
                     AddHitbox = false,
-                    DangerValue = 2,
+                    DangerValue = 3,
                     IsDangerous = true,
                     MissileSpellName = "",
                 });
@@ -2050,6 +2092,23 @@ namespace Evade
                     IsDangerous = true,
                     MissileSpellName = "RiftWalk",
                 });
+
+            Spells.Add(
+               new SpellData
+               {
+                   ChampionName = "Kassadin",
+                   SpellName = "ForcePulse",
+                   Slot = SpellSlot.E,
+                   Type = SkillShotType.SkillshotCone,
+                   Delay = 350,
+                   Range = 625,
+                   Radius = 80,
+                   MissileSpeed = int.MaxValue,
+                   FixedRange = false,
+                   AddHitbox = true,
+                   DangerValue = 3,
+                   IsDangerous = true,
+               });
 
             #endregion Kassadin
 
