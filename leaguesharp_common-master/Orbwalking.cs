@@ -1000,10 +1000,8 @@ namespace LeagueSharp.Common
                 {
                     var closestTower = ObjectManager.Get<Obj_AI_Turret>().MinOrDefault(t => t.IsAlly && !t.IsDead ? this.Player.Distance(t, true) : float.MaxValue);
 
-                    if (closestTower != null && this.Player.Distance(closestTower, true) < 1500 * 1500)
+                    if (closestTower != null && this.Player.Distance(closestTower, true) < 1500 * 1500 && Player.Level < 12)
                     {
-                        Obj_AI_Minion farmUnderTurretMinion = null;
-                        Obj_AI_Minion noneKillableMinion = null;
                         // return all the minions underturret in auto attack range
                         var minions =
                             MinionManager.GetMinions(this.Player.Position, this.Player.AttackRange + 200)
@@ -1064,6 +1062,9 @@ namespace LeagueSharp.Common
                         //    }
                         //}
 
+                        var t = (int)(AttackCastDelay * 1000) - 20 + 1000 * (int)Math.Max(0, 500)/ (int)GetMyProjectileSpeed();
+                        float laneClearDelay = Player.AttackDelay * 1000 * LaneClearWaitTimeMod + t;
+
                         var results = (from minion in
                             ObjectManager.Get<Obj_AI_Minion>()
                                 .Where(
@@ -1073,28 +1074,17 @@ namespace LeagueSharp.Common
                                        let predHealth =
                                            HealthPrediction.LaneClearHealthPrediction(
                                                minion,
-                                               (int)(this.Player.AttackDelay * 1000 * LaneClearWaitTimeMod),
+                                               (int)(laneClearDelay),
                                                this.FarmDelay)
                                        where
                                            predHealth >= 2 * this.Player.GetAutoAttackDamage(minion)
                                            || Math.Abs(predHealth - minion.Health) < float.Epsilon
                                        select minion);
 
-                        result = results.MaxOrDefault(m => !MinionManager.IsMinion(m, true) ? float.MaxValue : m.Health);
 
-                        if (_config.Item("PrioritizeCasters").GetValue<bool>())
-                        {
-                            result =
-                                results.OrderByDescending(
-                                    m =>
-                                        m.CharData.BaseSkinName.Contains("Ranged"))
-                                    .FirstOrDefault();
-                        }
 
-                        if (result != null)
-                        {
-                            this._prevMinion = (Obj_AI_Minion)result;
-                        }
+                        result = results.OrderBy(m => m.Health - HealthPrediction.LaneClearHealthPrediction(m, (int)(laneClearDelay), this.FarmDelay)).FirstOrDefault();
+
                     }
                 }
 
@@ -1156,6 +1146,8 @@ namespace LeagueSharp.Common
                 if (countAlly > 2 && minionListAA.Any(x => x.IsMoving && x.Health < Player.TotalAttackDamage * 2))
 		            return true;
 
+                var t = (int)(AttackCastDelay * 1000) - 20 + 1000 * (int)Math.Max(0, 500) / (int)GetMyProjectileSpeed();
+                float laneClearDelay = Player.AttackDelay * 1000 * LaneClearWaitTimeMod + t;
                 return
                     ObjectManager.Get<Obj_AI_Minion>()
                         .Any(
@@ -1164,7 +1156,7 @@ namespace LeagueSharp.Common
                             && this.InAutoAttackRange(minion) && MinionManager.IsMinion(minion, false)
                             && HealthPrediction.LaneClearHealthPrediction(
                                 minion,
-                                (int)(this.Player.AttackDelay * 1000 * LaneClearWaitTimeMod),
+                                (int)(laneClearDelay),
                                 this.FarmDelay) <= this.Player.GetAutoAttackDamage(minion));
             }
 

@@ -659,8 +659,8 @@ namespace SebbyLib.Prediction
                 input.Delay /= 2;
                 speed /= 1.5f;
             }
-
-            speed = (Math.Abs(speed - (-1)) < float.Epsilon) ? input.Unit.MoveSpeed : speed;
+            Vector3 vecZero = new Vector3(0, 0, 0);
+            speed = (Math.Abs(speed - (-1)) < float.Epsilon) ? vecZero.Distance(input.Unit.Velocity) : speed;
 
             if (path.Count <= 1 || (input.Unit.IsWindingUp && !input.Unit.IsDashing()))
             {
@@ -978,6 +978,7 @@ namespace SebbyLib.Prediction
             public static PredictionOutput GetPrediction(PredictionInput input)
             {
                 var mainTargetPrediction = Prediction.GetPrediction(input, false, true);
+
                 var posibleTargets = new List<PossibleTarget>
                 {
                     new PossibleTarget { Position = mainTargetPrediction.UnitPosition.To2D(), Unit = input.Unit }

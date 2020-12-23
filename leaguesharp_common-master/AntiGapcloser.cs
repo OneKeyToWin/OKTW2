@@ -134,14 +134,14 @@
                     .SpellsList.Select(
                         x =>
                         new Gapcloser
-                            {
-                                ChampionName = x.Key,
-                                SkillType =
+                        {
+                            ChampionName = x.Key,
+                            SkillType =
                                     x.Value.SkillType == LeagueSharp.Data.Enumerations.GapcloserType.Skillshot
                                         ? GapcloserType.Skillshot
                                         : GapcloserType.Targeted,
-                                Slot = x.Value.Slot, SpellName = x.Value.SpellName
-                            })
+                            Slot = x.Value.Slot, SpellName = x.Value.SpellName
+                        })
                     .ToList();
 
             Initialize();
@@ -164,7 +164,10 @@
         {
             Game.OnUpdate += Game_OnGameUpdate;
             Obj_AI_Base.OnProcessSpellCast += Obj_AI_Base_OnProcessSpellCast;
+            Obj_AI_Base.OnNewPath += Obj_AI_Base_OnNewPath;
         }
+
+
 
         public static void Shutdown()
         {
@@ -175,7 +178,22 @@
         #endregion
 
         #region Methods
-
+        private static void Obj_AI_Base_OnNewPath(Obj_AI_Base sender, GameObjectNewPathEventArgs args)
+        {
+            if (sender is Obj_AI_Hero && args.IsDash && !ActiveGapclosers.Any(h => h.Sender.NetworkId == sender.NetworkId))
+            {
+                ActiveGapclosers.Add(
+                    new ActiveGapcloser
+                    {
+                        Start = sender.Position,
+                        End = args.Path.Last(),
+                        Sender = (Obj_AI_Hero) sender,
+                        TickCount = Utils.TickCount,
+                        SkillType = HeroManager.Enemies.Any(h => h.Team != sender.Team &&h.Distance(args.Path.Last()) < 100)? GapcloserType.Targeted : GapcloserType.Skillshot,
+                        Slot = ((Obj_AI_Hero)sender).Spellbook.ActiveSpellSlot
+                    });
+             }
+        }
         /// <summary>
         ///     Fired when the game updates.
         /// </summary>

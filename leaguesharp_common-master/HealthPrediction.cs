@@ -71,7 +71,7 @@
             return ActiveAttacks.Values.Any(m => (m.Source is Obj_AI_Turret) && m.Target.NetworkId == minion.NetworkId);
         }
 
-        public static float LaneClearHealthPrediction(Obj_AI_Base unit, int time, int delay = 70)
+        public static float LaneClearHealthPrediction(Obj_AI_Base unit, int time, int delay = 0)
         {
             var predictedDamage = 0f;
 
