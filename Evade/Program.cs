@@ -825,8 +825,12 @@ namespace Evade
                         if (skillshot.Evade() && skillshot.IsDanger(PlayerPosition))
                         {
                             isDangerous = skillshot.GetValue<bool>("IsDangerous");
+                            args.Process = false;
+                            return;
+
                             if (isDangerous)
                                 break;
+                            
                         }
                     }
 
