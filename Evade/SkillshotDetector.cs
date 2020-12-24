@@ -207,7 +207,31 @@ namespace Evade
 
                 var startPos = args.Path[0].To2D();
                 var endPos = args.Path.Last().To2D();
-                var direction = (endPos - startPos).Normalized(); 
+                var direction = (endPos - startPos).Normalized();
+
+                if (spellData.BehindStart != -1)
+                {
+                    startPos = startPos - direction * spellData.BehindStart;
+                }
+
+                if (spellData.MinimalRange != -1)
+                {
+                    if (startPos.Distance(endPos) < spellData.MinimalRange)
+                    {
+                        endPos = startPos + direction * spellData.MinimalRange;
+                    }
+                }
+
+                if (startPos.Distance(endPos) > spellData.Range || spellData.FixedRange)
+                {
+                    endPos = startPos + direction * spellData.Range;
+                }
+
+                if (spellData.ExtraRange != -1)
+                {
+                    endPos = endPos +
+                             Math.Min(spellData.ExtraRange, spellData.Range - endPos.Distance(startPos)) * direction;
+                }
 
                 if (spellData.ExtraRange != -1)
                 {

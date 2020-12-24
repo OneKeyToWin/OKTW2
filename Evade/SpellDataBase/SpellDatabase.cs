@@ -594,7 +594,7 @@ namespace Evade
                     DangerValue = 2,
                     IsDangerous = true,
                     MissileSpellName = "",
-                    EndAtParticle = "brand_.+_w.+tar_red"
+                    SourceObjectName = "brand_.+_w.+tar_red"
                 });
 
             #endregion Brand
@@ -2545,9 +2545,9 @@ namespace Evade
                     SpellName = "LucianQ",
                     Slot = SpellSlot.Q,
                     Type = SkillShotType.SkillshotLine,
-                    Delay = 500,
-                    Range = 1300,
-                    Radius = 65,
+                    Delay = 400,
+                    Range = 1000,
+                    Radius = 50,
                     MissileSpeed = int.MaxValue,
                     FixedRange = true,
                     AddHitbox = true,
@@ -2564,8 +2564,8 @@ namespace Evade
                     Slot = SpellSlot.W,
                     Type = SkillShotType.SkillshotMissileLine,
                     Delay = 250,
-                    Range = 1000,
-                    Radius = 55,
+                    Range = 1350,
+                    Radius = 80,
                     MissileSpeed = 1600,
                     FixedRange = true,
                     AddHitbox = true,
@@ -2594,7 +2594,6 @@ namespace Evade
                     ExtraMissileNames = new[] {"lucianrmissile"},
                     EarlyEvade = new[] {EarlyObjects.Allies, EarlyObjects.Minions, EarlyObjects.AllyObjects},
                     DontCheckForDuplicates = true,
-                    DisabledByDefault = true,
                 });
 
             #endregion Lucian
@@ -4769,6 +4768,25 @@ namespace Evade
                     EarlyEvade = new[] {EarlyObjects.Allies, EarlyObjects.Minions, EarlyObjects.AllyObjects},
                     CollisionObjects = new[] {CollisionObjectTypes.YasuoWall},
                 });
+            Spells.Add(
+                new SpellData
+                {
+                    ChampionName = "Zyra",
+                    SpellName = "ZyraR",
+                    Slot = SpellSlot.R,
+                    Type = SkillShotType.SkillshotCircle,
+                    Delay = 2250,
+                    Range = 700,
+                    Radius = 500,
+                    FixedRange = false,
+                    AddHitbox = true,
+                    DangerValue = 4,
+                    IsDangerous = true,
+                    MissileSpeed = int.MaxValue,
+                    MissileSpellName = "",
+                });
+
+            
 
             Spells.Add(
                 new SpellData
@@ -5052,7 +5070,51 @@ namespace Evade
 
             #endregion Pyke
 
-            #region rwick
+            #region Hecarim
+
+            Spells.Add(
+                new SpellData
+                {
+                    ChampionName = "Hecarim",
+                    SpellName = "HecarimR",
+                    Slot = SpellSlot.R,
+                    Type = SkillShotType.SkillshotMissileLine,
+                    Delay = 0,
+                    Range = 1450,
+                    Radius = 50,
+                    MissileSpeed = 1100,
+                    FixedRange = true,
+                    AddHitbox = true,
+                    DangerValue = 2,
+                    IsDangerous = true,
+                    DontCheckForDuplicates = true,
+                    MissileSpellName = "HecarimUltMissile",
+                });
+            Spells.Add(
+               new SpellData
+               {
+                   ChampionName = "Hecarim",
+                   SpellName = "HecarimRcircle",
+                   Slot = SpellSlot.R,
+                   Type = SkillShotType.SkillshotCircle,
+                   Delay = 0,
+                   Range = 1000,
+                   Radius = 250,
+                   MissileSpeed = 1100,
+                   FixedRange = false,
+                   AddHitbox = true,
+                   DangerValue = 5,
+                   IsDangerous = true,
+                   IsDash = true,
+                   DontCheckForDuplicates = true,
+                   CanDetectDash = (sender, args) =>
+                   {
+                       return args.Speed == 1100 && Utils.ImmobileTime(sender) == -1;
+                   },
+               });
+
+            #endregion Warwick
+            #region Wrwick
 
             Spells.Add(
                 new SpellData
@@ -5821,6 +5883,65 @@ namespace Evade
                     MissileSpellName = "KayleQMis"
                 });
 
+            #endregion
+
+            #region Rell
+            Spells.Add(
+                new SpellData
+                {
+                    ChampionName = "Rell",
+                    SpellName = "RellQ",
+                    Slot = SpellSlot.Q,
+                    Type = SkillShotType.SkillshotMissileLine,
+                    Delay = 350,
+                    Range = 700,
+                    Radius = 70,
+                    MissileSpeed = int.MaxValue,
+                    DangerValue = 2,
+                    FixedRange = true,
+                    AddHitbox = true,
+                    MissileSpellName = "RellQ_VFXMis"
+                });
+
+            Spells.Add(
+                new SpellData
+                {
+                    ChampionName = "Rell",
+                    SpellName = "RellR",
+                    Slot = SpellSlot.R,
+                    Type = SkillShotType.SkillshotCircle,
+                    Delay = 250,
+                    Range = 0,
+                    Radius = 400,
+                    MissileSpeed = int.MaxValue,
+                    FixedRange = true,
+                    AddHitbox = true,
+                    DangerValue = 5,
+                    IsDangerous = true,
+                    MissileSpellName = "",
+                });
+            Spells.Add(
+              new SpellData
+              {
+                  ChampionName = "Rell",
+                  SpellName = "RellR",
+                  Slot = SpellSlot.W,
+                  Type = SkillShotType.SkillshotLine,
+                  Delay = 450,
+                  Range = 900,
+                  Radius = 220,
+                  MissileSpeed = 5000,
+                  FixedRange = true,
+                  AddHitbox = true,
+                  DangerValue = 5,
+                  IsDangerous = true,
+                  IsDash = true,
+
+                  CanDetectDash = (sender, args) =>
+                  {
+                      return Utils.ImmobileTime(sender) == -1;
+                  },
+              });
             #endregion
         }
 
