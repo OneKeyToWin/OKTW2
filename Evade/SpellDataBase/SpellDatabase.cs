@@ -1888,6 +1888,7 @@ namespace Evade
                     MissileSpellName = "JhinWMissile",
                     EarlyEvade = new[] { EarlyObjects.Allies, EarlyObjects.AllyObjects },
                     CanBeRemoved = true,
+                    DontCross = true,
                     CollisionObjects =
                         new[] { CollisionObjectTypes.Champions, CollisionObjectTypes.YasuoWall },
                 });

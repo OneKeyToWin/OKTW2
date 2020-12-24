@@ -374,6 +374,14 @@ namespace SebbyLib
                 }
             }
 
+            foreach (var hero in HeroManager.AllHeroes.Where(x=> x.Team != target.Team && x.NetworkId != target.NetworkId ))
+            {
+                if(!hero.IsDead && hero.Distance(target) < hero.AttackRange + 200 )
+                {
+                    totalDamage += hero.GetAutoAttackDamage(hero);
+                }
+            }
+
             if (damage2 > totalDamage)
                 totalDamage = damage2;
 
