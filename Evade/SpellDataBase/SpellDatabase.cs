@@ -1577,18 +1577,20 @@ namespace Evade
                 new SpellData
                 {
                     ChampionName = "Heimerdinger",
-                    SpellName = "Heimerdingerwm",
+                    SpellName = "HeimerdingerWM",
                     Slot = SpellSlot.W,
                     Type = SkillShotType.SkillshotMissileLine,
                     Delay = 250,
                     Range = 1500,
                     Radius = 70,
-                    MissileSpeed = 1800,
+                    MissileSpeed = 2200,
                     FixedRange = true,
                     AddHitbox = true,
                     DangerValue = 2,
                     IsDangerous = true,
                     MissileSpellName = "HeimerdingerWAttack2",
+                    DontCheckForDuplicates = true,
+                    ExtraMissileNames = new[]{ "HeimerdingerWAttack2Ult" },
                     CollisionObjects = new[] {CollisionObjectTypes.YasuoWall},
                 });
 
@@ -2783,6 +2785,26 @@ namespace Evade
                         new[]
                         {CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall},
                 });
+            Spells.Add(
+                new SpellData
+                {
+                    ChampionName = "Morgana",
+                    SpellName = "TormentedSoil",
+                    Slot = SpellSlot.W,
+                    Type = SkillShotType.SkillshotCircle,
+                    Delay = 950,
+                    ParticleDetectDelay = 250,
+                    Range = 1300,
+                    Radius = 280,
+                    MissileSpeed = int.MaxValue,
+                    FixedRange = false,
+                    AddHitbox = true,
+                    DangerValue = 3,
+                    IsDangerous = true,
+                    MissileSpellName = "",
+                    SourceObjectName = "morgana_base_w.+troy",
+                    CanBeRemoved = true,
+                });
 
             #endregion Morgana
 
@@ -3387,16 +3409,37 @@ namespace Evade
                     SpellName = "SorakaQ",
                     Slot = SpellSlot.Q,
                     Type = SkillShotType.SkillshotCircle,
-                    Delay = 500,
+                    Delay = 250,
                     Range = 950,
-                    Radius = 300,
-                    MissileSpeed = 1750,
+                    Radius = 240,
+                    MissileSpeed = 1100,
+                    FixedRange = false,
+                    AddHitbox = true,
+                    DangerValue = 2,
+                    IsDangerous = true,
+                    MissileSpellName = "SorakaQMissile",
+                    
+                    CollisionObjects = new[] {CollisionObjectTypes.YasuoWall},
+                });
+            Spells.Add(
+                new SpellData
+                {
+                    ChampionName = "Soraka",
+                    SpellName = "SorakaE",
+                    Slot = SpellSlot.E,
+                    Type = SkillShotType.SkillshotCircle,
+                    Delay = 1600,
+                    Range = 1200,
+                    Radius = 240,
+                    MissileSpeed = int.MaxValue,
                     FixedRange = false,
                     AddHitbox = true,
                     DangerValue = 2,
                     IsDangerous = true,
                     MissileSpellName = "",
-                    CollisionObjects = new[] {CollisionObjectTypes.YasuoWall},
+                    DontCross = true,
+                    SourceObjectName = "soraka_.+e_beam",
+                    CollisionObjects = new[] { CollisionObjectTypes.YasuoWall },
                 });
 
             #endregion Soraka
@@ -3758,7 +3801,7 @@ namespace Evade
                 new SpellData
                 {
                     ChampionName = "Talon",
-                    SpellName = "TalonRake",
+                    SpellName = "TalonW",
                     Slot = SpellSlot.W,
                     Type = SkillShotType.SkillshotMissileLine,
                     Delay = 250,
@@ -3771,7 +3814,7 @@ namespace Evade
                     IsDangerous = true,
                     MultipleNumber = 3,
                     MultipleAngle = 20*(float) Math.PI/180,
-                    MissileSpellName = "talonrakemissileone",
+                    MissileSpellName = "TalonWMissileOne",
                 });
 
             Spells.Add(
@@ -3791,7 +3834,7 @@ namespace Evade
                     IsDangerous = true,
                     MultipleNumber = 3,
                     MultipleAngle = 20*(float) Math.PI/180,
-                    MissileSpellName = "talonrakemissiletwo",
+                    MissileSpellName = "TalonWMissileTwo",
                 });
 
             #endregion Riven
@@ -5936,7 +5979,6 @@ namespace Evade
                   DangerValue = 5,
                   IsDangerous = true,
                   IsDash = true,
-
                   CanDetectDash = (sender, args) =>
                   {
                       return Utils.ImmobileTime(sender) == -1;
