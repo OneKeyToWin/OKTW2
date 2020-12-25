@@ -656,7 +656,7 @@ namespace LeagueSharp.Common
                     if (!YasuoInGame || !unit.IsEnemy || unit.IsMinion || Spell.SData.IsAutoAttack() || unit.Type != GameObjectType.obj_AI_Hero)
                         return;
 
-                    if (Spell.SData.Name.Contains("YasuoWMovingWall"))
+                    if (Spell.SData.Name.Contains("YasuoW"))
                     {
                         yasuoWall.CastTime = Game.Time;
                         yasuoWall.CastPosition = unit.Position.Extend(Spell.End, 400);
