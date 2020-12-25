@@ -1243,6 +1243,8 @@ namespace Evade
                     DangerValue = 2,
                     IsDangerous = true,
                     MissileSpellName = "FioraWMissile",
+                    //SourceObjectName = "Fiora_base_w_cas",
+                    //EndAtParticle = "Fiora_base_w_cas",
                     CollisionObjects = new[] {CollisionObjectTypes.YasuoWall},
                 });
 
@@ -1545,8 +1547,48 @@ namespace Evade
                     DangerValue = 2,
                     IsDangerous = true,
                     MissileSpellName = "GravesQLineMis",
+
                     CollisionObjects = new[] {CollisionObjectTypes.YasuoWall},
                 });
+            Spells.Add(
+               new SpellData
+               {
+                   ChampionName = "Graves",
+                   SpellName = "GravesQLineSpell",
+                   Slot = SpellSlot.Q,
+                   Type = SkillShotType.SkillshotMissileLine,
+                   Delay = 250,
+                   Range = 808,
+                   Radius = 40,
+                   MissileSpeed = 3000,
+                   FixedRange = true,
+                   AddHitbox = true,
+                   DangerValue = 2,
+                   IsDangerous = true,
+                   MissileSpellName = "GravesQReturn",
+                   CollisionObjects = new[] { CollisionObjectTypes.YasuoWall },
+               });
+            Spells.Add(
+              new SpellData
+              {
+                  ChampionName = "Graves",
+                  SpellName = "GravesSmokeGrenade",
+                  Slot = SpellSlot.W,
+                  Type = SkillShotType.SkillshotCircle,
+                  Delay = 350,
+                  Range = 950,
+                  Radius = 220,
+                  ExtraDuration = 3700,
+                  DontAddExtraDuration = true,
+                  DontCross = true,
+                  MissileSpeed = 1500,
+                  FixedRange = false,
+                  AddHitbox = true,
+                  DangerValue = 4,
+                  IsDangerous = true,
+                  MissileSpellName = "GravesSmokeGrenadeBoom",
+                  CollisionObjects = new[] { CollisionObjectTypes.YasuoWall },
+              });
 
             Spells.Add(
                 new SpellData
@@ -1568,7 +1610,24 @@ namespace Evade
                         new[]
                         {CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall},
                 });
-
+            Spells.Add(
+                new SpellData
+                {
+                    ChampionName = "Graves",
+                    SpellName = "GravesChargeShotFxMissile2",
+                    Slot = SpellSlot.R,
+                    Type = SkillShotType.SkillshotCone,
+                    Delay = 250,
+                    Range = 800,
+                    Radius = 10,
+                    MissileSpeed = 2100,
+                    FixedRange = true,
+                    AddHitbox = true,
+                    DangerValue = 5,
+                    IsDangerous = true,
+                    MissileSpellName = "GravesChargeShotFxMissile2",
+                    
+                });
             #endregion Graves
 
             #region Heimerdinger
@@ -6007,20 +6066,17 @@ namespace Evade
 
         public static SpellData GetByEndAtParticle(string objectName)
         {
+
             objectName = objectName.ToLowerInvariant();
             foreach (var spellData in Spells)
             {
                 if (spellData.EndAtParticle.Length == 0)
-                {
                     continue;
-                }
-                               
+
                 var reg = new System.Text.RegularExpressions.Regex(spellData.EndAtParticle.ToLowerInvariant());
 
-                if (reg.IsMatch(objectName.ToLowerInvariant()))
-                {
+                if (reg.IsMatch(objectName))
                     return spellData;
-                }
             }
 
             return null;
@@ -6032,17 +6088,13 @@ namespace Evade
             foreach (var spellData in Spells)
             {
                 if (spellData.SourceObjectName.Length == 0)
-                {
                     continue;
-                }
-                var reg = new System.Text.RegularExpressions.Regex(spellData.SourceObjectName.ToLowerInvariant());
+
+                var reg = new System.Text.RegularExpressions.Regex(spellData.SourceObjectName.ToLowerInvariant(), System.Text.RegularExpressions.RegexOptions.IgnoreCase);
 
                 if (reg.IsMatch(objectName))
-                {
                     return spellData;
-                }
             }
-
             return null;
         }
 

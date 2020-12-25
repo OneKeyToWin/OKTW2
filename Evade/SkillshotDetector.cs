@@ -290,7 +290,7 @@ namespace Evade
 
             var spellData = SpellDatabase.GetBySourceObjectName(sender.Name);
 
-            if (spellData == null)
+            if (spellData != null)
             {
                 foreach (var spell in SpellDatabase.Spells)
                 {
@@ -311,7 +311,7 @@ namespace Evade
                         break;
                     }
                 }
-
+                Console.WriteLine("test1 ");
                 spellData = SpellDatabase.GetByEndAtParticle(sender.Name);
 
                 if (spellData == null)
@@ -327,6 +327,7 @@ namespace Evade
                 var caster = HeroManager.AllHeroes.Where(x => (x.IsEnemy || Config.TestOnAllies) && x.ChampionName == spellData.ChampionName)
                     .OrderByDescending(x => x.Position.Distance(sender.Position)).FirstOrDefault();
 
+                Console.WriteLine("test2 ");
                 if (caster == null)
                 {
                     return;
@@ -334,7 +335,7 @@ namespace Evade
 
                 if (spellData.SpellName == "LuxMaliceCannonMis")
                 {
-                    var startPos = sender.Position.To2D(); //sender = LuxRPosition //LuxRPosition 
+                    var startPos2 = sender.Position.To2D(); //sender = LuxRPosition //LuxRPosition 
                     var luxRPosition = LuxRPositionMiddle;
 
                     if (sender.Name.Contains("middle"))
@@ -342,7 +343,7 @@ namespace Evade
                         if (!LuxRPosition.IsValid())
                             return;
 
-                        startPos = LuxRPosition;
+                        startPos2 = LuxRPosition;
                         luxRPosition = sender.Position.To2D();
                     }
                     else
@@ -351,7 +352,7 @@ namespace Evade
                             return;
                     }
 
-                    var dir = (startPos - luxRPosition).Normalized();
+                    var dir = (startPos2 - luxRPosition).Normalized();
                     var start = luxRPosition - dir * (spellData.Range / 2 - 50);
                     var end = luxRPosition + dir * (spellData.Range / 2 + 50);
 
@@ -377,17 +378,51 @@ namespace Evade
                     {
                         Utility.DelayAction.Add(0, () =>
                         {
-                            var startPos = clone.Position.To2D();
-                            var endPos = startPos + clone.Direction.To2D() * spellData.Range;
+                            var startPos2 = clone.Position.To2D();
+                            var endPos2 = startPos2 + clone.Direction.To2D() * spellData.Range;
 
-                            TriggerOnDetectSkillshot(DetectionType.ProcessSpell, spellData, Utils.TickCount - Game.Ping / 2 - spellData.ParticleDetectDelay, startPos, endPos, sender.Position.To2D(), caster);
+                            TriggerOnDetectSkillshot(DetectionType.ProcessSpell, spellData, Utils.TickCount - Game.Ping / 2 - spellData.ParticleDetectDelay, startPos2, endPos2, sender.Position.To2D(), caster);
                         });
                     }
 
                     return;
                 }
 
-                TriggerOnDetectSkillshot(DetectionType.ProcessSpell, spellData, Utils.TickCount - Game.Ping / 2 - spellData.ParticleDetectDelay, caster.Position.To2D(), sender.Position.To2D(), sender.Position.To2D(), caster);
+                var startPos = caster.Position.To2D();
+                var endPos = sender.Position.To2D();
+                var direction = (endPos - startPos).Normalized();
+
+                if (spellData.BehindStart != -1)
+                {
+                    startPos = startPos - direction * spellData.BehindStart;
+                }
+
+                if (spellData.MinimalRange != -1)
+                {
+                    if (startPos.Distance(endPos) < spellData.MinimalRange)
+                    {
+                        endPos = startPos + direction * spellData.MinimalRange;
+                    }
+                }
+
+                if (startPos.Distance(endPos) > spellData.Range || spellData.FixedRange)
+                {
+                    endPos = startPos + direction * spellData.Range;
+                }
+
+                if (spellData.ExtraRange != -1)
+                {
+                    endPos = endPos +
+                             Math.Min(spellData.ExtraRange, spellData.Range - endPos.Distance(startPos)) * direction;
+                }
+
+                if (spellData.ExtraRange != -1)
+                {
+                    endPos = endPos +
+                             Math.Min(spellData.ExtraRange, spellData.Range - endPos.Distance(startPos)) * direction;
+                }
+                Console.WriteLine("test3 ");
+                TriggerOnDetectSkillshot(DetectionType.ProcessSpell, spellData, Utils.TickCount - Game.Ping / 2 - spellData.ParticleDetectDelay, startPos, endPos, endPos, caster);
                 return;
             }
 
