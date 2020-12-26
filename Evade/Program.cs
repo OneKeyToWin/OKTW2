@@ -811,8 +811,9 @@ namespace Evade
             {
                 //if (args.Slot == SpellSlot.Recall)
                 //    EvadeToPoint = new Vector2();
+                var pointToCheck = HeroManager.Player.Position - HeroManager.Player.Direction * 100;
 
-                if (Evading || !IsSafe(PlayerPosition).IsSafe)
+                if (Evading || !IsSafe(PlayerPosition).IsSafe || !IsSafe(pointToCheck.To2D()).IsSafe)
                 {
                     var blockLevel = Config.Menu.Item("BlockSpells").GetValue<StringList>().SelectedIndex;
 
@@ -822,7 +823,7 @@ namespace Evade
                     var isDangerous = false;
                     foreach (var skillshot in DetectedSkillshots)
                     {
-                        if (skillshot.Evade() && skillshot.IsDanger(PlayerPosition))
+                        if (skillshot.Evade() && skillshot.IsDanger(PlayerPosition) )
                         {
                             isDangerous = skillshot.GetValue<bool>("IsDangerous");  
                         }
@@ -916,8 +917,6 @@ namespace Evade
                         Evading = true;
                     }
                 }
-
-               
 
                 //Block the packets if we are evading or not safe.
                 args.Process = false;

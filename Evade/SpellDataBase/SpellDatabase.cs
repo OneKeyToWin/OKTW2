@@ -2772,7 +2772,7 @@ namespace Evade
                 new SpellData
                 {
                     ChampionName = "Lux",
-                    SpellName = "LuxMaliceCannonXXXMis",
+                    SpellName = "LuxMaliceCannonMis",
                     Slot = SpellSlot.R,
                     Type = SkillShotType.SkillshotLine,
                     Delay = 1000,
