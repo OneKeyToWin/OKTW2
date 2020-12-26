@@ -2797,7 +2797,7 @@ namespace Evade
                 new SpellData
                 {
                     ChampionName = "Malphite",
-                    SpellName = "UFSlash",
+                    SpellName = "MalphiteR",
                     Slot = SpellSlot.R,
                     Type = SkillShotType.SkillshotCircle,
                     Delay = 0,
