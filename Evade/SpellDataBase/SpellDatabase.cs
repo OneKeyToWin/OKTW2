@@ -4564,7 +4564,7 @@ namespace Evade
                     MissileSpellName = "XerathLocusPulse",
                     EndAtParticle = "xerath_.+_r_aoe_reticle_red"
                 });
-
+ 
             #endregion Xerath
 
             #region Yasuo 
@@ -4585,7 +4585,7 @@ namespace Evade
                     Invert = true,
                     DangerValue = 3,
                     IsDangerous = true,
-                    MissileSpellName = "yasuoq3mis",
+                    MissileSpellName = "YasuoQ3Mis",
                     CollisionObjects = new[] {CollisionObjectTypes.YasuoWall}
                 });
 
@@ -4630,8 +4630,6 @@ namespace Evade
             #endregion Zac
 
             #region Zed
-
-
 
             Spells.Add(
                 new SpellData
@@ -5711,7 +5709,7 @@ namespace Evade
                     Slot = SpellSlot.Q,
                     Type = SkillShotType.SkillshotMissileLine,
                     Delay = 250,
-                    Range = 1100,
+                    Range = 1200,
                     Radius = 60,
                     MissileSpeed = 2500,
                     AddHitbox = true,

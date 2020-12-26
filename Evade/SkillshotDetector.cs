@@ -1,20 +1,4 @@
-﻿// Copyright 2014 - 2014 Esk0r
-// SkillshotDetector.cs is part of Evade.
-// 
-// Evade is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Evade is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU General Public License for more details.
-// 
-// You should have received a copy of the GNU General Public License
-// along with Evade. If not, see <http://www.gnu.org/licenses/>.
-
-#region
+﻿#region
 
 using System;
 using System.Collections.Generic;
@@ -45,27 +29,20 @@ namespace Evade
         }
 
         public delegate void OnDeleteMissileH(Skillshot skillshot, MissileClient missile);
-
         public delegate void OnDetectSkillshotH(Skillshot skillshot);
-
         private static Vector2 LuxRPosition = Vector2.Zero;
         private static Vector2 LuxRPositionMiddle = Vector2.Zero;
-
         private static List<hiu_structure> hius = new SpellList<hiu_structure>();
-
         private static Obj_AI_Hero Jhin = null;
         private static Vector3 JhinLastRDirection;
         private static int JhinLastTimeR = 0;
         static SkillshotDetector()
         {
             foreach (var hero in ObjectManager.Get<Obj_AI_Hero>())
-            {
                 if (hero.ChampionName == "Jhin")
                     Jhin = hero;
-            }
-                //Detect when the skillshots are created.
-                //Game.OnProcessPacket += GameOnOnGameProcessPacket; // Used only for viktor's Laser :^)
-                Obj_AI_Base.OnProcessSpellCast += ObjAiHeroOnOnProcessSpellCast;
+            
+            Obj_AI_Base.OnProcessSpellCast += ObjAiHeroOnOnProcessSpellCast;
             Obj_AI_Base.OnNewPath += Obj_AI_Base_OnNewPath;
             Game.OnUpdate += Game_OnUpdate;
 
@@ -76,7 +53,6 @@ namespace Evade
             GameObject.OnDelete += GameObject_OnDelete;
         }
 
-       
         private static void Game_OnUpdate(EventArgs args)
         {
             if(Jhin != null)
@@ -277,21 +253,15 @@ namespace Evade
 
             if (spellData != null)
             {
-                //Console.WriteLine("test1");
               
                 if (Config.Menu.Item("Enabled" + spellData.MenuItemName) == null)
-                {
                     return;
-                }
 
                 var caster = HeroManager.AllHeroes.Where(x => (x.IsEnemy || Config.TestOnAllies) && x.ChampionName == spellData.ChampionName)
                     .OrderByDescending(x => x.Position.Distance(sender.Position)).FirstOrDefault();
 
-                //Console.WriteLine("test2 ");
                 if (caster == null)
-                {
                     return;
-                }
 
                 if (spellData.SpellName == "XerathArcanopulse2")
                 {
@@ -331,7 +301,7 @@ namespace Evade
                     startPos = sender.Position.To2D();
 
                     if (spellData.ParticleRotation > 0)
-                        direction = direction.Rotated(ToRadians(spellData.ParticleRotation));
+                        direction = direction.Rotated(Utils.ToRadians(spellData.ParticleRotation));
                 }
 
                 if (spellData.BehindStart != -1)
@@ -354,14 +324,10 @@ namespace Evade
             }
 
             if (spellData == null)
-            {
                 return;
-            }
             
             if (Config.Menu.Item("Enabled" + spellData.MenuItemName) == null)
-            {
                 return;
-            }
 
             TriggerOnDetectSkillshot(DetectionType.ProcessSpell, spellData, Utils.TickCount - Game.Ping / 2, sender.Position.To2D(), sender.Position.To2D(), sender.Position.To2D(), HeroManager.AllHeroes.MinOrDefault(h => h.IsAlly ? 1 : 0));
         }
@@ -722,10 +688,7 @@ namespace Evade
             DetectionType.ProcessSpell, spellData, startTime, startPos, endPos, args.End.To2D(), sender);
         }
 
-        public static float ToRadians(this float val)
-        {
-            return ((float)Math.PI / 180f) * val;
-        }
+        
 
     }
 }
