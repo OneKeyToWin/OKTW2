@@ -88,39 +88,25 @@ namespace Evade
                         var sd = SpellDatabase.GetByName("JhinRShot");  
                         if (sd != null)
                         {
-                            Console.WriteLine(Utils.TickCount + " test2 ");
                             var startTime = Utils.TickCount - Game.Ping / 2;
                             var startPos = Jhin.ServerPosition.To2D();
                             var endPos = Jhin.ServerPosition.To2D() + 3000 * Jhin.Direction.To2D().Rotated(-1.5707f).Perpendicular();
                             var direction = (endPos - startPos).Normalized();
 
                             if (sd.BehindStart != -1)
-                            {
                                 startPos = startPos - direction * sd.BehindStart;
-                            }
 
-                            if (sd.MinimalRange != -1)
-                            {
-                                if (startPos.Distance(endPos) < sd.MinimalRange)
-                                {
-                                    endPos = startPos + direction * sd.MinimalRange;
-                                }
-                            }
-
+                            if (sd.MinimalRange != -1 && startPos.Distance(endPos) < sd.MinimalRange)
+                                endPos = startPos + direction * sd.MinimalRange;
+                            
                             if (startPos.Distance(endPos) > sd.Range || sd.FixedRange)
-                            {
                                 endPos = startPos + direction * sd.Range;
-                            }
 
                             if (sd.ExtraRange != -1)
-                            {
-                                endPos = endPos +
-                                         Math.Min(sd.ExtraRange, sd.Range - endPos.Distance(startPos)) * direction;
-                            }
+                                endPos = endPos + Math.Min(sd.ExtraRange, sd.Range - endPos.Distance(startPos)) * direction;
+                            
                             TriggerOnDetectSkillshot(DetectionType.ProcessSpell, sd, startTime, startPos, endPos, endPos, Jhin);
                         }
-
-                       
                     }
                     JhinLastRDirection = Jhin.Direction;
                 }
@@ -187,7 +173,6 @@ namespace Evade
 
             return false;
         }
-
 
         private static void Obj_AI_Base_OnNewPath(Obj_AI_Base sender, GameObjectNewPathEventArgs args)
         {
@@ -292,33 +277,8 @@ namespace Evade
 
             if (spellData != null)
             {
-                foreach (var spell in SpellDatabase.Spells)
-                {
-                    if (spell.SpellName == "LuxMaliceCannonMis")
-                    {
-                        var reg = new Regex("Lux_.+_R_mis_beam_middle");
-
-                        if (reg.IsMatch(sender.Name))
-                        {
-                            LuxRPositionMiddle = sender.Position.To2D();
-                        }
-
-                        else if (new Regex("Lux_.+_R_mis_beam").IsMatch(sender.Name))
-                        {
-                            LuxRPosition = sender.Position.To2D();
-                        }
-
-                        break;
-                    }
-                }
-                Console.WriteLine("test1 ");
-                spellData = SpellDatabase.GetByEndAtParticle(sender.Name);
-
-                if (spellData == null)
-                {
-                    return;
-                }
-
+                //Console.WriteLine("test1");
+              
                 if (Config.Menu.Item("Enabled" + spellData.MenuItemName) == null)
                 {
                     return;
@@ -327,42 +287,13 @@ namespace Evade
                 var caster = HeroManager.AllHeroes.Where(x => (x.IsEnemy || Config.TestOnAllies) && x.ChampionName == spellData.ChampionName)
                     .OrderByDescending(x => x.Position.Distance(sender.Position)).FirstOrDefault();
 
-                Console.WriteLine("test2 ");
+                //Console.WriteLine("test2 ");
                 if (caster == null)
                 {
                     return;
                 }
 
-                if (spellData.SpellName == "LuxMaliceCannonMis")
-                {
-                    var startPos2 = sender.Position.To2D(); //sender = LuxRPosition //LuxRPosition 
-                    var luxRPosition = LuxRPositionMiddle;
-
-                    if (sender.Name.Contains("middle"))
-                    {
-                        if (!LuxRPosition.IsValid())
-                            return;
-
-                        startPos2 = LuxRPosition;
-                        luxRPosition = sender.Position.To2D();
-                    }
-                    else
-                    {
-                        if (!LuxRPositionMiddle.IsValid())
-                            return;
-                    }
-
-                    var dir = (startPos2 - luxRPosition).Normalized();
-                    var start = luxRPosition - dir * (spellData.Range / 2 - 50);
-                    var end = luxRPosition + dir * (spellData.Range / 2 + 50);
-
-                    LuxRPositionMiddle = Vector2.Zero;
-                    LuxRPosition = Vector2.Zero;
-
-                    TriggerOnDetectSkillshot(DetectionType.ProcessSpell, spellData, Utils.TickCount - Game.Ping / 2 - spellData.ParticleDetectDelay, start, end, sender.Position.To2D(), caster);
-                    return;
-                }
-                else if (spellData.SpellName == "XerathArcanopulse2")
+                if (spellData.SpellName == "XerathArcanopulse2")
                 {
                     Utility.DelayAction.Add(0, () =>
                     {
@@ -392,36 +323,32 @@ namespace Evade
                 var endPos = sender.Position.To2D();
                 var direction = (endPos - startPos).Normalized();
 
-                if (spellData.BehindStart != -1)
+                Obj_GeneralParticleEmitter objpartice = sender as Obj_GeneralParticleEmitter;
+
+                if (objpartice != null && spellData.Type != SkillShotType.SkillshotCircle)
                 {
-                    startPos = startPos - direction * spellData.BehindStart;
+                    direction = objpartice.DirectionEmitter.To2D();
+                    startPos = sender.Position.To2D();
+
+                    if (spellData.ParticleRotation > 0)
+                        direction = direction.Rotated(ToRadians(spellData.ParticleRotation));
                 }
 
-                if (spellData.MinimalRange != -1)
-                {
-                    if (startPos.Distance(endPos) < spellData.MinimalRange)
-                    {
-                        endPos = startPos + direction * spellData.MinimalRange;
-                    }
-                }
+                if (spellData.BehindStart != -1)
+                    startPos = startPos - direction * spellData.BehindStart;
+
+                if (spellData.MinimalRange != -1 && startPos.Distance(endPos) < spellData.MinimalRange)
+                    endPos = startPos + direction * spellData.MinimalRange;
 
                 if (startPos.Distance(endPos) > spellData.Range || spellData.FixedRange)
-                {
                     endPos = startPos + direction * spellData.Range;
-                }
 
                 if (spellData.ExtraRange != -1)
-                {
-                    endPos = endPos +
-                             Math.Min(spellData.ExtraRange, spellData.Range - endPos.Distance(startPos)) * direction;
-                }
+                    endPos = endPos + Math.Min(spellData.ExtraRange, spellData.Range - endPos.Distance(startPos)) * direction;
 
                 if (spellData.ExtraRange != -1)
-                {
-                    endPos = endPos +
-                             Math.Min(spellData.ExtraRange, spellData.Range - endPos.Distance(startPos)) * direction;
-                }
-                Console.WriteLine("test3 ");
+                    endPos = endPos + Math.Min(spellData.ExtraRange, spellData.Range - endPos.Distance(startPos)) * direction;
+
                 TriggerOnDetectSkillshot(DetectionType.ProcessSpell, spellData, Utils.TickCount - Game.Ping / 2 - spellData.ParticleDetectDelay, startPos, endPos, endPos, caster);
                 return;
             }
@@ -580,9 +507,6 @@ namespace Evade
             TriggerOnDetectSkillshot(DetectionType.RecvPacket, spellData, castTime, unitPosition, endPos, endPos, unit);
         }
 
-        /// <summary>
-        /// Delete the missiles that collide.
-        /// </summary>
         private static void ObjSpellMissileOnOnDelete(GameObject sender, EventArgs args)
         {
             var missile = sender as MissileClient;
@@ -629,16 +553,9 @@ namespace Evade
                      skillshot.SpellData.CanBeRemoved || skillshot.SpellData.ForceRemove)); // 
         }
 
-        /// <summary>
-        ///     This event is fired after a skillshot is detected.
-        /// </summary>
         public static event OnDetectSkillshotH OnDetectSkillshot;
 
-        /// <summary>
-        ///     This event is fired after a skillshot missile collides.
-        /// </summary>
         public static event OnDeleteMissileH OnDeleteMissile;
-
 
         internal static void TriggerOnDetectSkillshot(DetectionType detectionType,
             SpellData spellData,
@@ -659,9 +576,6 @@ namespace Evade
             }
         }
 
-        /// <summary>
-        ///     Gets triggered when a unit casts a spell and the unit is visible.
-        /// </summary>
         private static void ObjAiHeroOnOnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
             if (sender == null || !sender.IsValid)
@@ -690,9 +604,7 @@ namespace Evade
 
             //Skillshot not added in the database.
             if (spellData == null)
-            {
                 return;
-            }
 
             var startPos = new Vector2();
 
@@ -810,61 +722,10 @@ namespace Evade
             DetectionType.ProcessSpell, spellData, startTime, startPos, endPos, args.End.To2D(), sender);
         }
 
-        /// <summary>
-        /// Detects the spells that have missile and are casted from fow.
-        /// </summary>
-        public static void GameOnOnGameProcessPacket(GamePacketEventArgs args)
+        public static float ToRadians(this float val)
         {
-            //Gets received when a projectile is created.
-            if (args.PacketData[0] == 0x3B)
-            {
-                var packet = new GamePacket(args.PacketData);
-
-                packet.Position = 1;
-
-                packet.ReadFloat(); //Missile network ID
-
-                var missilePosition = new Vector3(packet.ReadFloat(), packet.ReadFloat(), packet.ReadFloat());
-                var unitPosition = new Vector3(packet.ReadFloat(), packet.ReadFloat(), packet.ReadFloat());
-
-                packet.Position = packet.Size() - 119;
-                var missileSpeed = packet.ReadFloat();
-
-                packet.Position = 65;
-                var endPos = new Vector3(packet.ReadFloat(), packet.ReadFloat(), packet.ReadFloat());
-
-                packet.Position = 112;
-                var id = packet.ReadByte();
-
-
-                packet.Position = packet.Size() - 83;
-
-                var unit = ObjectManager.GetUnitByNetworkId<Obj_AI_Hero>(packet.ReadInteger());
-                if ((!unit.IsValid || unit.Team == ObjectManager.Player.Team) && !Config.TestOnAllies)
-                {
-                    return;
-                }
-
-                var spellData = SpellDatabase.GetBySpeed(unit.ChampionName, (int)missileSpeed, id);
-
-                if (spellData == null)
-                {
-                    return;
-                }
-                if (spellData.SpellName != "Laser")
-                {
-                    return;
-                }
-                var castTime = Utils.TickCount - Game.Ping / 2 - spellData.Delay -
-                               (int)
-                                   (1000 * missilePosition.SwitchYZ().To2D().Distance(unitPosition.SwitchYZ()) /
-                                    spellData.MissileSpeed);
-
-                //Trigger the skillshot detection callbacks.
-                TriggerOnDetectSkillshot(
-                    DetectionType.RecvPacket, spellData, castTime, unitPosition.SwitchYZ().To2D(),
-                    endPos.SwitchYZ().To2D(), endPos.SwitchYZ().To2D(), unit);
-            }
+            return ((float)Math.PI / 180f) * val;
         }
+
     }
 }

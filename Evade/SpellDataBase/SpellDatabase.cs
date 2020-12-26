@@ -1947,13 +1947,31 @@ namespace Evade
                     DangerValue = 3,
                     IsDangerous = true,
                     MissileSpellName = "JhinWMissile",
+                    SourceObjectName = "Jhin_.+_W_indicator",
                     EarlyEvade = new[] { EarlyObjects.Allies, EarlyObjects.AllyObjects },
-                    CanBeRemoved = true,
                     DontCross = true,
-                    CollisionObjects =
-                        new[] { CollisionObjectTypes.Champions, CollisionObjectTypes.YasuoWall },
+                    CollisionObjects = new[] { CollisionObjectTypes.Champions, CollisionObjectTypes.YasuoWall },
                 });
-
+            Spells.Add(
+               new SpellData
+               {
+                   ChampionName = "Jhin",
+                   SpellName = "JhinE",
+                   Slot = SpellSlot.E,
+                   Type = SkillShotType.SkillshotCircle,
+                   Delay = 500,
+                   ExtraDuration = 180000,
+                   DontAddExtraDuration = true,
+                   Range = 750,
+                   Radius = 110,
+                   MissileSpeed = 1600,
+                   FixedRange = false,
+                   AddHitbox = true,
+                   DangerValue = 2,
+                   MissileSpellName = "JhinETrap",
+                   DontCross = true,
+                   CollisionObjects = new[] { CollisionObjectTypes.Champions, CollisionObjectTypes.YasuoWall },
+               });
             Spells.Add(
                 new SpellData
                 {
@@ -1998,6 +2016,7 @@ namespace Evade
                     DangerValue = 3,
                     IsDangerous = true,
                     MissileSpellName = "JinxWMissile",
+                    SourceObjectName = "Jinx_.+_W_Beam",
                     EarlyEvade = new[] {EarlyObjects.Allies, EarlyObjects.Minions, EarlyObjects.AllyObjects},
                     CanBeRemoved = true,
                     CollisionObjects =
@@ -2753,18 +2772,20 @@ namespace Evade
                 new SpellData
                 {
                     ChampionName = "Lux",
-                    SpellName = "LuxMaliceCannonMis",
+                    SpellName = "LuxMaliceCannonXXXMis",
                     Slot = SpellSlot.R,
                     Type = SkillShotType.SkillshotLine,
                     Delay = 1000,
                     Range = 3500,
-                    Radius = 190,
+                    Radius = 110,
                     MissileSpeed = int.MaxValue,
                     FixedRange = true,
                     AddHitbox = true,
                     DangerValue = 5,
                     IsDangerous = true,
-                    MissileSpellName = "LuxMaliceCannonMis",
+                    ParticleRotation = 180,
+                    SourceObjectName = "Lux_.+_R_cas", 
+                    MissileSpellName = "LuxRVfxMis",
                     EndAtParticle = "lux_.+_r_mis_beam"
                 });
 
@@ -6051,46 +6072,37 @@ namespace Evade
             foreach (var spellData in Spells)
             {
                 if (!spellData.IsDash)
-                {
                     continue;
-                }
 
                 if (championName == spellData.ChampionName)
-                {
                     return spellData;
-                }
             }
-
             return null;
         }
 
         public static SpellData GetByEndAtParticle(string objectName)
         {
-
-            objectName = objectName.ToLowerInvariant();
             foreach (var spellData in Spells)
             {
                 if (spellData.EndAtParticle.Length == 0)
                     continue;
 
-                var reg = new System.Text.RegularExpressions.Regex(spellData.EndAtParticle.ToLowerInvariant());
+                var reg = new System.Text.RegularExpressions.Regex(spellData.EndAtParticle, System.Text.RegularExpressions.RegexOptions.IgnoreCase);
 
                 if (reg.IsMatch(objectName))
                     return spellData;
             }
-
             return null;
         }
 
         public static SpellData GetBySourceObjectName(string objectName)
         {
-            objectName = objectName.ToLowerInvariant();
             foreach (var spellData in Spells)
             {
                 if (spellData.SourceObjectName.Length == 0)
                     continue;
 
-                var reg = new System.Text.RegularExpressions.Regex(spellData.SourceObjectName.ToLowerInvariant(), System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+                var reg = new System.Text.RegularExpressions.Regex(spellData.SourceObjectName, System.Text.RegularExpressions.RegexOptions.IgnoreCase);
 
                 if (reg.IsMatch(objectName))
                     return spellData;
@@ -6100,15 +6112,12 @@ namespace Evade
 
         public static SpellData GetByName(string spellName)
         {
-            spellName = spellName.ToLower();
+            spellName = spellName.ToLowerInvariant();
             foreach (var spellData in Spells)
             {
-                if (spellData.SpellName.ToLower() == spellName || spellData.ExtraSpellNames.Contains(spellName))
-                {
+                if (spellData.SpellName.ToLowerInvariant() == spellName || spellData.ExtraSpellNames.Contains(spellName))
                     return spellData;
-                }
             }
-
             return null;
         }
 

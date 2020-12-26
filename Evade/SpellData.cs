@@ -69,6 +69,7 @@ namespace Evade
         public int MultipleNumber = -1;
         public int RingRadius;
         public string SourceObjectName = "";
+        public float ParticleRotation = 0f;
         public SpellSlot Slot;
         public string SpellName;
         public bool TakeClosestPath = false;
