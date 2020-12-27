@@ -349,7 +349,7 @@
         /// <returns><c>true</c> if the given minion is a valid attackable ward, otherwise returns <c>false</c>.</returns>
         public static bool IsWard(Obj_AI_Minion minion)
         {
-            return minion.Name.Contains("Ward") && minion.IsHPBarRendered;
+            return (minion.Name.Contains("Ward") || minion.Name.Contains("JammerDevice")) && minion.IsHPBarRendered;
         }
 
         #endregion
