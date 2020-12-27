@@ -3,11 +3,8 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-
     using LeagueSharp.Data.DataTypes;
-
     using SharpDX;
-
     using Color = System.Drawing.Color;
 
     public class TargetSelector
@@ -546,11 +543,12 @@
         {
             return LeagueSharp.Data.Data.Get<ChampionPriorityData>().GetPriority(championName);
         }
-
+        private static bool WasSet = false;
         private static bool IsSenna = false;
         private static bool IsShen = false;
         private static bool IsJax = false;
-        private static bool WasSet = false;
+        private static bool IsSamira = false;
+        private static bool IsTryndamere = false;
 
         private static bool IsValidTarget(
             Obj_AI_Base target,
@@ -585,6 +583,16 @@
                                 IsJax = true;
                                 break;
                             }
+                            case "Samira":
+                            {
+                                IsSamira = true;
+                                break;
+                            }
+                            case "Tryndamere":
+                            {
+                                IsTryndamere = true;
+                                break;
+                            }
                         }
                     }
 
@@ -599,13 +607,14 @@
                         {
                             var name = buff.Name;
 
-                            if (IsJax)
-                            {
-                                if (name.Equals("JaxCounterStrike", StringComparison.InvariantCultureIgnoreCase))
-                                {
-                                    return false;
-                                }
-                            }
+                            if (IsJax && name.Equals("JaxCounterStrike", StringComparison.InvariantCultureIgnoreCase))
+                                return false;
+
+                            if (IsSamira && name.Equals("SamiraW", StringComparison.InvariantCultureIgnoreCase))
+                                return false;
+
+                            if (IsSamira && target.Health < 100 && name.Equals("UndyingRage", StringComparison.InvariantCultureIgnoreCase))
+                                return false;
 
                             if (IsSenna)
                             {
@@ -613,17 +622,7 @@
                                     name.Equals("sennaewraithform", StringComparison.InvariantCultureIgnoreCase))
                                 {
                                     if (!target.IsHPBarRendered)
-                                    {
                                         return false;
-                                    }
-                                }
-                            }
-
-                            if (IsShen)
-                            {
-                                if (name.Equals("ShenWBuff", StringComparison.InvariantCultureIgnoreCase))
-                                {
-                                    return false;
                                 }
                             }
                         }
