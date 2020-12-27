@@ -673,11 +673,11 @@ namespace Evade
             }
 
 
-            if (ObjectManager.Player.IsWindingUp && !Orbwalking.IsAutoAttack(ObjectManager.Player.LastCastedSpellName()))
-            {
-                Evading = false;
-                return;
-            }
+            //if (ObjectManager.Player.IsWindingUp && !Orbwalking.IsAutoAttack(ObjectManager.Player.LastCastedSpellName()))
+            //{
+            //    Evading = false;
+            //    return;
+            //}
 
             /*Avoid evading while stunned or immobile.*/
             if (Utils.ImmobileTime(ObjectManager.Player) - Utils.TickCount > Game.Ping / 2 + 70)

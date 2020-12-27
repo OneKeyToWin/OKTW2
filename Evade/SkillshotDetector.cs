@@ -34,6 +34,7 @@ namespace Evade
         private static Vector2 LuxRPositionMiddle = Vector2.Zero;
         private static List<hiu_structure> hius = new SpellList<hiu_structure>();
         private static Obj_AI_Hero Jhin = null;
+
         private static Vector3 JhinLastRDirection;
         private static int JhinLastTimeR = 0;
         static SkillshotDetector()
@@ -45,12 +46,28 @@ namespace Evade
             Obj_AI_Base.OnProcessSpellCast += ObjAiHeroOnOnProcessSpellCast;
             Obj_AI_Base.OnNewPath += Obj_AI_Base_OnNewPath;
             Game.OnUpdate += Game_OnUpdate;
+            Obj_AI_Base.OnBuffAdd += Obj_AI_Base_OnBuffAdd;
 
             //Detect when projectiles collide.
             GameObject.OnDelete += ObjSpellMissileOnOnDelete;
             GameObject.OnCreate += ObjSpellMissileOnOnCreate;
-            GameObject.OnCreate += GameObject_OnCreate; //TODO: Detect lux R and other large skillshots.
+            GameObject.OnCreate += GameObject_OnCreate; 
             GameObject.OnDelete += GameObject_OnDelete;
+        }
+
+        private static void Obj_AI_Base_OnBuffAdd(Obj_AI_Base sender, Obj_AI_BaseBuffAddEventArgs args)
+        {
+           //if(sender is Obj_AI_Hero && args.Buff.Name == "LucianR")
+           // {
+           //     if (args.Buff.Name == "LucianR")
+           //     {
+           //         var spellData = SpellDatabase.GetByName("LucianRMis");
+           //         var startPos = sender.Position.To2D();
+           //         var endPos = startPos + sender.Direction.To2D() * spellData.Range;
+
+           //         TriggerOnDetectSkillshot(DetectionType.ProcessSpell, spellData, Utils.TickCount - Game.Ping / 2 - spellData.ParticleDetectDelay, startPos, endPos, endPos, sender);
+           //     }
+           // }
         }
 
         private static void Game_OnUpdate(EventArgs args)

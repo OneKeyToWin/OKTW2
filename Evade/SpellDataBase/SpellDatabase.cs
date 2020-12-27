@@ -2661,11 +2661,12 @@ namespace Evade
                     ChampionName = "Lucian",
                     SpellName = "LucianRMis",
                     Slot = SpellSlot.R,
-                    Type = SkillShotType.SkillshotMissileLine,
-                    Delay = 500,
+                    Type = SkillShotType.SkillshotLine,
+                    Delay = 0,
+                    ExtraDuration = 800,
                     Range = 1400,
-                    Radius = 110,
-                    MissileSpeed = 2800,
+                    Radius = 120,
+                    MissileSpeed = int.MaxValue,
                     FixedRange = true,
                     AddHitbox = true,
                     DangerValue = 2,
@@ -2673,7 +2674,6 @@ namespace Evade
                     MissileSpellName = "lucianrmissileoffhand",
                     ExtraMissileNames = new[] {"lucianrmissile"},
                     EarlyEvade = new[] {EarlyObjects.Allies, EarlyObjects.Minions, EarlyObjects.AllyObjects},
-                    DontCheckForDuplicates = true,
                 });
 
             #endregion Lucian

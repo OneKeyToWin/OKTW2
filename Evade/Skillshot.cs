@@ -257,7 +257,15 @@ namespace Evade
 
             if (SpellData.SpellName == "TaricE")
             {
-                Start = Unit.ServerPosition.To2D();
+                Start = Unit.Position.To2D();
+                End = Start + Direction * this.SpellData.Range;
+                Rectangle = new Geometry.Rectangle(Start, End, SpellData.Radius);
+                UpdatePolygon();
+            }
+
+            if (SpellData.SpellName == "LucianRMis" && Unit.HasBuff("LucianR"))
+            {
+                Start = Unit.Position.To2D();
                 End = Start + Direction * this.SpellData.Range;
                 Rectangle = new Geometry.Rectangle(Start, End, SpellData.Radius);
                 UpdatePolygon();
