@@ -94,6 +94,53 @@ namespace Evade
                 SpellName = "6656Cast",
                 Type = SkillShotType.SkillshotMissileLine
             });
+            #region Azir
+            Spells.Add(
+             new SpellData
+             {
+                 ChampionName = "Azir",
+                 SpellName = "AzirQ",
+                 Slot = SpellSlot.Q,
+                 Type = SkillShotType.SkillshotMissileLine,
+                 Delay = 0,
+                 DontCross = true,
+                 Range = 1500,
+                 Radius = 60,
+                 MissileSpeed = 1600,
+                 FixedRange = false,
+                 AddHitbox = true,
+                 DangerValue = 2,
+                 MissileSpellName = "",
+                 ToggleParticleName = "",
+                 SourceObjectName = "Azir_Base_Q_SoldierMoveIndicator",
+                 EndAtParticle = "",
+
+             });
+            //Spells.Add(
+            //  new SpellData
+            //  {
+            //      ChampionName = "Azir",
+            //      SpellName = "AzirW",
+            //      Slot = SpellSlot.W,
+            //      Type = SkillShotType.SkillshotCircle,
+            //      Delay = 500,
+            //      ExtraDuration = 1800,
+            //      DontAddExtraDuration = true,
+            //      DontCross = true,
+            //      Range = 750,
+            //      Radius = 220,
+            //      MissileSpeed = 1600,
+            //      FixedRange = false,
+            //      AddHitbox = true,
+            //      DangerValue = 2,
+            //      MissileSpellName = "",
+            //      ToggleParticleName = "",
+            //      SourceObjectName = "AzirSoldier",
+            //      EndAtParticle ="",
+
+            //  });
+            #endregion
+
 
             #region Aatrox
 
@@ -388,7 +435,7 @@ namespace Evade
                     IsDangerous = true,
                     MissileSpellName = "VolleyAttack",
                     MultipleNumber = 9,
-                    MultipleAngle = 4.62f*(float) Math.PI/180,
+                    MultipleAngle = 4.62f * (float) Math.PI/180,
                     CanBeRemoved = true,
                     CollisionObjects =
                         new[]
@@ -1969,6 +2016,7 @@ namespace Evade
                    AddHitbox = true,
                    DangerValue = 2,
                    MissileSpellName = "JhinETrap",
+                   ToggleParticleName = "Noxious Trap",
                    DontCross = true,
                    CollisionObjects = new[] { CollisionObjectTypes.Champions, CollisionObjectTypes.YasuoWall },
                });
@@ -2801,6 +2849,7 @@ namespace Evade
                     Slot = SpellSlot.R,
                     Type = SkillShotType.SkillshotCircle,
                     Delay = 0,
+                    ExtraDuration = 1000,
                     Range = 1000,
                     Radius = 270,
                     MissileSpeed = 1500,
@@ -2809,9 +2858,10 @@ namespace Evade
                     DangerValue = 5,
                     IsDangerous = true,
                     IsDash = true,
+
                     CanDetectDash = (sender, args) =>
                     {
-                        return args.Speed > sender.MoveSpeed + 1450 && Utils.ImmobileTime(sender) == -1;
+                        return Utils.ImmobileTime(sender) == -1;
                     },
                     MissileSpellName = "UFSlash",
                 });

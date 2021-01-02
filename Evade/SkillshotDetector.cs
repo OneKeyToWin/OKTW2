@@ -34,15 +34,25 @@ namespace Evade
         private static Vector2 LuxRPositionMiddle = Vector2.Zero;
         private static List<hiu_structure> hius = new SpellList<hiu_structure>();
         private static Obj_AI_Hero Jhin = null;
-
         private static Vector3 JhinLastRDirection;
         private static int JhinLastTimeR = 0;
+        private static Obj_AI_Hero Malphite = null;
+        private static float MalphiteRCD = 0;
+        private static bool MalphiteIsVisable = false;
+
         static SkillshotDetector()
         {
             foreach (var hero in ObjectManager.Get<Obj_AI_Hero>())
-                if (hero.ChampionName == "Jhin")
-                    Jhin = hero;
-            
+            {
+                if (Config.TestOnAllies || hero.IsEnemy)
+                {
+                    if (hero.ChampionName == "Jhin")
+                        Jhin = hero;
+                    if (hero.ChampionName == "Malphite")
+                        Malphite = hero;
+                }
+            }
+
             Obj_AI_Base.OnProcessSpellCast += ObjAiHeroOnOnProcessSpellCast;
             Obj_AI_Base.OnNewPath += Obj_AI_Base_OnNewPath;
             Game.OnUpdate += Game_OnUpdate;
@@ -110,7 +120,13 @@ namespace Evade
                 }
             }
 
-            hius.RemoveAll(x => x.created_at + 2000 < Utils.TickCount);
+            if (Malphite != null && !Malphite.IsDashing())
+            {
+                MalphiteIsVisable = Malphite.IsVisible;
+                MalphiteRCD = Malphite.Spellbook.GetSpell(SpellSlot.R).Cooldown;
+            }
+
+                hius.RemoveAll(x => x.created_at + 2000 < Utils.TickCount);
             //Get the skillshot data.
             var spellData = SpellDatabase.GetByName(ObjectManager.Player.Spellbook.GetSpell(SpellSlot.Q).SData.Name);
 
@@ -179,47 +195,39 @@ namespace Evade
                 var spellData = SpellDatabase.GetByDash(caster.ChampionName);
 
                 if (spellData == null || spellData.CanDetectDash == null)
-                {
                     return;
-                }
-
+                
                 var startPos = args.Path[0].To2D();
                 var endPos = args.Path.Last().To2D();
                 var direction = (endPos - startPos).Normalized();
 
                 if (spellData.BehindStart != -1)
-                {
                     startPos = startPos - direction * spellData.BehindStart;
-                }
-
-                if (spellData.MinimalRange != -1)
-                {
-                    if (startPos.Distance(endPos) < spellData.MinimalRange)
-                    {
-                        endPos = startPos + direction * spellData.MinimalRange;
-                    }
-                }
+                
+                if (spellData.MinimalRange != -1 && startPos.Distance(endPos) < spellData.MinimalRange)
+                    endPos = startPos + direction * spellData.MinimalRange;
 
                 if (startPos.Distance(endPos) > spellData.Range || spellData.FixedRange)
-                {
                     endPos = startPos + direction * spellData.Range;
-                }
 
                 if (spellData.ExtraRange != -1)
-                {
-                    endPos = endPos +
-                             Math.Min(spellData.ExtraRange, spellData.Range - endPos.Distance(startPos)) * direction;
-                }
-
+                    endPos = endPos + Math.Min(spellData.ExtraRange, spellData.Range - endPos.Distance(startPos)) * direction;
+                
                 if (spellData.ExtraRange != -1)
-                {
-                    endPos = endPos +
-                             Math.Min(spellData.ExtraRange, spellData.Range - endPos.Distance(startPos)) * direction;
-                }
+                    endPos = endPos + Math.Min(spellData.ExtraRange, spellData.Range - endPos.Distance(startPos)) * direction;
 
                 if (spellData.DashDelayedAction == -1)
                 {
-                    if (spellData.CanDetectDash(sender, args))
+                    if(Malphite != null)
+                    {
+                        if(Malphite.NetworkId == caster.NetworkId)
+                        {
+                            Console.WriteLine("MALPH " + MalphiteRCD + " " + Malphite.Spellbook.GetSpell(SpellSlot.R).Cooldown);
+                            if(!MalphiteIsVisable || MalphiteRCD <= Malphite.Spellbook.GetSpell(SpellSlot.R).Cooldown)
+                                TriggerOnDetectSkillshot(DetectionType.ProcessSpell, spellData, Utils.TickCount - Game.Ping / 2, startPos, endPos, sender.Position.To2D(), caster);
+                        }
+                    }
+                    else if (spellData.CanDetectDash(sender, args))
                     {
                         TriggerOnDetectSkillshot(DetectionType.ProcessSpell, spellData, Utils.TickCount - Game.Ping / 2, startPos, endPos, sender.Position.To2D(), caster);
                     }
@@ -271,6 +279,7 @@ namespace Evade
             if (spellData != null)
             {
               
+
                 if (Config.Menu.Item("Enabled" + spellData.MenuItemName) == null)
                     return;
 
@@ -305,7 +314,14 @@ namespace Evade
 
                     return;
                 }
+                else if (spellData.SpellName == "AzirQ")
+                {
+                    var azirSoldier = ObjectManager.Get<Obj_AI_Minion>().Where(x => (x.IsEnemy || Config.TestOnAllies) && x.Name == "AzirSoldier" && x.Health > 0).FirstOrDefault();
 
+                    TriggerOnDetectSkillshot(DetectionType.RecvPacket, spellData, Utils.TickCount - Game.Ping / 2, azirSoldier.Position.To2D(), sender.Position.To2D(), sender.Position.To2D(), caster);
+                    
+                    return;
+                }
                 var startPos = caster.Position.To2D();
                 var endPos = sender.Position.To2D();
                 var direction = (endPos - startPos).Normalized();

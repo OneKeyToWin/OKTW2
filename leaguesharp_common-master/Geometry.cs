@@ -494,6 +494,20 @@
         /// <param name="to">The vector to extend to</param>
         /// <param name="distance">The distance to extend.</param>
         /// <returns></returns>
+        /// 
+
+        public static List<Vector3> CirclePoints(float CircleLineSegmentN, float radius, Vector3 position)
+        {
+            List<Vector3> points = new List<Vector3>();
+            for (var i = 1; i <= CircleLineSegmentN; i++)
+            {
+                var angle = i * 2 * Math.PI / CircleLineSegmentN;
+                var point = new Vector3(position.X + radius * (float)Math.Cos(angle), position.Y + radius * (float)Math.Sin(angle), position.Z);
+                points.Add(point);
+            }
+            return points;
+        }
+
         public static Vector2 Extend(this Vector2 v, Vector2 to, float distance)
         {
             return v + distance * (to - v).Normalized();

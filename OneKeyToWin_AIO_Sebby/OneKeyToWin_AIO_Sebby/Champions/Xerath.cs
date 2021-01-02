@@ -1,6 +1,4 @@
-﻿
-
-using System;
+﻿using System;
 using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
@@ -82,7 +80,6 @@ namespace OneKeyToWin_AIO_Sebby.Champions
         {
             if (args.Order == GameObjectOrder.AttackUnit && Q.IsCharging)
             {
-                Program.debug("BADDDD");
                 Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
                 args.Process = false;
             }
@@ -152,7 +149,6 @@ namespace OneKeyToWin_AIO_Sebby.Champions
         {
             if (Program.LagFree(3) && R.IsReady())
                 LogicR();
-
 
             //Program.debug(""+OktwCommon.GetPassiveTime(Player, "XerathArcanopulseChargeUp"));
             if (IsCastingR || Player.IsChannelingImportantSpell())
@@ -392,9 +388,6 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 RMANA = QMANA - Player.PARRegenRate * Q.Instance.Cooldown;
             else
                 RMANA = RMANA - (30 + Player.Level * 3 + Player.Level);
-
-
-
         }
 
         private void Drawing_OnEndScene(EventArgs args)
@@ -415,7 +408,6 @@ namespace OneKeyToWin_AIO_Sebby.Champions
         {
             var wts1 = Drawing.WorldToScreen(pos1);
             var wts2 = Drawing.WorldToScreen(pos2);
-
             Drawing.DrawLine(wts1[0], wts1[1], wts2[0], wts2[1], bold, color);
         }
 

@@ -874,7 +874,7 @@ namespace Evade
             if (PlayerChampionName == "Olaf" && Config.Menu.Item("DisableEvadeForOlafR").GetValue<bool>() && ObjectManager.Player.HasBuff("OlafRagnarok"))
                 return;
 
-            var myPath = ObjectManager.Player.GetPath(new Vector3(args.TargetPosition.X, args.TargetPosition.Y, ObjectManager.Player.ServerPosition.Z)).To2DList();
+            var myPath = Orbwalking.GetPath(new Vector3(args.TargetPosition.X, args.TargetPosition.Y, ObjectManager.Player.ServerPosition.Z)).To2DList();
             var safeResult = IsSafe(PlayerPosition);
 
             if (args.Order == GameObjectOrder.AttackUnit)
@@ -982,7 +982,7 @@ namespace Evade
                 if (ObjectManager.Player.Distance(truePosition, true) < 100 * 100)
                     continue;
 
-                var safeResult = IsSafePath(ObjectManager.Player.GetPath(truePosition.To3D()).To2DList(), Config.CrossingTimeOffset);
+                var safeResult = IsSafePath(Orbwalking.GetPath(truePosition.To3D()).To2DList(), Config.CrossingTimeOffset);
                 if (!safeResult.IsSafe || safeResult.Intersection.Valid)
                     continue;
                 
@@ -1115,7 +1115,7 @@ namespace Evade
                         {
                             EvadePoint = to.Closest(points);
                             var nEvadePoint = EvadePoint.Extend(PlayerPosition, -100);
-                            if (Program.IsSafePath(ObjectManager.Player.GetPath(nEvadePoint.To3D()).To2DList(), Config.EvadingSecondTimeOffset, (int)ObjectManager.Player.MoveSpeed, 100).IsSafe)
+                            if (Program.IsSafePath(Orbwalking.GetPath(nEvadePoint.To3D()).To2DList(), Config.EvadingSecondTimeOffset, (int)ObjectManager.Player.MoveSpeed, 100).IsSafe)
                             {
                                 EvadePoint = nEvadePoint;
                             }

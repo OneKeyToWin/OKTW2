@@ -187,7 +187,7 @@ namespace LeagueSharp.Common
         public static event OnAttackEvenH OnAttack;
         public static event OnNonKillableMinionH OnNonKillableMinion;
         public static event OnTargetChangeH OnTargetChange;
-
+        private static IDictionary<Vector3, float> minionsWithBounding = new Dictionary<Vector3, float>();
         public enum OrbwalkingMode
         {
             LastHit,
@@ -197,6 +197,55 @@ namespace LeagueSharp.Common
             Freeze,
             CustomMode,
             None
+        }
+
+        public static Vector3[] GetPath(Vector3 end)
+        {
+
+            List<Vector3> path = new List<Vector3>();
+
+            var playerPosition = Player.ServerPosition;
+            var playerBoundingRadius = Player.BoundingRadius;
+            path.Add(playerPosition);
+            int step = 50;
+            int lastWaypointIndex = 0;
+
+            for (int i = 1; i * step <= playerPosition.Distance(end); i++)
+            {
+                var point = path[lastWaypointIndex].Extend(end, i * step);
+
+                foreach (var minion in minionsWithBounding)
+                {
+                    var minionRange = playerBoundingRadius + minion.Value;
+                    if (point.Distance(minion.Key) < minionRange)
+                    {
+                        path.Add(Geometry.CirclePoints(30, minionRange, point).Where(x => x.Distance(minion.Key) > minionRange).OrderBy(x => x.Distance(end)).FirstOrDefault());
+
+                        lastWaypointIndex++;
+                        break;
+                    }
+                }
+
+                if (point.IsWall())
+                {
+                    if (playerPosition.Distance(point) < 150)
+                    {
+                        var pointToWall = point.Extend(path[lastWaypointIndex], playerBoundingRadius);
+                        path.Add(Geometry.CirclePoints(8, 150, pointToWall)
+                            .Where(x => !x.IsWall())
+                            .OrderBy(x => x.Distance(end)).FirstOrDefault());
+                    }
+                    else
+                    {
+                        path.Add(point);
+                    }
+
+                    return path.ToArray();
+                }
+
+            }
+            path.Add(end);
+            return path.ToArray();
         }
 
         public static bool CanAttack()
@@ -431,10 +480,10 @@ namespace LeagueSharp.Common
 
             var angle = 0f;
             var currentPath = Player.GetWaypoints();
+            var movePath = GetPath(point);
+
             if (currentPath.Count > 1 && currentPath.PathLength() > 100)
             {
-                var movePath = Player.GetPath(point);
-
                 if (movePath.Length > 1)
                 {
                     var v1 = currentPath[1] - currentPath[0];
@@ -453,8 +502,8 @@ namespace LeagueSharp.Common
             if (angle >= 60 && Utils.GameTimeTickCount - LastMoveCommandT < 60)
                 return;
 
-            Player.ForceIssueOrder(GameObjectOrder.MoveTo, point);
-            LastMoveCommandPosition = point;
+            Player.ForceIssueOrder(GameObjectOrder.MoveTo, movePath[1]);
+            LastMoveCommandPosition = movePath[1];
             LastMoveCommandT = Utils.GameTimeTickCount;
         }
 
@@ -1213,6 +1262,10 @@ namespace LeagueSharp.Common
             {
                 try
                 {
+                    minionsWithBounding.Clear();
+                    foreach (var minion in ObjectManager.Get<Obj_AI_Minion>().Where(minion => minion.Health > 0 && minion.MaxHealth > 250 && minion.IsVisible && minion.Distance(Player.ServerPosition) < 500))
+                        minionsWithBounding.Add(minion.Position, minion.BoundingRadius);
+
                     if (this.ActiveMode == OrbwalkingMode.None)
                     {
                         return;
