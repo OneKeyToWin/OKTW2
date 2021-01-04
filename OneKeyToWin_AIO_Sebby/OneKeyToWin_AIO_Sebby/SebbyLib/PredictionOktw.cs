@@ -320,6 +320,13 @@ namespace SebbyLib.Prediction
                 return result;
             }
 
+            if (!NavMesh.IsWallOfGrass(input.Unit.ServerPosition, 10) && NavMesh.IsWallOfGrass(input.From, 10))
+            {
+                OktwCommon.debug("PRED VH: BUSH CAST");
+                result.Hitchance = HitChance.VeryHigh;
+                return result;
+            }
+
             // FIX RANGE ///////////////////////////////////////////////////////////////////////////////////
             if (distanceFromToUnit > input.Range - fixRange)
             {
