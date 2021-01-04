@@ -60,7 +60,7 @@ namespace Evade
                         {
                             bool foundWall;
                             var candidate = (originalCandidate + j * Config.DiagonalEvadePointsStep * direction).CutVectorWall(myPosition, out foundWall);
-                            var pathToPoint = ObjectManager.Player.GetPath(candidate.To3D()).To2DList();
+                            var pathToPoint = Orbwalking.GetPath(candidate.To3D()).To2DList();
 
                             if (!isBlink)
                             {
