@@ -64,7 +64,6 @@ namespace Evade
         public int MissileMinSpeed;
         public int MissileSpeed;
         public string MissileSpellName = "";
-        public EarlyObjects[] EarlyEvade;
         public float MultipleAngle;
         public int MultipleNumber = -1;
         public int RingRadius;
@@ -75,8 +74,8 @@ namespace Evade
         public bool TakeClosestPath = false;
         public string ToggleParticleName = "";
         public SkillShotType Type;
-        private int _radius;
-        private int _range;
+        private float _radius;
+        private float _range;
         
         public SpellData() { }
 
@@ -110,10 +109,13 @@ namespace Evade
             get { return ChampionName + " - " + SpellName; }
         }
 
-        public int Radius
+        public float Radius
         {
             get
             {
+                if (Type == SkillShotType.SkillshotCone)
+                    return _radius;
+
                 return (!AddHitbox)
                     ? _radius + Config.SkillShotsExtraRadius
                     : Config.SkillShotsExtraRadius + _radius + (int) ObjectManager.Player.BoundingRadius;
@@ -121,17 +123,17 @@ namespace Evade
             set { _radius = value; }
         }
 
-        public int RawRadius
+        public float RawRadius
         {
             get { return _radius; }
         }
 
-        public int RawRange
+        public float RawRange
         {
             get { return _range; }
         }
 
-        public int Range
+        public float Range
         {
             get
             {

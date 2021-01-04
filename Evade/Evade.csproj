@@ -74,18 +74,17 @@
     <Compile Include="Collision.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="EvadeSpellData.cs" />
-    <Compile Include="EvadeSpellDatabase.cs" />
+    <Compile Include="Database\EvadeSpellDatabase.cs" />
     <Compile Include="Geometry.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Skillshot.cs" />
     <Compile Include="SkillshotDetector.cs" />
-    <Compile Include="SpellBlocker.cs" />
+    <Compile Include="Database\SpellBlocker.cs" />
     <Compile Include="SpellData.cs" />
-    <Compile Include="SpellDataBase\SpellDatabase.cs" />
+    <Compile Include="Database\SpellDatabase.cs" />
     <Compile Include="Utils.cs" />
-    <Compile Include="EarlyEvade.cs" />
     <Compile Include="Evader.cs" />
   </ItemGroup>
   <ItemGroup>

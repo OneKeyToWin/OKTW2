@@ -340,14 +340,13 @@ namespace Evade
             public Polygon ToPolygon(int offset = 0)
             {
                 var result = new Polygon();
-                var outRadius = (Radius + offset) / (float) Math.Cos(2 * Math.PI / CircleLineSegmentN);
-
+                var outRadius = (Radius + offset);
+                var Side1 = Direction.Rotated(Utils.ToRadians(-Angle * 0.5f));
                 result.Add(Center);
-                var Side1 = Direction.Rotated(-Angle * 0.5f);
 
                 for (var i = 0; i <= CircleLineSegmentN; i++)
                 {
-                    var cDirection = Side1.Rotated(i * Angle / CircleLineSegmentN).Normalized();
+                    var cDirection = Side1.Rotated(Utils.ToRadians(i * (Angle / CircleLineSegmentN))).Normalized();
                     result.Add(new Vector2(Center.X + outRadius * cDirection.X, Center.Y + outRadius * cDirection.Y));
                 }
 

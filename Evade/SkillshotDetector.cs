@@ -37,6 +37,7 @@ namespace Evade
         private static Vector3 JhinLastRDirection;
         private static int JhinLastTimeR = 0;
         private static Obj_AI_Hero Malphite = null;
+        private static Obj_AI_Hero MissFortune = null;
         private static float MalphiteRCD = 0;
         private static bool MalphiteIsVisable = false;
 
@@ -50,6 +51,8 @@ namespace Evade
                         Jhin = hero;
                     if (hero.ChampionName == "Malphite")
                         Malphite = hero;
+                    if (hero.ChampionName == "MissFortune")
+                        MissFortune = hero;
                 }
             }
 
@@ -185,6 +188,16 @@ namespace Evade
 
         private static void Obj_AI_Base_OnNewPath(Obj_AI_Base sender, GameObjectNewPathEventArgs args)
         {
+            if (MissFortune != null && sender.NetworkId ==  MissFortune.NetworkId)
+            {
+                for (var i = Program.DetectedSkillshots.Count - 1; i >= 0; i--)
+                {
+                    var skillshot = Program.DetectedSkillshots[i];
+                    if (skillshot.SpellData.Slot == SpellSlot.R)
+                        Program.DetectedSkillshots.RemoveAt(i);
+                }
+            }
+
             if (args.IsDash && args.Path.Length >= 2)
             {
                 var caster = sender as Obj_AI_Hero;
@@ -431,21 +444,15 @@ namespace Evade
             var missile = sender as MissileClient;
 
             if (missile == null || !missile.IsValid)
-            {
                 return;
-            }
                        
             var unit = missile.SpellCaster as Obj_AI_Hero;
 
             if (unit == null || !unit.IsValid || (unit.Team == ObjectManager.Player.Team && !Config.TestOnAllies))
-            {
                 return;
-            }
+            
 
-            if (Config.TestOnAllies) Console.WriteLine(
-                    Utils.TickCount + " Projectile Created: " + missile.SData.Name + " distance: " +
-                    missile.SData.CastRange + "Radius: " +
-                    missile.SData.LineWidth + " Speed: " + missile.SData.MissileSpeed);
+            if (Config.TestOnAllies) Console.WriteLine(Utils.TickCount + " Projectile Created: " + missile.SData.Name + " distance: " + missile.SData.CastRange + "Radius: " +  missile.SData.LineWidth + " Speed: " + missile.SData.MissileSpeed);
 
             var missileName = missile.SData.Name;
 
@@ -466,9 +473,7 @@ namespace Evade
             var spellData = SpellDatabase.GetByMissileName(missileName);
 
             if (spellData == null)
-            {
                 return;
-            }
 
             if (missileName == "HowlingGaleSpell")
                 spellData.MissileSpeed = (int)missile.SData.MissileSpeed;
@@ -480,13 +485,8 @@ namespace Evade
             //Calculate the real end Point:
             var direction = (endPos - unitPosition).Normalized();
 
-            if (spellData.MinimalRange != -1)
-            {
-                if (unitPosition.Distance(endPos) < spellData.MinimalRange)
-                {
+            if (spellData.MinimalRange != -1 && unitPosition.Distance(endPos) < spellData.MinimalRange)
                     endPos = unitPosition + direction * spellData.MinimalRange;
-                }
-            }
 
             if (unitPosition.Distance(endPos) > spellData.Range || spellData.FixedRange)
             {
@@ -495,8 +495,7 @@ namespace Evade
 
             if (spellData.ExtraRange != -1)
             {
-                endPos = endPos +
-                         Math.Min(spellData.ExtraRange, spellData.Range - endPos.Distance(unitPosition)) * direction;
+                endPos = endPos +  Math.Min(spellData.ExtraRange, spellData.Range - endPos.Distance(unitPosition)) * direction;
             }
 
             var castTime = Utils.TickCount - Game.Ping / 2 - (spellData.MissileDelayed ? 0 : spellData.Delay) -
@@ -578,9 +577,7 @@ namespace Evade
         private static void ObjAiHeroOnOnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
             if (sender == null || !sender.IsValid)
-            {
                 return;
-            }
 
             if (Config.PrintSpellData && sender is Obj_AI_Hero)
             {
@@ -716,9 +713,15 @@ namespace Evade
                 }
                 return;
             }
+            if (spellData.SpellName == "MissFortuneRicochetShot" && args.Target != null)
+            {
+                startPos = args.Target.Position.To2D();
+                endPos = startPos.Extend(sender.Position.To2D(), -300);
+                TriggerOnDetectSkillshot(DetectionType.ProcessSpell, spellData, startTime, startPos, endPos, endPos, sender);
+                return;
+            }
             //Trigger the skillshot detection callbacks.
-            TriggerOnDetectSkillshot(
-            DetectionType.ProcessSpell, spellData, startTime, startPos, endPos, args.End.To2D(), sender);
+            TriggerOnDetectSkillshot(DetectionType.ProcessSpell, spellData, startTime, startPos, endPos, args.End.To2D(), sender);
         }
 
         

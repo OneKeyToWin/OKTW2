@@ -120,7 +120,7 @@ namespace Evade
                     break;
                 case SkillShotType.SkillshotCone:
                     Sector = new Geometry.Sector(
-                        start, CollisionEnd - start, spellData.Radius * (float) Math.PI / 180, spellData.Range);
+                        start, CollisionEnd - start, spellData.Radius, spellData.Range);
                     break;
                 case SkillShotType.SkillshotRing:
                     Ring = new Geometry.Ring(CollisionEnd, spellData.Radius, spellData.RingRadius);

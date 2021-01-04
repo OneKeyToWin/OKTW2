@@ -385,8 +385,8 @@ namespace Evade
                     if (skillshot.SpellData.SpellName == "ZoeE")
                     {
                         Vector2 wall_start = Vector2.Zero;
-                        int range_left = 0;
-                        int range_max = skillshot.SpellData.RawRange + skillshot.SpellData.ExtraRange;
+                        float range_left = 0;
+                        var range_max = skillshot.SpellData.RawRange + skillshot.SpellData.ExtraRange;
 
                         for (int i = 0; i < range_max; i += 10)
                         {

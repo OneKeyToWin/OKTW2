@@ -16,7 +16,7 @@ namespace Evade
             switch (ObjectManager.Player.ChampionName.ToLowerInvariant())
             {
                 case "aatrox":
-                    Whitelisted_SpellSlots = new List<SpellSlot> { SpellSlot.Q, SpellSlot.W, SpellSlot.R };
+                    Whitelisted_SpellSlots = new List<SpellSlot> { SpellSlot.W, SpellSlot.R };
                     break;
 
                 case "ahri":
