@@ -52,21 +52,17 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             Spellbook.OnCastSpell += Spellbook_OnCastSpell;
             AntiGapcloser.OnEnemyGapcloser += AntiGapcloser_OnEnemyGapcloser;
             Orbwalking.AfterAttack += Orbwalking_AfterAttack;
-
         }
 
         private void Orbwalking_AfterAttack(AttackableUnit unit, AttackableUnit target)
         {
-            if (Q.IsReady() && target is Obj_AI_Hero)
+            if (Q.IsReady())
             {
-                foreach (var t in HeroManager.Enemies.Where(enemy => enemy.IsValidTarget(Q.Range)).OrderBy(enemy => enemy.Health))
+                var t = target as Obj_AI_Hero;
+                if (t != null)
                 {
-
-                    if (Program.Harass && OktwCommon.CanHarras() && Config.Item("Harass" + t.ChampionName).GetValue<bool>() && Player.Mana > RMANA + WMANA + QMANA)
+                    if (Program.Harass && OktwCommon.CanHarras() && Config.Item("Harass" + t.ChampionName).GetValue<bool>())
                         Q.Cast(t);
-
-                    if (t.IsMelee && t.IsFacing(Player) && t.ServerPosition.Distance(Player.ServerPosition) > 300)
-                        continue;
 
                     if (Program.Combo)
                         Q.Cast(t);

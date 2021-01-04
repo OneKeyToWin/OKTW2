@@ -94,6 +94,28 @@ namespace Evade
                 SpellName = "6656Cast",
                 Type = SkillShotType.SkillshotMissileLine
             });
+
+            Spells.Add(
+            new SpellData
+            {
+                ChampionName = "AllChampions",
+                DangerValue = 2,
+                MissileSpeed = int.MaxValue,
+                Radius = 160,
+                Range = 2500,
+                Delay = 1000,
+                FixedRange = false,
+                IsDangerous = true,
+                AddHitbox = true,
+                Slot = SpellSlot.Q,
+                SpellName = "ArcaneComet",
+                MissileDelayed = true,
+                MissileSpellName = "Perks_ArcaneComet_Mis",
+                ExtraMissileNames = new[] { "Perks_ArcaneComet_Mis_Arc" },
+                EndAtParticle = "Perks_Meteor_AOE_Tar",
+                Type = SkillShotType.SkillshotCircle
+            });
+            //Perks_ArcaneComet_Mis
             #region Azir
             Spells.Add(
              new SpellData
@@ -6113,47 +6135,22 @@ namespace Evade
             #endregion
             #region MissFortune
             Spells.Add(
-                new SpellData
-                {
-                    ChampionName = "MissFortune",
-                    SpellName = "MissFortuneBulletTime",
-                    Slot = SpellSlot.R,
-                    Type = SkillShotType.SkillshotCone,
-                    Delay = 1500,
-                    ExtraDuration = 1500,
-                    DontAddExtraDuration = true,
-                    Range = 1500,
-                    Radius = 35,
-                    BehindStart = 100,
-                    DontCross = true,
-                    MissileSpeed = int.MaxValue,
-                    DangerValue = 2,
-                    FixedRange = false,
-                    AddHitbox = true,
-                    IsDangerous = true,
-                    //MissileSpellName = "MissFortuneBullets",
-
-                });
-            Spells.Add(
-                new SpellData
-                {
-                    ChampionName = "MissFortune",
-                    SpellName = "MissFortuneRicochetShot",
-                    Slot = SpellSlot.Q,
-                    Type = SkillShotType.SkillshotCone,
-                    Delay = 250,
-                    Range = 600,
-                    Radius = 100,
-                    //BehindStart = 50,
-                    DontCross = true,
-                    MissileSpeed = 500,
-                    DangerValue = 2,
-                    FixedRange = false,
-                    AddHitbox = true,
-                    IsDangerous = true,
-                    MissileSpellName = "MissFortuneRicochetShot"
-                    //MissileSpellName = "MissFortuneBullets",
-
+               new SpellData
+               {
+                   ChampionName = "MissFortune",
+                   SpellName = "MissFortuneRicochetShot",
+                   Slot = SpellSlot.Q,
+                   Type = SkillShotType.SkillshotCone,
+                   Delay = 250,
+                   Range = 600,
+                   Radius = 100,
+                   DontCross = true,
+                   MissileSpeed = 500,
+                   DangerValue = 2,
+                   FixedRange = false,
+                   AddHitbox = true,
+                   IsDangerous = true,
+                   MissileSpellName = "MissFortuneRicochetShot"
                 });
             Spells.Add(
                 new SpellData
@@ -6175,6 +6172,27 @@ namespace Evade
                     IsDangerous = true,
                     MissileSpellName = "",
                 });
+            Spells.Add(
+                new SpellData
+                {
+                    ChampionName = "MissFortune",
+                    SpellName = "MissFortuneBulletTime",
+                    Slot = SpellSlot.R,
+                    Type = SkillShotType.SkillshotCone,
+                    Delay = 1500,
+                    ExtraDuration = 1500,
+                    DontAddExtraDuration = true,
+                    Range = 1500,
+                    Radius = 35,
+                    BehindStart = 100,
+                    DontCross = true,
+                    MissileSpeed = int.MaxValue,
+                    DangerValue = 2,
+                    FixedRange = false,
+                    AddHitbox = true,
+                    IsDangerous = true,
+                });
+           
             Spells.Add(
               new SpellData
               {
@@ -6258,11 +6276,17 @@ namespace Evade
             missileSpellName = missileSpellName.ToLower();
             foreach (var spellData in Spells)
             {
-                if (spellData.MissileSpellName != null && spellData.MissileSpellName.ToLower() == missileSpellName ||
-                    spellData.ExtraMissileNames.Contains(missileSpellName))
+                if (spellData.MissileSpellName != null)
                 {
-                    return spellData;
-                }
+                    if(spellData.MissileSpellName.ToLower() == missileSpellName)
+                        return spellData;
+
+                    foreach (var name in spellData.ExtraMissileNames)
+                    {
+                        if (missileSpellName == name.ToLower())
+                            return spellData;
+                    }
+                 }
             }
 
             return null;

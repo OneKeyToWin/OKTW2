@@ -396,11 +396,11 @@ namespace LeagueSharp.Common
                     }
 
                     result -= Math.Min(Game.Ping / 7f, 10f);
-                    result -= 7;
+                    result -= 9;
                     if (Player.IsMoving && aiBase.IsMoving)
                     {
                         if (!aiBase.IsFacing(Player))
-                            result -= 10;
+                            result -= 8;
                         if (Player.IsFacing(aiBase))
                             result -= 8;
                     }

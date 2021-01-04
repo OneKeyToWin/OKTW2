@@ -209,9 +209,9 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                         {
 
                             if (Tibbers.Distance(enemy.Position) > 200)
-                                Player.IssueOrder(GameObjectOrder.MovePet, enemy);
+                                R.Cast(enemy);
                             else
-                                Tibbers.IssueOrder(GameObjectOrder.AttackUnit, enemy);
+                                R.Cast(enemy);
                         }
                         else
                         {
@@ -219,13 +219,14 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                             if (annieTarget != null)
                             {
                                 if (Tibbers.Distance(annieTarget.Position) > 200)
-                                    Player.IssueOrder(GameObjectOrder.MovePet, annieTarget);
+                                    R.Cast(annieTarget);
+                               
                                 else
-                                    Tibbers.IssueOrder(GameObjectOrder.AttackUnit, annieTarget);
+                                    R.Cast(annieTarget);
                             }
                             else if (Tibbers.UnderTurret(true))
                             {
-                                Player.IssueOrder(GameObjectOrder.MovePet, Player);
+                                R.Cast(Player);
                             }
                         }
                     }
