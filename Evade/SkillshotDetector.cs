@@ -713,7 +713,7 @@ namespace Evade
                 }
                 return;
             }
-            if (spellData.SpellName == "MissFortuneRicochetShot" && args.Target != null)
+            if (spellData.SpellName == "MissFortuneRicochetShot" && args.Target != null && !args.Target.IsMe)
             {
                 startPos = args.Target.Position.To2D();
                 endPos = startPos.Extend(sender.Position.To2D(), -300);
