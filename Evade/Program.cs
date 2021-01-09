@@ -37,7 +37,7 @@ namespace Evade
                 if (value == true)
                 {
                     LastSentMovePacketT = 0;
-                    ObjectManager.Player.SendMovePacket(EvadePoint);
+                    ObjectManager.Player.SendMovePacket(Orbwalking.GetPath(EvadePoint.To3D()).Last().To2D());
                 }
 
                 _evading = value;
@@ -761,7 +761,7 @@ namespace Evade
                     if (Utils.TickCount - LastSentMovePacketT > 1000 / 3)
                     {
                         LastSentMovePacketT = Utils.TickCount;
-                        ObjectManager.Player.SendMovePacket(EvadePoint);
+                        ObjectManager.Player.SendMovePacket(Orbwalking.GetPath(EvadePoint.To3D()).Last().To2D());
                     }
                     return;
                 }
@@ -936,7 +936,7 @@ namespace Evade
                     if (Utils.TickCount - LastSentMovePacketT > 1000 / 3)
                     {
                         LastSentMovePacketT = Utils.TickCount;
-                        ObjectManager.Player.SendMovePacket(pathfinderPoint, true);
+                        ObjectManager.Player.SendMovePacket(Orbwalking.GetPath(pathfinderPoint.To3D()).Last().To2D(), true);
                     }
                 }
                 args.Process = false;
@@ -956,7 +956,7 @@ namespace Evade
                     {
                         if (safePath.Intersection.Valid)
                         {
-                            ObjectManager.Player.SendMovePacket(safePath.Intersection.Point);
+                            ObjectManager.Player.SendMovePacket(Orbwalking.GetPath(safePath.Intersection.Point.To3D()).Last().To2D());
                         }
                         args.Process = false;
                         return;
@@ -985,8 +985,6 @@ namespace Evade
                 var safeResult = IsSafePath(Orbwalking.GetPath(truePosition.To3D()).To2DList(), Config.CrossingTimeOffset);
                 if (!safeResult.IsSafe || safeResult.Intersection.Valid)
                     continue;
-                
-                
 
                 if (ObjectManager.Player.Direction.To2D().AngleBetween(truePosition - PlayerPosition) < 120)
                     return truePosition;
@@ -1249,7 +1247,7 @@ namespace Evade
                                     {
                                         if (evadeSpell.RequiresPreMove)
                                         {
-                                            ObjectManager.Player.SendMovePacket(EvadePoint);
+                                            ObjectManager.Player.SendMovePacket(Orbwalking.GetPath(EvadePoint.To3D()).Last().To2D());
                                             var theSpell = evadeSpell;
                                             Utility.DelayAction.Add(
                                                 Game.Ping / 2 + 100,
