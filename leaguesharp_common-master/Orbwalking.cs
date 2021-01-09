@@ -375,6 +375,8 @@ namespace LeagueSharp.Common
                        : Player.BasicAttack.MissileSpeed;
         }
 
+
+
         public static float GetRealAutoAttackRange(AttackableUnit target)
         {
             var result = Player.AttackRange + Player.BoundingRadius;
@@ -383,20 +385,14 @@ namespace LeagueSharp.Common
                 var aiBase = target as Obj_AI_Base;
                 if (aiBase != null)
                 {
-                    if (Player.ChampionName == "Caitlyn")
-                    {
-                        if (aiBase.HasBuff("caitlynyordletrapinternal"))
-                            return 1250;
-                    }
+                    if (Player.ChampionName == "Caitlyn" && aiBase.HasBuff("caitlynyordletrapinternal"))
+                        return 1250;
 
-                    if (Player.ChampionName == "Aphelios")
-                    {
-                        if (aiBase.HasBuff("aphelioscalibrumbonusrangedebuff"))
-                            return 1800;
-                    }
+                    if (Player.ChampionName == "Aphelios" && aiBase.HasBuff("aphelioscalibrumbonusrangedebuff"))
+                        return 1800;
 
-                    result -= Math.Min(Game.Ping / 7f, 10f);
-                    result -= 9;
+                    result -= Math.Min((Game.Ping - 40) / 3f, 10f);
+                    result -= 11;
                     if (Player.IsMoving && aiBase.IsMoving)
                     {
                         if (!aiBase.IsFacing(Player))
@@ -502,7 +498,7 @@ namespace LeagueSharp.Common
             if (angle >= 60 && Utils.GameTimeTickCount - LastMoveCommandT < 60)
                 return;
 
-            Player.ForceIssueOrder(GameObjectOrder.MoveTo, movePath[1]);
+            Player.ForceIssueOrder(GameObjectOrder.MoveTo, point);
             LastMoveCommandPosition = movePath[1];
             LastMoveCommandT = Utils.GameTimeTickCount;
         }
