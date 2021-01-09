@@ -195,7 +195,7 @@ namespace SebbyLib.Prediction
             //Normal prediction
             if (result == null)
             {
-                result = GetPositionOnPath(input, input.Unit.GetWaypoints(), input.Unit.MoveSpeed);
+                result = GetPositionOnPath(input, input.Unit.GetWaypoints(), SpeedFromVelocity(input.Unit));
             }
 
             //Check if the unit position is in range
@@ -259,7 +259,26 @@ namespace SebbyLib.Prediction
             var distanceEndPoint = segmentEnd.Distance(point, true);
             return !(distanceEndPoint > distanceStartEnd || distanceStartPoint > distanceStartEnd);
         }
+        
+        public static float SpeedFromVelocity(Obj_AI_Base unit)
+        {
+            var realVelocity = new Vector3
+            {
+                X = unit.Velocity.X * 20,
+                Y = unit.Velocity.Y * 20,
+                Z = unit.Velocity.Z * 20
+            };
 
+            var velocitySpeed = new Vector3
+            {
+                X = 0,
+                Y = 0,
+                Z = 0
+            }.Distance(realVelocity);
+
+            return velocitySpeed == 0.0f ? unit.MoveSpeed : velocitySpeed;
+        }
+        
         public static float UnitIsSlowed(Obj_AI_Base unit)
         {
             var t = 0f;
@@ -303,8 +322,8 @@ namespace SebbyLib.Prediction
             if (Math.Abs(input.Speed - float.MaxValue) < float.Epsilon)
                 speedDelay = 0;
 
-            float totalDelay = speedDelay + input.Delay - (input.Radius / input.Unit.MoveSpeed);
-            float moveArea = input.Unit.MoveSpeed * totalDelay;
+            float totalDelay = speedDelay + input.Delay - (input.Radius / SpeedFromVelocity(input.Unit));
+            float moveArea = SpeedFromVelocity(input.Unit) * totalDelay;
             float fixRange = moveArea * 0.25f;
 
             var LastNewPathTime = UnitTracker.GetLastNewPathTime(input.Unit);
@@ -392,7 +411,7 @@ namespace SebbyLib.Prediction
             {
                 var timeToReachTargetPosition = input.Delay + input.Unit.Position.Distance(input.From) / input.Speed;
 
-                if (timeToReachTargetPosition <= remainingSlowT + input.RealRadius / input.Unit.MoveSpeed)
+                if (timeToReachTargetPosition <= remainingSlowT + input.RealRadius / SpeedFromVelocity(input.Unit))
                 {
                     OktwCommon.debug("PRED VH: SLOW");
                     result.Hitchance = HitChance.VeryHigh;
@@ -556,7 +575,7 @@ namespace SebbyLib.Prediction
                 {
                     var timeToPoint = input.Delay / 2f + input.From.To2D().Distance(endP) / input.Speed - 0.25f;
                     if (timeToPoint <=
-                        input.Unit.Distance(endP) / dashData.Speed + input.RealRadius / input.Unit.MoveSpeed)
+                        input.Unit.Distance(endP) / dashData.Speed + input.RealRadius / SpeedFromVelocity(input.Unit))
                     {
                         return new PredictionOutput
                         {
@@ -579,7 +598,7 @@ namespace SebbyLib.Prediction
         {
             var timeToReachTargetPosition = input.Delay + input.Unit.Distance(input.From) / input.Speed;
 
-            if (timeToReachTargetPosition <= remainingImmobileT + input.RealRadius / input.Unit.MoveSpeed)
+            if (timeToReachTargetPosition <= remainingImmobileT + input.RealRadius / SpeedFromVelocity(input.Unit))
             {
                 return new PredictionOutput
                 {
@@ -595,7 +614,7 @@ namespace SebbyLib.Prediction
                 CastPosition = input.Unit.ServerPosition,
                 UnitPosition = input.Unit.ServerPosition,
                 Hitchance = HitChance.High
-                /*timeToReachTargetPosition - remainingImmobileT + input.RealRadius / input.Unit.MoveSpeed < 0.4d ? HitChance.High : HitChance.Medium*/
+                /*timeToReachTargetPosition - remainingImmobileT + input.RealRadius / SpeedFromVelocity(input.Unit) < 0.4d ? HitChance.High : HitChance.Medium*/
             };
         }
 
@@ -667,7 +686,7 @@ namespace SebbyLib.Prediction
                 speed /= 1.5f;
             }
 
-            speed = (Math.Abs(speed - (-1)) < float.Epsilon) ? input.Unit.MoveSpeed : speed;
+            speed = (Math.Abs(speed - (-1)) < float.Epsilon) ? SpeedFromVelocity(input.Unit) : speed;
 
             if (path.Count <= 1 || (input.Unit.IsWindingUp && !input.Unit.IsDashing()))
             {
@@ -1362,7 +1381,7 @@ namespace SebbyLib.Prediction
             if (pathBank[0].Position.Count() < 2 || pathBank[1].Position.Count() < 2 || pathBank[2].Position.Count() < 2)
                 return false;
 
-            var fixDelay = radius * 2 - unit.MoveSpeed * delay;
+            var fixDelay = radius * 2 - Prediction.SpeedFromVelocity(unit) * delay;
 
             if (Utils.TickCount - pathBank[2].Time > 100)
                 return false;
