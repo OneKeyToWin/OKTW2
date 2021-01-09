@@ -201,10 +201,13 @@ namespace OneKeyToWin_AIO_Sebby.Champions
         private void CastQ(Obj_AI_Base t)
         {
             var poutput = Q1.GetPrediction(t);
-            var col = poutput.CollisionObjects.Count(ColObj => ColObj.IsEnemy && ColObj.IsMinion && !ColObj.IsDead); 
-     
-            if ( col < 4)
+            var col = poutput.CollisionObjects.Count(ColObj => ColObj.IsEnemy && ColObj.IsMinion && !ColObj.IsDead);
+
+            if (col < 3)
+            {
+
                 Program.CastSpell(Q, t);
+            }
         }
 
         private void LogicE()

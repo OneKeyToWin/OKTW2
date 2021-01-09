@@ -71,7 +71,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
             if (t != null)
             {
-                var realDistance = GetRealDistance(t) - 50;
+                var realDistance = GetRealDistance(t) - 40;
                 if (Program.Combo && (realDistance < GetRealPowPowRange(t) || (Player.Mana < RMANA + 20 && Player.GetAutoAttackDamage(t) * 3 < t.Health)))
                     Q.Cast();
                 else if (Program.Harass && Config.Item("Qharras", true).GetValue<bool>() && (realDistance > bonusRange() || realDistance < GetRealPowPowRange(t) || Player.Mana < RMANA + EMANA + WMANA + WMANA))
@@ -327,7 +327,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             }
         }
 
-        private float bonusRange() { return 670f + Player.BoundingRadius + 25 * Player.Spellbook.GetSpell(SpellSlot.Q).Level; }
+        private float bonusRange() { return 640f + Player.BoundingRadius + 25 * Player.Spellbook.GetSpell(SpellSlot.Q).Level; }
 
         private bool FishBoneActive { get { return Player.HasBuff("JinxQ"); } }
 

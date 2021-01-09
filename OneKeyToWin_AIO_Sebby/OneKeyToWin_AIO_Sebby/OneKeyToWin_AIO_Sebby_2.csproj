@@ -54,9 +54,6 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\..\..\..\Desktop\LeagueSharp\Kernel\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="Python.Runtime, Version=2.5.1.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\pythonnet_netstandard_py38_win.2.5.1\lib\netstandard2.0\Python.Runtime.dll</HintPath>
-    </Reference>
     <Reference Include="SharpDX">
       <HintPath>..\..\..\..\..\Desktop\LeagueSharp\Kernel\SharpDX.dll</HintPath>
     </Reference>
