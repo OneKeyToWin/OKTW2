@@ -1259,8 +1259,12 @@ namespace LeagueSharp.Common
                 try
                 {
                     minionsWithBounding.Clear();
+                    
                     foreach (var minion in ObjectManager.Get<Obj_AI_Minion>().Where(minion => minion.Health > 0 && minion.MaxHealth > 250 && minion.IsVisible && minion.Distance(Player.ServerPosition) < 500))
-                        minionsWithBounding.Add(minion.Position, minion.BoundingRadius);
+                    {
+                        if(!minionsWithBounding.Any(x => x.Key.Distance(minion.Position ) < 1))
+                            minionsWithBounding.Add(minion.Position, minion.BoundingRadius);
+                    }
 
                     if (this.ActiveMode == OrbwalkingMode.None)
                     {
