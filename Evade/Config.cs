@@ -103,6 +103,13 @@ namespace Evade
             }
             Menu.AddSubMenu(shielding);
 
+            var spellBlocker = new Menu("Spell Blocker", "SpellBlocker");
+            spellBlocker.AddItem(new MenuItem("spellBlockerQ", "Q").SetValue(SpellBlocker.ShouldBlock(SpellSlot.Q)));
+            spellBlocker.AddItem(new MenuItem("spellBlockerW", "W").SetValue(SpellBlocker.ShouldBlock(SpellSlot.W)));
+            spellBlocker.AddItem(new MenuItem("spellBlockerE", "E").SetValue(SpellBlocker.ShouldBlock(SpellSlot.E)));
+            spellBlocker.AddItem(new MenuItem("spellBlockerR", "R").SetValue(SpellBlocker.ShouldBlock(SpellSlot.R)));
+            Menu.AddSubMenu(spellBlocker);
+
             var collision = new Menu("Collision", "Collision");
             collision.AddItem(new MenuItem("MinionCollision", "Minion collision").SetValue(false));
             collision.AddItem(new MenuItem("HeroCollision", "Hero collision").SetValue(false));

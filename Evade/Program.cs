@@ -832,7 +832,14 @@ namespace Evade
                     if (blockLevel == 1 && !isDangerous)
                         return;
 
-                    args.Process = !SpellBlocker.ShouldBlock(args.Slot);
+                    if(args.Slot == SpellSlot.Q)
+                        args.Process = !Config.Menu.Item("spellBlockerQ").GetValue<bool>();
+                    if (args.Slot == SpellSlot.W)
+                        args.Process = !Config.Menu.Item("spellBlockerW").GetValue<bool>();
+                    if (args.Slot == SpellSlot.E)
+                        args.Process = !Config.Menu.Item("spellBlockerE").GetValue<bool>();
+                    if (args.Slot == SpellSlot.R)
+                        args.Process = !Config.Menu.Item("spellBlockerR").GetValue<bool>();
                 }
             }
         }
