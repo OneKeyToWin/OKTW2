@@ -360,16 +360,17 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
                 if (Program.Combo && Player.IsMoving && Config.Item("comboE", true).GetValue<bool>() && Player.Mana > RMANA + EMANA + WMANA)
                 {
-                    var t = TargetSelector.GetTarget(E.Range, TargetSelector.DamageType.Physical);
-                    if (t.IsValidTarget(E.Range) && E.GetPrediction(t).CastPosition.Distance(t.Position) > 200 )
-                    {
-                        E.CastIfWillHit(t, 2);
-                        if (t.HasBuffOfType(BuffType.Slow))
+                    foreach (var t in HeroManager.Enemies.Where(enemy => enemy.IsValidTarget(E.Range + 50)))
+                     {
+                        if (t.IsValidTarget(E.Range) && E.GetPrediction(t).CastPosition.Distance(t.Position) > 200)
                         {
-                            Program.CastSpell(E, t);
+                            if (E.CastIfWillHit(t, 2))
+                                return;
+                            if (t.HasBuffOfType(BuffType.Slow))
+                                Program.CastSpell(E, t);
+                            if (OktwCommon.IsMovingInSameDirection(Player, t))
+                                Program.CastSpell(E, t);
                         }
-                        if (OktwCommon.IsMovingInSameDirection(Player, t))
-                            Program.CastSpell(E, t);
                     }
                 }
             }

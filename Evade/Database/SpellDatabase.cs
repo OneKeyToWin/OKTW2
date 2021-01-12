@@ -6144,7 +6144,7 @@ namespace Evade
                    Type = SkillShotType.SkillshotCone,
                    Delay = 250,
                    Range = 600,
-                   Radius = 100,
+                   Radius = 70,
                    DontCross = true,
                    MissileSpeed = 500,
                    DangerValue = 2,
