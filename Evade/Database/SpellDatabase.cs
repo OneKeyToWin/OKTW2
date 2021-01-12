@@ -3846,23 +3846,24 @@ namespace Evade
                     MissileSpellName = "SyndraQSpell",
                 });
 
-            Spells.Add(
-                new SpellData
-                {
-                    ChampionName = "Syndra",
-                    SpellName = "syndrawcast",
-                    Slot = SpellSlot.W,
-                    Type = SkillShotType.SkillshotCircle,
-                    Delay = 250,
-                    Range = 950,
-                    Radius = 210,
-                    MissileSpeed = 1450,
-                    FixedRange = false,
-                    AddHitbox = true,
-                    DangerValue = 2,
-                    IsDangerous = true,
-                    MissileSpellName = "syndrawcast",
-                });
+            //Spells.Add(
+            //    new SpellData
+            //    {
+            //        ChampionName = "Syndra",
+            //        SpellName = "syndrawcast",
+            //        Slot = SpellSlot.W,
+            //        Type = SkillShotType.SkillshotCircle,
+            //        Delay = 250,
+            //        Range = 950,
+            //        Radius = 210,
+            //        MissileSpeed = 1450,
+            //        FixedRange = false,
+            //        AddHitbox = true,
+            //        DangerValue = 2,
+            //        IsDangerous = true,
+            //        MissileSpellName = "syndrawcast",
+            //        SourceObjectName = "Syndra_Skin01_W_fling_01"
+            //    });
 
             Spells.Add(
                 new SpellData
