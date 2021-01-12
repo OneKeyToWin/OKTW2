@@ -32,19 +32,20 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             Config.SubMenu(Player.ChampionName).SubMenu("Draw").AddItem(new MenuItem("rRange", "R range", true).SetValue(false));
             Config.SubMenu(Player.ChampionName).SubMenu("Draw").AddItem(new MenuItem("onlyRdy", "Draw only ready spells", true).SetValue(true));
 
-            Config.SubMenu(Player.ChampionName).SubMenu("Q Config").AddItem(new MenuItem("autoQ", "Auto Q", true).SetValue(true));
+            Config.SubMenu(Player.ChampionName).SubMenu("Q Config").AddItem(new MenuItem("autoQ", "var Q", true).SetValue(true));
             Config.SubMenu(Player.ChampionName).SubMenu("Q Config").AddItem(new MenuItem("Qharras", "Harass Q", true).SetValue(true));
+            Config.SubMenu(Player.ChampionName).SubMenu("Q Config").AddItem(new MenuItem("QpokeOnMinions", "Poke Q on minion", true).SetValue(true));
 
-            Config.SubMenu(Player.ChampionName).SubMenu("W Config").AddItem(new MenuItem("autoW", "Auto W", true).SetValue(true));
+            Config.SubMenu(Player.ChampionName).SubMenu("W Config").AddItem(new MenuItem("autoW", "var W", true).SetValue(true));
             Config.SubMenu(Player.ChampionName).SubMenu("W Config").AddItem(new MenuItem("Wharras", "Harass W", true).SetValue(true));
 
-            Config.SubMenu(Player.ChampionName).SubMenu("E Config").AddItem(new MenuItem("autoE", "Auto E on CC", true).SetValue(true));
-            Config.SubMenu(Player.ChampionName).SubMenu("E Config").AddItem(new MenuItem("comboE", "Auto E in Combo BETA", true).SetValue(true));
+            Config.SubMenu(Player.ChampionName).SubMenu("E Config").AddItem(new MenuItem("autoE", "var E on CC", true).SetValue(true));
+            Config.SubMenu(Player.ChampionName).SubMenu("E Config").AddItem(new MenuItem("comboE", "var E in Combo BETA", true).SetValue(true));
             Config.SubMenu(Player.ChampionName).SubMenu("E Config").AddItem(new MenuItem("AGC", "AntiGapcloserE", true).SetValue(true));
             Config.SubMenu(Player.ChampionName).SubMenu("E Config").AddItem(new MenuItem("opsE", "OnProcessSpellCastE", true).SetValue(true));
-            Config.SubMenu(Player.ChampionName).SubMenu("E Config").AddItem(new MenuItem("telE", "Auto E teleport", true).SetValue(true));
+            Config.SubMenu(Player.ChampionName).SubMenu("E Config").AddItem(new MenuItem("telE", "var E teleport", true).SetValue(true));
 
-            Config.SubMenu(Player.ChampionName).SubMenu("R Config").AddItem(new MenuItem("autoR", "Auto R", true).SetValue(true));
+            Config.SubMenu(Player.ChampionName).SubMenu("R Config").AddItem(new MenuItem("autoR", "var R", true).SetValue(true));
             Config.SubMenu(Player.ChampionName).SubMenu("R Config").SubMenu("R Jungle stealer").AddItem(new MenuItem("Rjungle", "R Jungle stealer", true).SetValue(true));
             Config.SubMenu(Player.ChampionName).SubMenu("R Config").SubMenu("R Jungle stealer").AddItem(new MenuItem("Rdragon", "Dragon", true).SetValue(true));
             Config.SubMenu(Player.ChampionName).SubMenu("R Config").SubMenu("R Jungle stealer").AddItem(new MenuItem("Rbaron", "Baron", true).SetValue(true));
@@ -77,16 +78,21 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 else if (Program.Harass && Config.Item("Qharras", true).GetValue<bool>() && (realDistance > bonusRange() || realDistance < GetRealPowPowRange(t) || Player.Mana < RMANA + EMANA + WMANA + WMANA))
                     Q.Cast();
             }
-
-            var minion = args.Target as Obj_AI_Minion;
-            if (Program.Farm && minion != null)
+            else if(!Program.Combo || Program.LaneClear)
             {
-                var realDistance = GetRealDistance(minion);
-
-                if(realDistance < GetRealPowPowRange(minion) || Player.ManaPercent < Config.Item("Mana", true).GetValue<Slider>().Value)
+                var minion = args.Target as Obj_AI_Minion;
+                if (Program.LaneClear && minion != null && FarmSpells)
                 {
-                    Q.Cast();
+                    var minions = MinionManager.GetMinions(minion.Position, 300);
+                    var realDistance = GetRealDistance(minion);
+
+                    if (minions.Count > 1)
+                        return;
+
+                    if (realDistance + 50 > GetRealPowPowRange(minion))
+                        return;
                 }
+                Q.Cast();
             }
         }
 
@@ -141,9 +147,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             }
 
             if (Program.LagFree(0))
-            {
                 SetMana();
-            }
 
             if (E.IsReady())
                 LogicE();
@@ -160,6 +164,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
         private void LogicQ()
         {
+            var laneMinions = MinionManager.GetMinions(1000);
             if (Program.Farm && !FishBoneActive && !Player.IsWindingUp && Orbwalker.GetTarget() == null && Orbwalking.CanAttack() && Config.Item("farmQout", true).GetValue<bool>() && Player.Mana > RMANA + WMANA + EMANA + 10)
             {
                 foreach (var minion in Cache.GetMinions(Player.Position, bonusRange() + 30).Where(
@@ -193,10 +198,104 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 Q.Cast();
             else if (FishBoneActive && Program.Combo && Player.CountEnemiesInRange(2000) == 0)
                 Q.Cast();
-            else if (FishBoneActive && Program.Farm )
-            {
+            else if (FishBoneActive && Program.Harass && !Program.LaneClear )
                 Q.Cast();
+            else if (Program.LaneClear)
+            {
+                var tOrb = Orbwalker.GetTarget();
+                if (!FarmSpells || !Config.Item("farmQ", true).GetValue<bool>())
+                {
+                    if (FishBoneActive)
+                        Q.Cast();
+                }
+                else if (!FishBoneActive)
+                {
+                   
+                    if (tOrb != null && tOrb.Type == GameObjectType.obj_AI_Minion)
+                    {
+                        var minions = MinionManager.GetMinions(tOrb.Position, 300);
+                        if (minions.Count > 1)
+                            Q.Cast();
+                    }
+                    else if (laneMinions.Count > 2)
+                        Q.Cast();
+                }
+                else
+                {
+
+                    if (tOrb != null && tOrb.Type == GameObjectType.obj_AI_Minion)
+                    {
+                        var minions = MinionManager.GetMinions(tOrb.Position, 300);
+                        if (minions.Count < 2)
+                            Q.Cast();
+                    }
+                }
             }
+            else if (Program.Harass)
+            {
+
+                if (Config.Item("farmQout", true).GetValue<bool>() && Q.Level >= 3 && !FishBoneActive && Orbwalking.CanAttack())
+                {
+                    foreach (var x in laneMinions)
+                    {
+                        if (!Orbwalking.InAutoAttackRange(x) && GetRealDistance(x) < bonusRange() + 150)
+                        {
+                            var t2 = Player.AttackCastDelay * 1000f + 20 + 100;
+                            var t3 = t2 + 1000 * Math.Max(0, x.Distance(Player) - Player.BoundingRadius) / Player.BasicAttack.MissileSpeed;
+                            float predicted_minion_health = LeagueSharp.Common.HealthPrediction.GetHealthPrediction(x, (int)t3);
+                            if (predicted_minion_health > 0)
+                            {
+                                if (predicted_minion_health - Player.GetAutoAttackDamage(x, true) * 1.1 <= 0 || x.Health < Player.TotalAttackDamage)
+                                {
+                                    Q.Cast();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (Config.Item("QpokeOnMinions", true).GetValue<bool>() && FishBoneActive && Program.Combo && Player.Mana > RMANA + EMANA + WMANA + WMANA)
+            {
+                var tOrb = Orbwalker.GetTarget();
+                if (tOrb != null)
+                {
+                    var t2 = TargetSelector.GetTarget(bonusRange() + 200, TargetSelector.DamageType.Physical);
+
+                    if (t2 != null)
+                    {
+                        Obj_AI_Base bestMinion = null;
+                        foreach (var minion in laneMinions)
+                        {
+                            if (!Orbwalker.InAutoAttackRange(minion))
+                                continue;
+
+                            float delay = Player.AttackCastDelay + 0.3f;
+                            var t2Pred = Prediction.GetPrediction(t2, delay).CastPosition;
+                            var minionPred = Prediction.GetPrediction(minion, delay).CastPosition;
+
+                            if (t2Pred.Distance(minionPred) < 250 && t2.Distance(minion) < 250)
+                            {
+                                if (bestMinion != null)
+                                {
+                                    if (bestMinion.Distance(t2) > minion.Distance(t2))
+                                        bestMinion = minion;
+                                }
+                                else
+                                {
+                                    bestMinion = minion;
+                                }
+                            }
+                        }
+                        if (bestMinion != null)
+                        {
+                            Orbwalker.ForceTarget(bestMinion);
+                            return;
+                        }
+                    }
+                }
+            }
+            Orbwalker.ForceTarget(null);
         }
 
         private void LogicW()
