@@ -140,7 +140,6 @@
     <Compile Include="SebbyLib\HealthPrediction.cs" />
     <Compile Include="SebbyLib\Movement.cs" />
     <Compile Include="SebbyLib\OktwCommon.cs" />
-    <Compile Include="SebbyLib\PredictionOktw.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

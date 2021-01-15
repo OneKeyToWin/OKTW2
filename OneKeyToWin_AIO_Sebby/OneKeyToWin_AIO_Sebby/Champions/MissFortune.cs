@@ -277,7 +277,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                         return;
                 }
 
-                var enemyPredictionPos = SebbyLib.Prediction.Prediction.GetPrediction(t1, 0.2f).CastPosition;
+                var enemyPredictionPos = Prediction.GetPrediction(t1, 0.2f).CastPosition;
                 foreach(var minion in minions)
                 {
                     if (Config.Item("killQ", true).GetValue<bool>() && Q.GetDamage(minion) < minion.Health)

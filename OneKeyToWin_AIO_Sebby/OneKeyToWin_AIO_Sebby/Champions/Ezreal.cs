@@ -651,13 +651,13 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
             if (predIndex == 3)
             {
-                SebbyLib.Movement.SkillshotType CoreType2 = SebbyLib.Movement.SkillshotType.SkillshotLine;
+                SkillshotType CoreType2 = SkillshotType.SkillshotLine;
                 bool aoe2 = false;
 
                 if (QWER.Width > 80 && !QWER.Collision)
                     aoe2 = true;
 
-                var predInput2 = new SebbyLib.Movement.PredictionInput
+                var predInput2 = new PredictionInput
                 {
                     Aoe = aoe2,
                     Collision = QWER.Collision,
@@ -669,16 +669,16 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                     Unit = target,
                     Type = CoreType2
                 };
-                var poutput2 = SebbyLib.Movement.Prediction.GetPrediction(predInput2);
+                var poutput2 = Prediction.GetPrediction(predInput2);
 
                 if (QWER.Speed != float.MaxValue && OktwCommon.CollisionYasuo(Player.ServerPosition, poutput2.CastPosition))
                     return false;
 
                 if ((int)hitchance == 6)
                 {
-                    if (poutput2.Hitchance >= SebbyLib.Movement.HitChance.VeryHigh)
+                    if (poutput2.Hitchance >= HitChance.VeryHigh)
                         return true;
-                    else if (predInput2.Aoe && poutput2.AoeTargetsHitCount > 1 && poutput2.Hitchance >= SebbyLib.Movement.HitChance.High)
+                    else if (predInput2.Aoe && poutput2.AoeTargetsHitCount > 1 && poutput2.Hitchance >= HitChance.High)
                     {
                         return true;
                     }
@@ -686,31 +686,31 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 }
                 else if ((int)hitchance == 5)
                 {
-                    if (poutput2.Hitchance >= SebbyLib.Movement.HitChance.High)
+                    if (poutput2.Hitchance >= HitChance.High)
                         return true;
 
                 }
                 else if ((int)hitchance == 4)
                 {
-                    if (poutput2.Hitchance >= SebbyLib.Movement.HitChance.Medium)
+                    if (poutput2.Hitchance >= HitChance.Medium)
                         return true;
                 }
             }
             else if (predIndex == 1)
             {
-                SebbyLib.Prediction.SkillshotType CoreType2 = SebbyLib.Prediction.SkillshotType.SkillshotLine;
+                SkillshotType CoreType2 = SkillshotType.SkillshotLine;
                 bool aoe2 = false;
 
                 if (QWER.Type == SkillshotType.SkillshotCircle)
                 {
-                    CoreType2 = SebbyLib.Prediction.SkillshotType.SkillshotCircle;
+                    CoreType2 = SkillshotType.SkillshotCircle;
                     aoe2 = true;
                 }
 
                 if (QWER.Width > 80 && !QWER.Collision)
                     aoe2 = true;
 
-                var predInput2 = new SebbyLib.Prediction.PredictionInput
+                var predInput2 = new PredictionInput
                 {
                     Aoe = aoe2,
                     Collision = QWER.Collision,
@@ -722,7 +722,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                     Unit = target,
                     Type = CoreType2
                 };
-                var poutput2 = SebbyLib.Prediction.Prediction.GetPrediction(predInput2);
+                var poutput2 = Prediction.GetPrediction(predInput2);
 
                 //var poutput2 = QWER.GetPrediction(target);
 
@@ -731,9 +731,9 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
                 if ((int)hitchance == 6)
                 {
-                    if (poutput2.Hitchance >= SebbyLib.Prediction.HitChance.VeryHigh)
+                    if (poutput2.Hitchance >= HitChance.VeryHigh)
                         return true;
-                    else if (predInput2.Aoe && poutput2.AoeTargetsHitCount > 1 && poutput2.Hitchance >= SebbyLib.Prediction.HitChance.High)
+                    else if (predInput2.Aoe && poutput2.AoeTargetsHitCount > 1 && poutput2.Hitchance >= HitChance.High)
                     {
                         return true;
                     }
@@ -741,13 +741,13 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 }
                 else if ((int)hitchance == 5)
                 {
-                    if (poutput2.Hitchance >= SebbyLib.Prediction.HitChance.High)
+                    if (poutput2.Hitchance >= HitChance.High)
                         return true;
 
                 }
                 else if ((int)hitchance == 4)
                 {
-                    if (poutput2.Hitchance >= SebbyLib.Prediction.HitChance.Medium)
+                    if (poutput2.Hitchance >= HitChance.Medium)
                         return true;
                 }
                 if (Game.Time - DrawSpellTime > 0.5)

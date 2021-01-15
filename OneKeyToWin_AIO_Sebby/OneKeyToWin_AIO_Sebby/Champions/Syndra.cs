@@ -352,9 +352,9 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
         private void CastQE(Obj_AI_Base target)
         {
-            SebbyLib.Prediction.SkillshotType CoreType2 = SebbyLib.Prediction.SkillshotType.SkillshotLine;
+            SkillshotType CoreType2 = SkillshotType.SkillshotLine;
 
-            var predInput2 = new SebbyLib.Prediction.PredictionInput
+            var predInput2 = new PredictionInput
             {
                 Aoe = false,
                 Collision = EQ.Collision,
@@ -367,7 +367,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 Type = CoreType2
             };
 
-            var poutput2 = SebbyLib.Prediction.Prediction.GetPrediction(predInput2);
+            var poutput2 = Prediction.GetPrediction(predInput2);
 
             if (OktwCommon.CollisionYasuo(Player.ServerPosition, poutput2.CastPosition))
                 return;
@@ -379,7 +379,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
             if (Config.Item("EHitChance", true).GetValue<StringList>().SelectedIndex == 0)
             {
-                if (poutput2.Hitchance >= SebbyLib.Prediction.HitChance.VeryHigh)
+                if (poutput2.Hitchance >= HitChance.VeryHigh)
                 {
                     EQcastNow = true;
                     Q.Cast(castQpos);
@@ -388,7 +388,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             }
             else if (Config.Item("EHitChance", true).GetValue<StringList>().SelectedIndex == 1)
             {
-                if (poutput2.Hitchance >= SebbyLib.Prediction.HitChance.High)
+                if (poutput2.Hitchance >= HitChance.High)
                 {
                     EQcastNow = true;
                     Q.Cast(castQpos);
@@ -397,7 +397,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             }
             else if (Config.Item("EHitChance", true).GetValue<StringList>().SelectedIndex == 2)
             {
-                if (poutput2.Hitchance >= SebbyLib.Prediction.HitChance.Medium)
+                if (poutput2.Hitchance >= HitChance.Medium)
                 {
                     EQcastNow = true;
                     Q.Cast(castQpos);

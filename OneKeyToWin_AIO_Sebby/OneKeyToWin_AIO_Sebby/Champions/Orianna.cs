@@ -358,7 +358,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             {
                 //var prepos5 = Core.Prediction.GetPrediction(target, delay, Q.Width);
 
-                var predInput2 = new SebbyLib.Prediction.PredictionInput
+                var predInput2 = new PredictionInput
                 {
                     Aoe = true,
                     Collision = Q.Collision,
@@ -368,9 +368,9 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                     From = BallPos,
                     Radius = Q.Width,
                     Unit = target,
-                    Type = SebbyLib.Prediction.SkillshotType.SkillshotCircle
+                    Type = SkillshotType.SkillshotCircle
                 };
-                var prepos5 = SebbyLib.Prediction.Prediction.GetPrediction(predInput2);
+                var prepos5 = Prediction.GetPrediction(predInput2);
 
                 if ((int)prepos5.Hitchance > 5 - Config.Item("QHitChance", true).GetValue<StringList>().SelectedIndex)
                 {

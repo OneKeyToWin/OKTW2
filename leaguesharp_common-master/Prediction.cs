@@ -91,11 +91,37 @@ namespace LeagueSharp.Common
     {
         public List<Obj_AI_Hero> AoeTargetsHit = new List<Obj_AI_Hero>();
         public List<Obj_AI_Base> CollisionObjects = new List<Obj_AI_Base>();
-        public HitChance Hitchance = HitChance.Impossible;
+        
         internal int _aoeTargetsHitCount;
         internal PredictionInput Input;
         private Vector3 _castPosition;
         private Vector3 _unitPosition;
+        public float HitchanceFloat = -1f;
+        private HitChance _hitchance = HitChance.Impossible;
+        public HitChance Hitchance
+        {
+            get
+            {
+                if (HitchanceFloat < 0)
+                    return _hitchance;
+
+                if (HitchanceFloat < 0.4)
+                    return HitChance.Low;
+
+                if (HitchanceFloat < 0.6)
+                    return HitChance.Medium;
+
+                if (HitchanceFloat < 0.8)
+                    return HitChance.High;
+
+                return HitChance.VeryHigh;
+            }
+            set
+            {
+                this._hitchance = value;
+            }
+        }
+
         public int AoeTargetsHitCount
         {
             get
@@ -224,6 +250,25 @@ namespace LeagueSharp.Common
             return result;
         }
 
+        public static float SpeedFromVelocity(Obj_AI_Base unit)
+        {
+            var realVelocity = new Vector3
+            {
+                X = unit.Velocity.X * 20,
+                Y = unit.Velocity.Y * 20,
+                Z = unit.Velocity.Z * 20
+            };
+
+            var velocitySpeed = new Vector3
+            {
+                X = 0,
+                Y = 0,
+                Z = 0
+            }.Distance(realVelocity);
+
+            return velocitySpeed == 0.0f ? unit.MoveSpeed : velocitySpeed;
+        }
+
         internal static PredictionOutput GetImmobilePrediction(PredictionInput input, double remainingImmobileT)
         {
             var timeToReachTargetPosition = input.Delay + input.Unit.Distance(input.From) / input.Speed;
@@ -247,24 +292,26 @@ namespace LeagueSharp.Common
 
         internal static PredictionOutput GetPositionOnPath(PredictionInput input, List<Vector2> path, float speed = -1)
         {
-            speed = (Math.Abs(speed - (-1)) < float.Epsilon) ? input.Unit.MoveSpeed : speed;
 
-            if (path.Count <= 1)
+            speed = (Math.Abs(speed - (-1)) < float.Epsilon) ? SpeedFromVelocity(input.Unit) : speed;
+
+            if (path.Count <= 1 || (input.Unit.IsWindingUp && !input.Unit.IsDashing()))
             {
                 return new PredictionOutput
-                           {
-                               Input = input, UnitPosition = input.Unit.ServerPosition,
-                               CastPosition = input.Unit.ServerPosition, Hitchance = HitChance.VeryHigh
-                           };
+                {
+                    Input = input,
+                    UnitPosition = input.Unit.ServerPosition,
+                    CastPosition = input.Unit.ServerPosition,
+                    Hitchance = HitChance.High
+                };
             }
 
             var pLength = path.PathLength();
 
             //Skillshots with only a delay
-            if (pLength >= input.Delay * speed - input.RealRadius && Math.Abs(input.Speed - float.MaxValue) < float.Epsilon)
+            var tDistance = input.Delay * speed - input.RealRadius;
+            if (pLength >= tDistance && Math.Abs(input.Speed - float.MaxValue) < float.Epsilon)
             {
-                var tDistance = input.Delay * speed - input.RealRadius;
-
                 for (var i = 0; i < path.Count - 1; i++)
                 {
                     var a = path[i];
@@ -276,20 +323,19 @@ namespace LeagueSharp.Common
                         var direction = (b - a).Normalized();
 
                         var cp = a + direction * tDistance;
-                        var p = a
-                                + direction
-                                * ((i == path.Count - 2)
-                                       ? Math.Min(tDistance + input.RealRadius, d)
-                                       : (tDistance + input.RealRadius));
+                        var p = a +
+                                direction *
+                                ((i == path.Count - 2)
+                                    ? Math.Min(tDistance + input.RealRadius, d)
+                                    : (tDistance + input.RealRadius));
 
                         return new PredictionOutput
-                                   {
-                                       Input = input, CastPosition = cp.To3D(), UnitPosition = p.To3D(),
-                                       Hitchance =
-                                           PathTracker.GetCurrentPath(input.Unit).Time < 0.1d
-                                               ? HitChance.VeryHigh
-                                               : HitChance.High
-                                   };
+                        {
+                            Input = input,
+                            CastPosition = cp.To3D(),
+                            UnitPosition = p.To3D(),
+                            Hitchance = HitChance.High
+                        };
                     }
 
                     tDistance -= d;
@@ -297,9 +343,9 @@ namespace LeagueSharp.Common
             }
 
             //Skillshot with a delay and speed.
-            if (pLength >= input.Delay * speed - input.RealRadius && Math.Abs(input.Speed - float.MaxValue) > float.Epsilon)
+            if (pLength >= tDistance && Math.Abs(input.Speed - float.MaxValue) > float.Epsilon)
             {
-                var d = input.Delay * speed - input.RealRadius;
+                var d = tDistance;
                 if (input.Type == SkillshotType.SkillshotLine || input.Type == SkillshotType.SkillshotCone)
                 {
                     if (input.From.Distance(input.Unit.ServerPosition, true) < 200 * 200)
@@ -323,7 +369,8 @@ namespace LeagueSharp.Common
 
                     if (pos.IsValid() && t >= tT && t <= tT + tB)
                     {
-                        if (pos.Distance(b, true) < 20) break;
+                        if (pos.Distance(b, true) < 20)
+                            break;
                         var p = pos + input.RealRadius * direction;
 
                         if (input.Type == SkillshotType.SkillshotLine && false)
@@ -340,13 +387,12 @@ namespace LeagueSharp.Common
                         }
 
                         return new PredictionOutput
-                                   {
-                                       Input = input, CastPosition = pos.To3D(), UnitPosition = p.To3D(),
-                                       Hitchance =
-                                           PathTracker.GetCurrentPath(input.Unit).Time < 0.1d
-                                               ? HitChance.VeryHigh
-                                               : HitChance.High
-                                   };
+                        {
+                            Input = input,
+                            CastPosition = pos.To3D(),
+                            UnitPosition = p.To3D(),
+                            Hitchance = HitChance.High
+                        };
                     }
                     tT += tB;
                 }
@@ -354,10 +400,12 @@ namespace LeagueSharp.Common
 
             var position = path.Last();
             return new PredictionOutput
-                       {
-                           Input = input, CastPosition = position.To3D(), UnitPosition = position.To3D(),
-                           Hitchance = HitChance.Medium
-                       };
+            {
+                Input = input,
+                CastPosition = position.To3D(),
+                UnitPosition = position.To3D(),
+                Hitchance = HitChance.Medium
+            };
         }
 
         internal static PredictionOutput GetPrediction(PredictionInput input, bool ft, bool checkCollision)
@@ -439,10 +487,16 @@ namespace LeagueSharp.Common
                 }
             }
 
+            //Set hit chance
+            if (result.Hitchance == HitChance.High)
+            {
+                result = WayPointAnalysis(result, input);
+            }
+
             //Check for collision
             if (checkCollision && input.Collision)
             {
-                var positions = new List<Vector3> { result.UnitPosition, result.CastPosition, input.Unit.Position };
+                var positions = new List<Vector3> {result.CastPosition};
                 var originalUnit = input.Unit;
                 result.CollisionObjects = Collision.GetCollision(positions, input);
                 result.CollisionObjects.RemoveAll(x => x.NetworkId == originalUnit.NetworkId);
@@ -456,18 +510,13 @@ namespace LeagueSharp.Common
         {
             var speed = input.Unit.MoveSpeed;
 
-            if (input.Unit.Distance(input.From, true) < 200 * 200)
+            if (input.Unit.Distance(input.From, true) < 230 * 230)
             {
-                //input.Delay /= 2;
+                input.Delay /= 2;
                 speed /= 1.5f;
             }
 
             var result = GetPositionOnPath(input, input.Unit.GetWaypoints(), speed);
-
-            if (result.Hitchance >= HitChance.High && input.Unit is Obj_AI_Hero)
-            {
-
-            }
 
             return result;
         }
@@ -484,6 +533,543 @@ namespace LeagueSharp.Common
             return (result - Game.Time);
         }
 
+        internal static float UnitIsSlowed(Obj_AI_Base unit)
+        {
+            var t = 0f;
+            foreach (var buff in unit.Buffs)
+                if (buff.Type == BuffType.Sleep)
+                    t = buff.EndTime - Game.Time;
+
+            return t;
+        }
+
+        internal static bool IsMovingInSameDirection(Obj_AI_Base source, Obj_AI_Base target)
+        {
+            var sourceLW = source.GetWaypoints().Last().To3D();
+
+            if (sourceLW == source.Position || !source.IsMoving)
+                return false;
+
+            var targetLW = target.GetWaypoints().Last().To3D();
+
+            if (targetLW == target.Position || !target.IsMoving)
+                return false;
+
+            Vector2 pos1 = sourceLW.To2D() - source.Position.To2D();
+            Vector2 pos2 = targetLW.To2D() - target.Position.To2D();
+            var getAngle = pos1.AngleBetween(pos2);
+
+            if (getAngle < 20)
+                return true;
+            else
+                return false;
+        }
+
+        internal static PredictionOutput WayPointAnalysis(PredictionOutput result, PredictionInput input)
+        {
+            bool debug = false;
+
+            if (!(input.Unit is Obj_AI_Hero) || input.Radius == 1)
+            {
+                result.Hitchance = HitChance.VeryHigh;
+                return result;
+            }
+
+            // CAN'T MOVE SPELLS ///////////////////////////////////////////////////////////////////////////////////
+
+            if (UnitTracker.GetSpecialSpellEndTime(input.Unit) > 100 || input.Unit.HasBuff("Recall") || (UnitTracker.GetLastStopMoveTime(input.Unit) < 100 && input.Unit.IsRooted))
+            {
+                if(debug) Console.WriteLine("CAN'T MOVE SPELLS");
+                result.Hitchance = HitChance.VeryHigh;
+                result.CastPosition = input.Unit.Position;
+                return result;
+            }
+
+            // PREPARE MATH ///////////////////////////////////////////////////////////////////////////////////
+            var wayPoints = input.Unit.GetWaypoints();
+            var lastWaypiont = wayPoints.Last().To3D();
+            if (!input.Unit.IsMoving)
+            {
+                lastWaypiont = input.Unit.Position;
+            }
+            var distanceUnitToWaypoint = lastWaypiont.Distance(input.Unit.Position);
+            var distanceFromToUnit = input.From.Distance(input.Unit.Position);
+            var distanceFromToWaypoint = lastWaypiont.Distance(input.From);
+            var speedDelay = distanceFromToUnit / input.Speed;
+
+            if (Math.Abs(input.Speed - float.MaxValue) < float.Epsilon)
+                speedDelay = 0;
+
+            float totalDelay = speedDelay + input.Delay - (input.Radius / SpeedFromVelocity(input.Unit));
+            float moveArea = SpeedFromVelocity(input.Unit) * totalDelay;
+            float fixRange = moveArea * 0.25f;
+
+            var LastNewPathTime = UnitTracker.GetLastNewPathTime(input.Unit);
+            Vector2 pos1 = lastWaypiont.To2D() - input.Unit.Position.To2D();
+            Vector2 pos2 = input.From.To2D() - input.Unit.Position.To2D();
+            var getAngle = pos1.AngleBetween(pos2);
+
+            // NEW VISABLE ///////////////////////////////////////////////////////////////////////////////////
+            if (UnitTracker.GetLastVisableTime(input.Unit) < 100 || input.Unit.Path.Count() == 0)
+            {
+                if(debug) Console.WriteLine("PRED M: NEW VISABLE");
+                result.Hitchance = HitChance.Medium;
+                return result;
+            }
+
+            if (!NavMesh.IsWallOfGrass(input.Unit.ServerPosition, 10) && NavMesh.IsWallOfGrass(input.From, 10))
+            {
+                if(debug) Console.WriteLine("PRED VH: BUSH CAST");
+                result.Hitchance = HitChance.VeryHigh;
+                return result;
+            }
+
+            // FIX RANGE ///////////////////////////////////////////////////////////////////////////////////
+            if (distanceFromToUnit > input.Range - fixRange)
+            {
+                if (input.Type != SkillshotType.SkillshotCircle)
+                {
+                    if (wayPoints.Count() <= 1 || getAngle < 150)
+                    {
+                        if(debug) Console.WriteLine("PRED M: Fix Range");
+                        result.Hitchance = HitChance.Medium;
+                        return result;
+                    }
+                }
+            }
+
+            if (UnitTracker.IsSpamClick(input.Unit, input.Radius, input.Delay))
+            {
+                if(debug) Console.WriteLine("PRED VH: SPAM CLICK");
+                result.Hitchance = HitChance.VeryHigh;
+                result.CastPosition = input.Unit.Position;
+                return result;
+            }
+
+            // SHORT CLICK DETECTION ///////////////////////////////////////////////////////////////////////////////////
+            if (distanceUnitToWaypoint > 0 && distanceUnitToWaypoint < 200)
+            {
+                if(debug) Console.WriteLine("PRED M: SMALL WAYPOINT");
+                result.Hitchance = HitChance.Medium;
+                return result;
+            }
+
+            if (input.Unit.Health < HeroManager.Player.MaxHealth * 0.2f + HeroManager.Player.TotalAttackDamage + HeroManager.Player.TotalMagicalDamage)
+            {
+                if(debug) Console.WriteLine("PRED VH: LOW HP ENEMY");
+                result.Hitchance = HitChance.VeryHigh;
+                return result;
+            }
+
+            if (HeroManager.Player.HealthPercent < 20)
+            {
+                if(debug) Console.WriteLine("PRED VH: LOW HP MY HERO");
+                result.Hitchance = HitChance.VeryHigh;
+            }
+
+            // SPECIAL CASES ///////////////////////////////////////////////////////////////////////////////////
+            if (distanceFromToUnit < 250)
+            {
+                if(debug) Console.WriteLine("PRED VH: Near");
+                result.Hitchance = HitChance.VeryHigh;
+                return result;
+            }
+            else if (distanceFromToWaypoint < 250)
+            {
+                if(debug) Console.WriteLine("PRED VH: on way");
+                result.Hitchance = HitChance.VeryHigh;
+                return result;
+            }
+
+            // SLOW LOGIC /////////////////////////////////////////////////////////////////////////////////// 
+            var remainingSlowT = UnitIsSlowed(input.Unit);
+            if (remainingSlowT > 0)
+            {
+                var timeToReachTargetPosition = input.Delay + input.Unit.Position.Distance(input.From) / input.Speed;
+
+                if (timeToReachTargetPosition <= remainingSlowT + input.RealRadius / SpeedFromVelocity(input.Unit))
+                {
+                    if(debug) Console.WriteLine("PRED VH: SLOW");
+                    result.Hitchance = HitChance.VeryHigh;
+                    return result;
+                }
+                else
+                {
+                    if(debug) Console.WriteLine("PRED M: SLOW BAD");
+                    result.Hitchance = HitChance.High;
+                    return result;
+                }
+            }
+
+            // DON'T MOVE
+            if (wayPoints.Count() <= 1)
+            {
+                var stoptime = UnitTracker.GetLastStopMoveTime(input.Unit);
+                if (stoptime < 1000)
+                {
+                    var acitveSpell = input.Unit.Spellbook;
+
+                    if (acitveSpell.IsCastingSpell && totalDelay < acitveSpell.CastEndTime - Game.Time && !input.Unit.CanMove)
+                    {
+                        if(debug) Console.WriteLine("PRED VH: Spell Cast Detection");
+                        result.Hitchance = HitChance.VeryHigh;
+                        return result;
+                    }
+                    else if (!acitveSpell.IsAutoAttacking && acitveSpell.CastEndTime - Game.Time < 0.1 && !input.Unit.CanMove)
+                    {
+                        if(debug) Console.WriteLine("PRED M: STOP CAST SPELL SOON ");
+                        result.Hitchance = HitChance.Medium;
+                        return result;
+                    }
+                    else if (UnitTracker.GetLastAutoAttackTime(input.Unit) < 60 && input.Delay < 0.3)
+                    {
+                        if(debug) Console.WriteLine("PRED VH: AA detection");
+                        result.Hitchance = HitChance.VeryHigh;
+                        return result;
+                    }
+                    else
+                    {
+                        if(debug) Console.WriteLine("PRED M: STOP HIGH ");
+                        result.Hitchance = HitChance.Medium;
+                        return result;
+                    }
+                }
+                else
+                {
+                    if(debug) Console.WriteLine("PRED VH: STOP LOGIC");
+                    result.Hitchance = HitChance.VeryHigh;
+                    return result;
+                }
+            }
+            else //MOVE 
+            {
+                //if (Game.IsFogOfWar(input.Unit.Position.Extend(wayPoints.back(), 100)))
+                //{
+                //    OktwCommon.debug( "PRED VH: FOW cast");
+                //    result.Hitchance = HitChance.VeryHigh;
+                //    return result;
+                //}
+
+                if (distanceUnitToWaypoint > 1200)
+                {
+                    if(debug) Console.WriteLine("PRED VH: LONG CLICK DETECTION");
+                    result.Hitchance = HitChance.VeryHigh;
+                    return result;
+                }
+
+                //if (getAngle < 110 && getAngle > 40 && LastNewPathTime < 200)
+                //{
+                //	OktwCommon.debug( "PRED M: Bad Click");
+                //	result.Hitchance = HitChance.Medium;
+                //	return result;
+                //}
+
+                if (getAngle > 105 && getAngle < 150 && distanceUnitToWaypoint < 600)
+                {
+                    if(debug) Console.WriteLine("PRED M: Bad Click Angle");
+                    result.Hitchance = HitChance.Medium;
+                    return result;
+                }
+
+                if (distanceUnitToWaypoint > 500)
+                {
+                    if (getAngle > 170 || getAngle < 10)
+                    {
+                        if(debug) Console.WriteLine("PRED VH: Angle run long cast");
+                        result.Hitchance = HitChance.VeryHigh;
+                        return result;
+                    }
+                }
+
+                if (input.Radius >= 90 && input.Speed > 3000 && input.Delay < 0.7)
+                {
+                    if(debug) Console.WriteLine("PRED VH: RADIUS GOOD");
+                    result.Hitchance = HitChance.VeryHigh;
+                    return result;
+                }
+
+                if (distanceUnitToWaypoint > 500)
+                {
+                    // RUN IN LANE DETECTION /////////////////////////////////////////////////////////////////////////////////// 
+                    foreach (var x in ObjectManager.Get<Obj_AI_Turret>())
+                    {
+                        if (x.Team == input.Unit.Team && !x.IsDead && x.Distance(input.From) < 2500 && x.Distance(input.Unit.Position) > 400)
+                        {
+                            var pos3 = x.Position - input.Unit.Position;
+                            var getAngle2 = pos1.AngleBetween(pos3.To2D());
+                            if (getAngle2 < 10)
+                            {
+                                if(debug) Console.WriteLine("PRED VH: Angle TURRET");
+                                result.Hitchance = HitChance.VeryHigh;
+                                return result;
+                            }
+                        }
+                    }
+                }
+                var inSameDriection = IsMovingInSameDirection(input.Unit, ObjectManager.Player);
+                if (inSameDriection || distanceUnitToWaypoint > 600)
+                {
+                    if (getAngle > 130 || getAngle < 15)
+                    {
+                        if(debug) Console.WriteLine("PRED VH: Angle run");
+                        result.Hitchance = HitChance.VeryHigh;
+                        return result;
+                    }
+                }
+
+                if (wayPoints.Count() == 2 && LastNewPathTime < 80 && totalDelay < 0.25)
+                {
+                    if(debug) Console.WriteLine("PRED VH: NEW PATH");
+                    result.Hitchance = HitChance.VeryHigh;
+                    return result;
+                }
+            }
+            result.Hitchance = HitChance.High;
+            return result;
+        }
+    }
+
+    internal class PathInfo
+    {
+        public Vector3[] Position { get; set; }
+        public float Time { get; set; }
+    }
+
+    internal class Spells
+    {
+        public string name { get; set; }
+        public double duration { get; set; }
+    }
+
+    internal class UnitTrackerInfo
+    {
+        public int NetworkId { get; set; }
+        public int AaTick { get; set; }
+        public int NewPathTick { get; set; }
+        public float ClickAvarageTime { get; set; }
+        public int StopMoveTick { get; set; }
+        public int LastInvisableTick { get; set; }
+        public int SpecialSpellFinishTick { get; set; }
+        public List<PathInfo> PathBank = new List<PathInfo>();
+    }
+
+    internal static class UnitTracker
+    {
+        public static List<UnitTrackerInfo> UnitTrackerInfoList = new List<UnitTrackerInfo>();
+        private static List<Obj_AI_Hero> Champion = new List<Obj_AI_Hero>();
+        private static List<Spells> spells = new List<Spells>();
+        private static List<PathInfo> PathBank = new List<PathInfo>();
+        static UnitTracker()
+        {
+            spells.Add(new Spells() { name = "katarinar", duration = 1 }); //Katarinas R
+            spells.Add(new Spells() { name = "drain", duration = 1 }); //Fiddle W
+            spells.Add(new Spells() { name = "crowstorm", duration = 1 }); //Fiddle R
+            spells.Add(new Spells() { name = "consume", duration = 0.5 }); //Nunu Q
+            spells.Add(new Spells() { name = "absolutezero", duration = 1 }); //Nunu R
+            spells.Add(new Spells() { name = "staticfield", duration = 0.5 }); //Blitzcrank R
+            spells.Add(new Spells() { name = "cassiopeiapetrifyinggaze", duration = 0.5 }); //Cassio's R
+            spells.Add(new Spells() { name = "ezrealtrueshotbarrage", duration = 1 }); //Ezreal's R
+            spells.Add(new Spells() { name = "galioidolofdurand", duration = 1 }); //Ezreal's R                                                                   
+            spells.Add(new Spells() { name = "luxmalicecannon", duration = 1 }); //Lux R
+            spells.Add(new Spells() { name = "reapthewhirlwind", duration = 1 }); //Jannas R
+            spells.Add(new Spells() { name = "jinxw", duration = 0.6 }); //jinxW
+            spells.Add(new Spells() { name = "jinxr", duration = 0.6 }); //jinxR
+            spells.Add(new Spells() { name = "missfortunebullettime", duration = 1 }); //MissFortuneR
+            spells.Add(new Spells() { name = "shenstandunited", duration = 1 }); //ShenR
+            spells.Add(new Spells() { name = "threshe", duration = 0.4 }); //ThreshE
+            spells.Add(new Spells() { name = "threshrpenta", duration = 0.75 }); //ThreshR
+            spells.Add(new Spells() { name = "threshq", duration = 0.75 }); //ThreshQ
+            spells.Add(new Spells() { name = "infiniteduress", duration = 1 }); //Warwick R
+            spells.Add(new Spells() { name = "meditate", duration = 1 }); //yi W
+            spells.Add(new Spells() { name = "alzaharnethergrasp", duration = 1 }); //Malza R
+            spells.Add(new Spells() { name = "lucianq", duration = 0.5 }); //Lucian Q
+            spells.Add(new Spells() { name = "caitlynpiltoverpeacemaker", duration = 0.5 }); //Caitlyn Q
+            spells.Add(new Spells() { name = "velkozr", duration = 0.5 }); //Velkoz R 
+            spells.Add(new Spells() { name = "jhinr", duration = 2 }); //Velkoz R 
+
+            foreach (var hero in ObjectManager.Get<Obj_AI_Hero>())
+            {
+                Champion.Add(hero);
+                UnitTrackerInfoList.Add(new UnitTrackerInfo() { NetworkId = hero.NetworkId, AaTick = Utils.TickCount, StopMoveTick = Utils.TickCount, NewPathTick = Utils.TickCount, SpecialSpellFinishTick = Utils.TickCount, LastInvisableTick = Utils.TickCount });
+            }
+
+            Obj_AI_Base.OnProcessSpellCast += Obj_AI_Base_OnProcessSpellCast;
+            Obj_AI_Base.OnNewPath += Obj_AI_Hero_OnNewPath;
+            AttackableUnit.OnEnterVisiblityClient += Obj_AI_Base_OnEnterLocalVisiblityClient;
+        }
+
+        private static void Obj_AI_Base_OnEnterLocalVisiblityClient(GameObject sender, EventArgs args)
+        {
+            if (sender is Obj_AI_Hero)
+                UnitTrackerInfoList.Find(x => x.NetworkId == sender.NetworkId).LastInvisableTick = Utils.TickCount;
+        }
+
+        private static void Obj_AI_Hero_OnNewPath(Obj_AI_Base sender, GameObjectNewPathEventArgs args)
+        {
+            if (sender is Obj_AI_Hero)
+            {
+                var x = UnitTrackerInfoList.Find(y => y.NetworkId == sender.NetworkId);
+                if (x.PathBank.Count() > 2)
+                {
+                    float time0 = Utils.TickCount - x.PathBank[2].Time;
+                    float time1 = x.PathBank[2].Time - x.PathBank[1].Time;
+                    float time2 = x.PathBank[1].Time - x.PathBank[0].Time;
+                    var i = 1;
+                    float sum = 0;
+                    if (time0 < 400 && args.Path.Count() > 1)
+                    {
+                        sum += time0;
+                        i++;
+                    }
+                    if (time1 < 400 && x.PathBank[2].Position.Count() > 1)
+                    {
+                        sum += time1;
+                        i++;
+                    }
+                    if (time2 < 400 && x.PathBank[1].Position.Count() > 1)
+                    {
+                        sum += time2;
+                        i++;
+                    }
+                    x.ClickAvarageTime = (x.ClickAvarageTime + sum) / i;
+                }
+
+                x.PathBank.Add(new PathInfo() { Position = args.Path, Time = Utils.TickCount });
+
+                if (x.PathBank.Count > 3)
+                    x.PathBank.RemoveAt(0);
+
+                if (args.Path.Count() > 1 && args.Path.Last().Distance(args.Path.First()) > 1) // STOP MOVE DETECTION
+                    x.NewPathTick = Utils.TickCount;
+                else
+                    x.StopMoveTick = Utils.TickCount;
+
+            }
+        }
+
+        private static void Obj_AI_Base_OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
+        {
+            if (sender is Obj_AI_Hero)
+            {
+                if (args.SData.IsAutoAttack())
+                    UnitTrackerInfoList.Find(x => x.NetworkId == sender.NetworkId).AaTick = Utils.TickCount;
+                else
+                {
+                    var foundSpell = spells.Find(x => args.SData.Name.ToLower() == x.name.ToLower());
+                    if (foundSpell != null)
+                    {
+                        UnitTrackerInfoList.Find(x => x.NetworkId == sender.NetworkId).SpecialSpellFinishTick = Utils.TickCount + (int)(foundSpell.duration * 1000);
+                    }
+                    else if (sender.IsWindingUp || sender.IsRooted || !sender.CanMove)
+                    {
+                        UnitTrackerInfoList.Find(x => x.NetworkId == sender.NetworkId).SpecialSpellFinishTick = Utils.TickCount + 100;
+                    }
+                }
+            }
+        }
+
+        public static bool IsSpamClick(Obj_AI_Base unit, float radius, float delay)
+        {
+            var x = UnitTrackerInfoList.Find(y => y.NetworkId == unit.NetworkId);
+            if (x.PathBank.Count < 3)
+                return false;
+
+            var pathBank = x.PathBank;
+
+            if (pathBank.Count < 3)
+                return false;
+
+            if (pathBank[0].Position.Count() < 2 || pathBank[1].Position.Count() < 2 || pathBank[2].Position.Count() < 2)
+                return false;
+
+            var fixDelay = radius * 2 - Prediction.SpeedFromVelocity(unit) * delay;
+
+            if (Utils.TickCount - pathBank[2].Time > 100)
+                return false;
+
+            if (Utils.TickCount - pathBank[0].Time > 900 + fixDelay)
+                return false;
+
+            var pos1 = pathBank[0].Position.Last().To2D() - pathBank[0].Position.First().To2D();
+            var pos2 = pathBank[1].Position.Last().To2D() - pathBank[1].Position.First().To2D();
+            var pos3 = pathBank[2].Position.Last().To2D() - pathBank[2].Position.First().To2D();
+
+            var angle1 = pos1.AngleBetween(pos2);
+            var angle2 = pos2.AngleBetween(pos3);
+            if (angle1 > 130 && angle2 > 130)
+                return true;
+
+            return false;
+        }
+
+        public static bool SpamSamePlace(Obj_AI_Base unit)
+        {
+            //var TrackerUnit = UnitTrackerInfoList.Find(x => x.NetworkId == unit.NetworkId);
+            //if (TrackerUnit.PathBank.Count < 3)
+            //    return false;
+            //if (TrackerUnit.PathBank[2].Time - TrackerUnit.PathBank[1].Time < 180 && Utils.TickCount - TrackerUnit.PathBank[2].Time < 90)
+            //{
+            //    var C = TrackerUnit.PathBank[1].Position;
+            //    var A = TrackerUnit.PathBank[2].Position;
+            //    var B = unit.Position.To2D();
+            //    var AB = Math.Pow(A.X - B.X, 2) + Math.Pow(A.Y - B.Y, 2);
+            //    var BC = Math.Pow(B.X - C.X, 2) + Math.Pow(B.Y - C.Y, 2);
+            //    var AC = Math.Pow(A.X - C.X, 2) + Math.Pow(A.Y - C.Y, 2);
+
+            //    if (TrackerUnit.PathBank[1].Position.Distance(TrackerUnit.PathBank[2].Position) < 50)
+            //    {
+            //        Console.WriteLine("SPAM PLACE");
+            //        return true;
+            //    }
+            //    else if (Math.Cos((AB + BC - AC) / (2 * Math.Sqrt(AB) * Math.Sqrt(BC))) * 180 / Math.PI < 31)
+            //    {
+            //        Console.WriteLine("SPAM ANGLE");
+            //        return true;
+            //    }
+            //    else
+            //        return false;
+            //}
+            //else
+            return false;
+        }
+
+        public static List<Vector2> GetPathWayCalc(Obj_AI_Base unit)
+        {
+            var TrackerUnit = UnitTrackerInfoList.Find(x => x.NetworkId == unit.NetworkId);
+            List<Vector2> points = new List<Vector2>();
+            points.Add(unit.ServerPosition.To2D());
+            return points;
+        }
+
+        public static double GetSpecialSpellEndTime(Obj_AI_Base unit)
+        {
+            var TrackerUnit = UnitTrackerInfoList.Find(x => x.NetworkId == unit.NetworkId);
+            return TrackerUnit.SpecialSpellFinishTick - Utils.TickCount;
+        }
+
+        public static double GetLastAutoAttackTime(Obj_AI_Base unit)
+        {
+            var TrackerUnit = UnitTrackerInfoList.Find(x => x.NetworkId == unit.NetworkId);
+            return Utils.TickCount - TrackerUnit.AaTick;
+        }
+
+        public static double GetLastNewPathTime(Obj_AI_Base unit)
+        {
+            var TrackerUnit = UnitTrackerInfoList.Find(x => x.NetworkId == unit.NetworkId);
+            return Utils.TickCount - TrackerUnit.NewPathTick;
+        }
+
+        public static double GetLastVisableTime(Obj_AI_Base unit)
+        {
+            var TrackerUnit = UnitTrackerInfoList.Find(x => x.NetworkId == unit.NetworkId);
+            return Utils.TickCount - TrackerUnit.LastInvisableTick;
+        }
+
+        public static double GetLastStopMoveTime(Obj_AI_Base unit)
+        {
+            var TrackerUnit = UnitTrackerInfoList.Find(x => x.NetworkId == unit.NetworkId);
+            return Utils.TickCount - TrackerUnit.StopMoveTick;
+        }
     }
 
     internal static class AoePrediction
@@ -840,13 +1426,43 @@ namespace LeagueSharp.Common
                                             true,
                                             input.RangeCheckFrom)))
                             {
-                                input.Unit = minion;
-                                var minionPrediction = Prediction.GetPrediction(input, false, false);
-                                if (minionPrediction.UnitPosition.To2D()
-                                        .Distance(input.From.To2D(), position.To2D(), true, true)
-                                    <= Math.Pow((input.Radius + 15 + minion.BoundingRadius), 2))
+                                var distanceFromToUnit = minion.ServerPosition.Distance(input.From);
+                                var bOffset = minion.BoundingRadius + input.Unit.BoundingRadius;
+                                if (distanceFromToUnit < bOffset)
                                 {
                                     result.Add(minion);
+                                }
+                                else if (minion.ServerPosition.Distance(position) < bOffset)
+                                {
+                                    result.Add(minion);
+                                }
+                                else if (minion.ServerPosition.Distance(input.Unit.Position) < bOffset)
+                                {
+                                    result.Add(minion);
+                                }
+                                else
+                                {
+                                    var minionPos = minion.ServerPosition;
+                                    int bonusRadius = 15;
+                                    if (minion.IsMoving)
+                                    {
+                                        var predInput2 = new PredictionInput
+                                        {
+                                            Collision = false,
+                                            Speed = input.Speed,
+                                            Delay = input.Delay,
+                                            Range = input.Range,
+                                            From = input.From,
+                                            Radius = input.Radius,
+                                            Unit = minion,
+                                            Type = input.Type
+                                        };
+                                        minionPos = Prediction.GetPrediction(predInput2).CastPosition;
+                                        bonusRadius = 50 + (int)input.Radius;
+                                    }
+
+                                    if (minionPos.To2D().Distance(input.From.To2D(), position.To2D(), true, true) <= Math.Pow((input.Radius + bonusRadius + minion.BoundingRadius), 2))
+                                        result.Add(minion);
                                 }
                             }
                             break;

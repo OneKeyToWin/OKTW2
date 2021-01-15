@@ -272,9 +272,9 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
         private void CastW(Obj_AI_Base t)
         {
-            SebbyLib.Prediction.SkillshotType CoreType2 = SebbyLib.Prediction.SkillshotType.SkillshotLine;
+            SkillshotType CoreType2 = SkillshotType.SkillshotLine;
 
-            var predInput2 = new SebbyLib.Prediction.PredictionInput
+            var predInput2 = new PredictionInput
             {
                 Aoe = false,
                 Collision = W.Collision,
@@ -287,9 +287,9 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 Type = CoreType2
             };
 
-            var poutput2 = SebbyLib.Prediction.Prediction.GetPrediction(predInput2);
+            var poutput2 = Prediction.GetPrediction(predInput2);
 
-            if (poutput2.Hitchance >= SebbyLib.Prediction.HitChance.High)
+            if (poutput2.Hitchance >= HitChance.High)
             {
                 W.Cast(poutput2.CastPosition);
             }
