@@ -287,6 +287,11 @@ namespace Evade
 
                 if (spellData.SpellName == "XerathArcanopulse")
                 {
+                    if (!Config.TestOnAllies)
+                        foreach (var ally in HeroManager.Allies.Where(x => (x.ChampionName == spellData.ChampionName)))
+                            if (ally.Distance(objpartice.Position) < 50)
+                                return;
+
                     var buff = caster.GetBuff("XerathArcanopulseChargeUp");
                     if (buff != null)
                     {
@@ -307,9 +312,6 @@ namespace Evade
 
                 if (startPos.Distance(endPos) > spellData.Range || spellData.FixedRange)
                     endPos = startPos + direction * spellData.Range;
-
-                if (spellData.ExtraRange != -1)
-                    endPos = endPos + Math.Min(spellData.ExtraRange, spellData.Range - endPos.Distance(startPos)) * direction;
 
                 if (spellData.ExtraRange != -1)
                     endPos = endPos + Math.Min(spellData.ExtraRange, spellData.Range - endPos.Distance(startPos)) * direction;
