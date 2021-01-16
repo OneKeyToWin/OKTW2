@@ -121,12 +121,19 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
         private void Obj_AI_Base_OnCreate(GameObject sender, EventArgs args)
         {
-            if(sender.Name.Contains("_Q_aoe_reticle_green"))
+            var particle = sender as Obj_GeneralParticleEmitter;
+            if (particle != null)
             {
-                var timeQNow = Game.Time - qCastTime - Game.Ping / 2f / 1000f;
-                Q.Delay = 0.55f +(qRealDelay + timeQNow) / 2;
-                Console.WriteLine("now: " + timeQNow + " before: " + qRealDelay + " total delay set: "+ Q.Delay);
-                qRealDelay = timeQNow;
+                if (sender.Name.Contains("_Q_aoe_reticle_green"))
+                {
+                    var timeQNow = Game.Time - qCastTime - Game.Ping / 2f / 1000f;
+                    if (timeQNow < 0 || timeQNow > 0.2)
+                    {
+                        Q.Delay = 0.55f + (qRealDelay + timeQNow) / 2;
+                        Console.WriteLine("now: " + timeQNow + " before: " + qRealDelay + " total delay set: " + Q.Delay);
+                        qRealDelay = timeQNow;
+                    }
+                }
             }
         }
 
