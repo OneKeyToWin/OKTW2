@@ -1336,11 +1336,34 @@ namespace Evade
                     DangerValue = 5,
                     IsDangerous = true,
                     MissileSpellName = "FizzRMissile",
-                    
+                    DontCheckForDuplicates = true,
                     CollisionObjects = new[] {CollisionObjectTypes.Champions, CollisionObjectTypes.YasuoWall},
                     CanBeRemoved = true,
                 });
 
+            Spells.Add(
+               new SpellData
+               {
+                   ChampionName = "Fizz",
+                   SpellName = "FizzR",
+                   Slot = SpellSlot.R,
+                   Type = SkillShotType.SkillshotCircle,
+                   Delay = 950,
+                   ParticleDetectDelay = 250,
+                   ExtraDuration = 2000,
+                   DontAddExtraDuration = true,
+                   Range = 1275,
+                   Radius = 250,
+                   MissileSpeed = int.MaxValue,
+                   FixedRange = false,
+                   AddHitbox = true,
+                   DangerValue = 5,
+                   IsDangerous = true,
+                   SourceObjectName = "Fizz_Base_R_DeadFish",
+                   DontCheckForDuplicates = true,
+                   DontCross = true,
+                   CanBeRemoved = true,
+               });
             #endregion Fizz
 
             #region Galio
@@ -4288,7 +4311,7 @@ namespace Evade
                     Type = SkillShotType.SkillshotMissileLine,
                     Delay = 250,
                     Range = 1800,
-                    Radius = 70,
+                    Radius = 75,
                     MissileSpeed = 1900,
                     FixedRange = true,
                     AddHitbox = true,
@@ -4307,7 +4330,7 @@ namespace Evade
                     Type = SkillShotType.SkillshotCircle,
                     Delay = 1000,
                     Range = 925,
-                    Radius = 235,
+                    Radius = 250,
                     MissileSpeed = 1500,
                     FixedRange = false,
                     AddHitbox = true,
@@ -4551,6 +4574,27 @@ namespace Evade
                     ExtraMissileNames = new[] {"viktoreaugmissile"},
                     CollisionObjects = new[] {CollisionObjectTypes.YasuoWall},
                 });
+            Spells.Add(
+             new SpellData
+             {
+                 ChampionName = "Viktor",
+                 SpellName = "ViktorGravitonField",
+                 Slot = SpellSlot.W,
+                 Type = SkillShotType.SkillshotCircle,
+                 Delay = 1500,
+                 Range = 800,
+                 Radius = 270,
+                 ExtraDuration = 2000,
+                 DontAddExtraDuration = true,
+                 DontCross = true,
+                 MissileSpeed = int.MaxValue,
+                 FixedRange = false,
+                 AddHitbox = true,
+                 DangerValue = 4,
+                 IsDangerous = true,
+                 SourceObjectName = "Viktor_Catalyst",
+ 
+             });
 
             #endregion Viktor
 
@@ -6108,7 +6152,7 @@ namespace Evade
                     MissileSpeed = int.MaxValue,
                     FixedRange = true,
                     AddHitbox = true,
-                    DangerValue = 5,
+                    DangerValue = 3,
                     IsDangerous = true,
                     MissileSpellName = "",
                 });
@@ -6125,7 +6169,7 @@ namespace Evade
                   MissileSpeed = 5000,
                   FixedRange = true,
                   AddHitbox = true,
-                  DangerValue = 5,
+                  DangerValue = 3,
                   IsDangerous = true,
                   IsDash = true,
                   CanDetectDash = (sender, args) =>
