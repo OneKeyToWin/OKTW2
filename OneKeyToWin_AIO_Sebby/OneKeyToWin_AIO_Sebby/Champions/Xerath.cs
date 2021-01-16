@@ -11,10 +11,12 @@ namespace OneKeyToWin_AIO_Sebby.Champions
     {
         private Vector3 Rtarget;
         private float lastR = 0;
-
+        private float qCastTime = 0f;
+        private float qRealDelay = 0.1f;
         private Items.Item
             FarsightOrb = new Items.Item(3342, 4000f),
             ScryingOrb = new Items.Item(3363, 3500f);
+
 
         public Xerath()
         {
@@ -23,7 +25,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             E = new Spell(SpellSlot.E, 1050);
             R = new Spell(SpellSlot.R, 5000);
 
-            Q.SetSkillshot(0.7f, 90f, float.MaxValue, false, SkillshotType.SkillshotLine);
+            Q.SetSkillshot(0.55f, 95f, float.MaxValue, false, SkillshotType.SkillshotLine);
             W.SetSkillshot(0.7f, 150f, float.MaxValue, false, SkillshotType.SkillshotCircle);
             E.SetSkillshot(0.25f, 60f, 1400f, true, SkillshotType.SkillshotLine);
             R.SetSkillshot(0.7f, 130f, float.MaxValue, false, SkillshotType.SkillshotCircle);
@@ -74,7 +76,10 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             Spellbook.OnCastSpell += Spellbook_OnCastSpell;
             Obj_AI_Base.OnProcessSpellCast += Obj_AI_Base_OnProcessSpellCast;
             Obj_AI_Base.OnIssueOrder += Obj_AI_Base_OnIssueOrder;
+            GameObject.OnCreate += Obj_AI_Base_OnCreate;
         }
+
+        
 
         private void Obj_AI_Base_OnIssueOrder(Obj_AI_Base sender, GameObjectIssueOrderEventArgs args)
         {
@@ -107,6 +112,21 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                     if(FarsightOrb.IsReady())
                         FarsightOrb.Cast(Rtarget);                  
                 }
+            }
+            if (args.Slot == SpellSlot.Q && Q.IsCharging)
+            {
+                qCastTime = Game.Time;
+            }
+        }
+
+        private void Obj_AI_Base_OnCreate(GameObject sender, EventArgs args)
+        {
+            if(sender.Name.Contains("_Q_aoe_reticle_green"))
+            {
+                var timeQNow = Game.Time - qCastTime - Game.Ping / 2f / 1000f;
+                Q.Delay = 0.55f +(qRealDelay + timeQNow) / 2;
+                Console.WriteLine("now: " + timeQNow + " before: " + qRealDelay + " total delay set: "+ Q.Delay);
+                qRealDelay = timeQNow;
             }
         }
 
@@ -171,10 +191,10 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 Orbwalking.Move = true;
             }
 
-            if (Q.IsCharging && (int)(Game.Time * 10) % 2 == 0)
-            {
-                Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
-            }
+            //if (Q.IsCharging && (int)(Game.Time * 10) % 2 == 0)
+            //{
+            //    Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
+            //}
 
             if (Program.LagFree(1))
             {
