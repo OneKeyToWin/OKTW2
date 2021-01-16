@@ -32,7 +32,6 @@ namespace Evade
         public delegate void OnDetectSkillshotH(Skillshot skillshot);
         private static Vector2 LuxRPosition = Vector2.Zero;
         private static Vector2 LuxRPositionMiddle = Vector2.Zero;
-        private static List<hiu_structure> hius = new SpellList<hiu_structure>();
         private static Obj_AI_Hero Jhin = null;
         private static Vector3 JhinLastRDirection;
         private static int JhinLastTimeR = 0;
@@ -129,7 +128,6 @@ namespace Evade
                 MalphiteRCD = Malphite.Spellbook.GetSpell(SpellSlot.R).Cooldown;
             }
 
-                hius.RemoveAll(x => x.created_at + 2000 < Utils.TickCount);
             //Get the skillshot data.
             var spellData = SpellDatabase.GetByName(ObjectManager.Player.Spellbook.GetSpell(SpellSlot.Q).SData.Name);
 
@@ -138,52 +136,6 @@ namespace Evade
                 //TriggerOnDetectSkillshot(DetectionType.ProcessSpell, spellData,
                 //    Utils.TickCount, Game.CursorPos.To2D(), ObjectManager.Player.Position.To2D(), ObjectManager.Player.Position.To2D(), ObjectManager.Player);
             }
-        }
-
-        public static bool GetHiuLine(Vector2 position, ref Vector2 start, ref Vector2 end)
-        {
-            var positions = new List<hiu_structure>();
-
-            foreach (var hiu in hius.Where(x => x.position.Distance(position) < 700))
-            {
-                foreach (var hiuB in hius)
-                {
-                    if (Math.Abs(hiu.created_at - hiuB.created_at) < 7)
-                    {
-                        var alreadyAdded = positions.FindIndex(x => (x.position - hiuB.position).LengthSquared() < 5);
-
-                        if (alreadyAdded != -1)
-                        {
-                            positions[alreadyAdded] = hiuB;
-                            continue;
-                        }
-
-                        if (positions.Find(x => x.self.NetworkId == hiuB.self.NetworkId) != null)
-                            continue;
-
-                        positions.Add(hiuB);
-                    }
-                }
-            }
-
-            if (positions.Count >= 2)
-            {
-                var last = positions.Last();
-                
-                positions.RemoveAll(x => Math.Abs(x.created_at - last.created_at) > 20);
-
-                var sorted = positions.OrderBy(x => x.self.NetworkId).ToArray();
-
-                if (sorted.Length >= 2)
-                {
-                    start = sorted[1].position;
-                    end = sorted[0].position;
-
-                    return true;
-                }
-            }
-
-            return false;
         }
 
         private static void Obj_AI_Base_OnNewPath(Obj_AI_Base sender, GameObjectNewPathEventArgs args)
@@ -277,15 +229,6 @@ namespace Evade
                 Console.WriteLine(Utils.TickCount + " GameObject_OnCreate " + sender.Name + " " + sender.IsAlly + " " + sender.Type );
             }
 
-            var minion = sender as Obj_AI_Minion;
-
-            if (minion != null && (minion.IsEnemy || Config.TestOnAllies))
-            {
-                if (minion.Name == "hiu" && hius.Find(x => x.self.NetworkId == minion.NetworkId) == null)
-                {
-                    hius.Add(new hiu_structure(minion.Position.To2D(), minion, Utils.TickCount));
-                }
-            }
 
             var spellData = SpellDatabase.GetBySourceObjectName(sender.Name);
 
@@ -302,15 +245,7 @@ namespace Evade
                 if (caster == null)
                     return;
 
-                if (spellData.SpellName == "XerathArcanopulse2")
-                {
-                    Utility.DelayAction.Add(0, () =>
-                    {
-                        TriggerOnDetectSkillshot(DetectionType.ProcessSpell, spellData, Utils.TickCount - Game.Ping / 2 - spellData.ParticleDetectDelay, caster.Position.To2D(), sender.Position.To2D(), sender.Position.To2D(), caster);
-                    });
-                    return;
-                }
-                else if (spellData.SpellName == "KaynAssW")
+               if (spellData.SpellName == "KaynAssW")
                 {
                     var clone = sender as Obj_AI_Minion;
 
@@ -350,6 +285,20 @@ namespace Evade
                         direction = direction.Rotated(Utils.ToRadians(spellData.ParticleRotation));
                 }
 
+                if (spellData.SpellName == "XerathArcanopulse")
+                {
+                    var buff = caster.GetBuff("XerathArcanopulseChargeUp");
+                    if (buff != null)
+                    {
+                        var bufftime = Game.Time - buff.StartTime;
+                        spellData.Range = 800f + 750f * Math.Min((bufftime / 1.4f), 1f);
+                    }
+                    else
+                    {
+                        spellData.Range = 1550;
+                    }
+                }
+
                 if (spellData.BehindStart != -1)
                     startPos = startPos - direction * spellData.BehindStart;
 
@@ -364,7 +313,7 @@ namespace Evade
 
                 if (spellData.ExtraRange != -1)
                     endPos = endPos + Math.Min(spellData.ExtraRange, spellData.Range - endPos.Distance(startPos)) * direction;
-
+               
                 TriggerOnDetectSkillshot(DetectionType.ProcessSpell, spellData, Utils.TickCount - Game.Ping / 2 - spellData.ParticleDetectDelay, startPos, endPos, endPos, caster);
                 return;
             }
@@ -383,16 +332,6 @@ namespace Evade
             if (!sender.IsValid || !Config.TestOnAllies && sender.Team == ObjectManager.Player.Team)
             {
                 return;
-            }
-
-            var minion = sender as Obj_AI_Minion;
-
-            if (minion != null && (minion.IsEnemy || Config.TestOnAllies))
-            {
-                if (minion.Name == "hiu")
-                {
-                    hius.RemoveAll(x => x.self.NetworkId == minion.NetworkId);
-                }
             }
 
             for (var i = Program.DetectedSkillshots.Count - 1; i >= 0; i--)

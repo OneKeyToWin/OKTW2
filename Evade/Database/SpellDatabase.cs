@@ -4604,19 +4604,18 @@ namespace Evade
                 new SpellData
                 {
                     ChampionName = "Xerath",
-                    SpellName = "XerathArcanopulse2",
+                    SpellName = "XerathArcanopulse",
                     Slot = SpellSlot.Q,
                     Type = SkillShotType.SkillshotLine,
                     Delay = 600,
-                    Range = 1600,
+                    Range = 1550,
                     Radius = 95,
                     MissileSpeed = int.MaxValue,
                     FixedRange = true,
                     AddHitbox = true,
-                    DangerValue = 2,
+                    DangerValue = 3,
                     IsDangerous = true,
-                    MissileSpellName = "xeratharcanopulse2",
-                    EndAtParticle = "xerath_.+_q_aoe_reticle_red"
+                    SourceObjectName = "^Xerath_.+_Q_cas$"
                 });
 
             Spells.Add(

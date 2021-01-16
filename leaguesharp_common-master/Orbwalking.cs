@@ -1096,15 +1096,15 @@ namespace LeagueSharp.Common
                             }
                            
                                 var minionToTryKill = minions.Where(x => closestTower.GetAutoAttackDamage(x, true) > x.Health 
-                                                                                    && Player.GetAutoAttackDamage(nextMinion, true) < x.Health ).Last();
+                                                                                    && Player.GetAutoAttackDamage(nextMinion, true) < x.Health ).LastOrDefault();
                                 if (minionToTryKill != null)
-                                    return minions.Last();
+                                    return minionToTryKill;
                             
                             if (mode == OrbwalkingMode.LaneClear && minions.Count() > 3)
                             {
-                                var lastMinion = minions.Where(x =>!HealthPrediction.HasMinionAggro(x as Obj_AI_Minion)).Last();
+                                var lastMinion = minions.Where(x =>!HealthPrediction.HasMinionAggro(x as Obj_AI_Minion)).LastOrDefault();
                                 if(lastMinion != null)
-                                return minions.Last();
+                                return lastMinion;
                             }
                             return null;
                         }
