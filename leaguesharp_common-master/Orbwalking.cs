@@ -993,7 +993,18 @@ namespace LeagueSharp.Common
                                     FireOnNonKillableMinion(minion);
 
                                 if (killable)
-                                    return minion;
+                                {
+                                    if (HealthPrediction.HasTurretAggro(minion as Obj_AI_Minion))
+                                    {
+                                       if(predHealth > 0)
+                                            return minion;
+                                    }
+                                    else
+                                    {
+                                        return minion;
+                                    }
+                                }
+                                  
                             }
                         }
                     }
@@ -1083,7 +1094,18 @@ namespace LeagueSharp.Common
                                 if (minionHpPred > Player.GetAutoAttackDamage(nextMinion, true) && minionHpPred < damageOnMinion)
                                     return nextMinion;
                             }
-
+                           
+                                var minionToTryKill = minions.Where(x => closestTower.GetAutoAttackDamage(x, true) > x.Health 
+                                                                                    && Player.GetAutoAttackDamage(nextMinion, true) < x.Health ).Last();
+                                if (minionToTryKill != null)
+                                    return minions.Last();
+                            
+                            if (mode == OrbwalkingMode.LaneClear && minions.Count() > 3)
+                            {
+                                var lastMinion = minions.Where(x =>!HealthPrediction.HasMinionAggro(x as Obj_AI_Minion)).Last();
+                                if(lastMinion != null)
+                                return minions.Last();
+                            }
                             return null;
                         }
                     }
