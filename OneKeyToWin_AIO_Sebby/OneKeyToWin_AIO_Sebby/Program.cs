@@ -420,7 +420,7 @@ namespace OneKeyToWin_AIO_Sebby
                 var predInput2 = new PredictionInput
                 {
                     Aoe = false,
-                    Collision = QWER.Collision,
+                    Collision = false,
                     Speed = QWER.Speed,
                     Delay = QWER.Delay,
                     Range = QWER.Range,
@@ -429,12 +429,10 @@ namespace OneKeyToWin_AIO_Sebby
                     Unit = target,
                     Type = CoreType2
                 };
-                
+
                 var poutput2 = Prediction.GetPrediction(predInput2);
                 
-                if ((poutput2.Hitchance >= HitChance.Low &&
-                    poutput2.Hitchance <= HitChance.VeryHigh)
-                    || poutput2.Hitchance == HitChance.Collision)
+                if (poutput2.Hitchance >= HitChance.Low && poutput2.Hitchance <= HitChance.VeryHigh)
                 {
                     var prediction = AIPrediction.GetPrediction(predInput2, poutput2.CastPosition);
 
@@ -512,17 +510,31 @@ namespace OneKeyToWin_AIO_Sebby
         private static bool CastSpellPred(Spell QWER, float targetPrediction,
             PredictionOutput poutput2, PredictionInput input, AIPredictionOutput prediction)
         {
-            if (prediction.HitchancePath > targetPrediction && prediction.HitchancePath >= prediction.HitchancePosition
-                                                            && (QWER.Slot != SpellSlot.Q || Collision
-                                                                .GetCollision(new List<Vector3> {poutput2.CastPosition}, input).Count <= 1))
+            if (prediction.HitchancePath > targetPrediction && prediction.HitchancePath >= prediction.HitchancePosition)
             {
+                if(QWER.Collision)
+                { 
+}
+                var positions = new List<Vector3> { poutput2.CastPosition };
+                var originalUnit = input.Unit;
+                poutput2.CollisionObjects = Collision.GetCollision(positions, input);
+                poutput2.CollisionObjects.RemoveAll(x => x.NetworkId == originalUnit.NetworkId);
+                if(poutput2.CollisionObjects.Count > 0 )
+                    return false;
+
                 Console.WriteLine($"CAST {QWER.Slot.ToString()} PATH: " + prediction.HitchancePath);
                 QWER.Cast(poutput2.CastPosition);
                 return true;
             }
-            else if (prediction.HitchancePosition > targetPrediction &&
-                     (QWER.Slot != SpellSlot.Q || Collision.GetCollision(new List<Vector3> {input.Unit.ServerPosition}, input).Count <= 1))
+            else if (prediction.HitchancePosition > targetPrediction)
             {
+                var positions = new List<Vector3> { input.Unit.ServerPosition };
+                var originalUnit = input.Unit;
+                poutput2.CollisionObjects = Collision.GetCollision(positions, input);
+                poutput2.CollisionObjects.RemoveAll(x => x.NetworkId == originalUnit.NetworkId);
+                if (poutput2.CollisionObjects.Count > 0)
+                    return false;
+
                 Console.WriteLine($"CAST {QWER.Slot.ToString()} POSITION: " + prediction.HitchancePosition);
                 QWER.Cast(input.Unit.ServerPosition);
                 return true;
