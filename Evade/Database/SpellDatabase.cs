@@ -3823,7 +3823,9 @@ namespace Evade
                     FixedRange = false,
                     AddHitbox = true,
                     DangerValue = 3,
-                    IsDangerous = true
+                    IsDangerous = true,
+                    SourceObjectName = "Swain_.+AOE_Initial"
+
                 });
 
             Spells.Add(
@@ -3834,7 +3836,7 @@ namespace Evade
                     Slot = SpellSlot.E,
                     Type = SkillShotType.SkillshotMissileLine,
                     Delay = 250,
-                    Range = 1000,
+                    Range = 1150,
                     Radius = 90,
                     ExtraRange = 150,
                     MissileSpeed = 1500,
@@ -3845,6 +3847,25 @@ namespace Evade
                     CollisionObjects = new [] { CollisionObjectTypes.YasuoWall },
                     MissileSpellName = "SwainE"
                 });
+            Spells.Add(
+               new SpellData
+               {
+                   ChampionName = "Swain",
+                   SpellName = "SwainEReturn",
+                   Slot = SpellSlot.E,
+                   Type = SkillShotType.SkillshotMissileLine,
+                   Delay = 250,
+                   Range = 1000,
+                   Radius = 90,
+                   ExtraRange = 150,
+                   MissileSpeed = 1200,
+                   FixedRange = false,
+                   AddHitbox = true,
+                   DangerValue = 3,
+                   IsDangerous = true,
+                   CollisionObjects = new[] { CollisionObjectTypes.YasuoWall },
+                   MissileSpellName = "SwainEReturnMissile"
+               });
 
             #endregion Swain
 
