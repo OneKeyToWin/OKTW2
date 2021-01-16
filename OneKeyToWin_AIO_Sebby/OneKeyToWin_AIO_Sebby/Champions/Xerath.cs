@@ -25,7 +25,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             E = new Spell(SpellSlot.E, 1050);
             R = new Spell(SpellSlot.R, 5000);
 
-            Q.SetSkillshot(0.55f, 95f, float.MaxValue, false, SkillshotType.SkillshotLine);
+            Q.SetSkillshot(0.7f, 95f, float.MaxValue, false, SkillshotType.SkillshotLine);
             W.SetSkillshot(0.7f, 150f, float.MaxValue, false, SkillshotType.SkillshotCircle);
             E.SetSkillshot(0.25f, 60f, 1400f, true, SkillshotType.SkillshotLine);
             R.SetSkillshot(0.7f, 130f, float.MaxValue, false, SkillshotType.SkillshotCircle);
@@ -126,8 +126,8 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             {
                 if (sender.Name.Contains("_Q_aoe_reticle_green"))
                 {
-                    var timeQNow = Game.Time - qCastTime - Game.Ping / 2f / 1000f;
-                    if (timeQNow < 0 || timeQNow > 0.2)
+                    float timeQNow = Game.Time - qCastTime - Game.Ping / 2f / 1000f;
+                    if (timeQNow > 0f && timeQNow < 0.2f)
                     {
                         Q.Delay = 0.55f + (qRealDelay + timeQNow) / 2;
                         Console.WriteLine("now: " + timeQNow + " before: " + qRealDelay + " total delay set: " + Q.Delay);
