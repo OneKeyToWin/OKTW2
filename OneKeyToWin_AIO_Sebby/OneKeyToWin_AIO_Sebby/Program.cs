@@ -512,29 +512,30 @@ namespace OneKeyToWin_AIO_Sebby
         {
             if (prediction.HitchancePath > targetPrediction && prediction.HitchancePath >= prediction.HitchancePosition)
             {
-                if(QWER.Collision)
-                { 
-}
-                var positions = new List<Vector3> { poutput2.CastPosition };
-                var originalUnit = input.Unit;
-                poutput2.CollisionObjects = Collision.GetCollision(positions, input);
-                poutput2.CollisionObjects.RemoveAll(x => x.NetworkId == originalUnit.NetworkId);
-                if(poutput2.CollisionObjects.Count > 0 )
-                    return false;
-
-                Console.WriteLine($"CAST {QWER.Slot.ToString()} PATH: " + prediction.HitchancePath);
+                if (QWER.Collision)
+                {
+                    var positions = new List<Vector3> { poutput2.CastPosition };
+                    var originalUnit = input.Unit;
+                    poutput2.CollisionObjects = Collision.GetCollision(positions, input);
+                    poutput2.CollisionObjects.RemoveAll(x => x.NetworkId == originalUnit.NetworkId);
+                    if (poutput2.CollisionObjects.Count > 0)
+                        return false;
+                }
+                 Console.WriteLine($"CAST {QWER.Slot.ToString()} PATH: " + prediction.HitchancePath);
                 QWER.Cast(poutput2.CastPosition);
                 return true;
             }
             else if (prediction.HitchancePosition > targetPrediction)
             {
-                var positions = new List<Vector3> { input.Unit.ServerPosition };
-                var originalUnit = input.Unit;
-                poutput2.CollisionObjects = Collision.GetCollision(positions, input);
-                poutput2.CollisionObjects.RemoveAll(x => x.NetworkId == originalUnit.NetworkId);
-                if (poutput2.CollisionObjects.Count > 0)
-                    return false;
-
+                if (QWER.Collision)
+                {
+                    var positions = new List<Vector3> { input.Unit.ServerPosition };
+                    var originalUnit = input.Unit;
+                    poutput2.CollisionObjects = Collision.GetCollision(positions, input);
+                    poutput2.CollisionObjects.RemoveAll(x => x.NetworkId == originalUnit.NetworkId);
+                    if (poutput2.CollisionObjects.Count > 0)
+                        return false;
+                }
                 Console.WriteLine($"CAST {QWER.Slot.ToString()} POSITION: " + prediction.HitchancePosition);
                 QWER.Cast(input.Unit.ServerPosition);
                 return true;
