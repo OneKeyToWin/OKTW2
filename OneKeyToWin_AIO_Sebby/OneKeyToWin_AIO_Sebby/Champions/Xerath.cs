@@ -191,11 +191,6 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 Orbwalking.Move = true;
             }
 
-            //if (Q.IsCharging && (int)(Game.Time * 10) % 2 == 0)
-            //{
-            //    Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
-            //}
-
             if (Program.LagFree(1))
             {
                 SetMana();
