@@ -248,7 +248,7 @@ namespace OneKeyToWin_AIO_Sebby
                 .AddItem(new MenuItem($"{spellSlot}pred", $"{spellSlot} Prediction MODE", true).SetValue(
                     new StringList(new[] {"Common prediction", "PROdiction"}, 1)));
                 
-            var isAiPrediction = predType.GetValue<StringList>().SelectedIndex == 2;
+            var isAiPrediction = predType.GetValue<StringList>().SelectedIndex == 1;
             var regularPredictionMenu = Config.SubMenu("Prediction MODE")
                 .AddItem(new MenuItem($"{spellSlot}HitChance", $"{spellSlot} Hit Chance", true)
                     .SetValue(new StringList(new[] {"Very High", "High", "Medium"}, 0))).Show(!isAiPrediction);
