@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
+using PROdiction;
 using SharpDX;
 using SebbyLib;
+using Collision = LeagueSharp.Common.Collision;
 
 namespace OneKeyToWin_AIO_Sebby
 {
@@ -202,14 +205,11 @@ namespace OneKeyToWin_AIO_Sebby
                 }
                 #endregion
 
-                Config.SubMenu("Prediction MODE").AddItem(new MenuItem("Qpred", "Q Prediction MODE", true).SetValue(new StringList(new[] { "Common prediction", "Ai prediction"}, 0)));
-                Config.SubMenu("Prediction MODE").AddItem(new MenuItem("QHitChance", "Q Hit Chance", true).SetValue(new StringList(new[] { "Very High", "High", "Medium" }, 0)));
-                Config.SubMenu("Prediction MODE").AddItem(new MenuItem("Wpred", "W Prediction MODE", true).SetValue(new StringList(new[] { "Common prediction", "Ai prediction" }, 0)));
-                Config.SubMenu("Prediction MODE").AddItem(new MenuItem("WHitChance", "W Hit Chance", true).SetValue(new StringList(new[] { "Very High", "High", "Medium" }, 0)));
-                Config.SubMenu("Prediction MODE").AddItem(new MenuItem("Epred", "E Prediction MODE", true).SetValue(new StringList(new[] { "Common prediction", "Ai prediction" }, 0)));
-                Config.SubMenu("Prediction MODE").AddItem(new MenuItem("EHitChance", "E Hit Chance", true).SetValue(new StringList(new[] { "Very High", "High", "Medium" }, 0)));
-                Config.SubMenu("Prediction MODE").AddItem(new MenuItem("Rpred", "R Prediction MODE", true).SetValue(new StringList(new[] { "Common prediction", "Ai prediction" }, 0)));
-                Config.SubMenu("Prediction MODE").AddItem(new MenuItem("RHitChance", "R Hit Chance", true).SetValue(new StringList(new[] { "Very High", "High", "Medium" }, 0)));
+                AddPredictionSpellMenuItem("Q");
+                AddPredictionSpellMenuItem("W");
+                AddPredictionSpellMenuItem("E");
+                AddPredictionSpellMenuItem("R");
+                
                 Config.SubMenu("Prediction MODE").AddItem(new MenuItem("debugPred", "Draw Aiming OKTW© PREDICTION").SetValue(false));
                 new Core.OktwTs();
             }
@@ -242,6 +242,35 @@ namespace OneKeyToWin_AIO_Sebby
             }
         }
 
+        private static void AddPredictionSpellMenuItem(string spellSlot)
+        {
+            var predType = Config.SubMenu("Prediction MODE")
+                .AddItem(new MenuItem($"{spellSlot}pred", $"{spellSlot} Prediction MODE", true).SetValue(
+                    new StringList(new[] {"Common prediction", "PROdiction"}, 1)));
+                
+            var isAiPrediction = predType.GetValue<StringList>().SelectedIndex == 2;
+            var regularPredictionMenu = Config.SubMenu("Prediction MODE")
+                .AddItem(new MenuItem($"{spellSlot}HitChance", $"{spellSlot} Hit Chance", true)
+                    .SetValue(new StringList(new[] {"Very High", "High", "Medium"}, 0))).Show(!isAiPrediction);
+            var aiPredictionMenu = Config.SubMenu("Prediction MODE")
+                .AddItem(new MenuItem($"{spellSlot}HitChanceAI", $"{spellSlot} Hit Chance AI", true).SetValue(new Slider(50, 0, 100)))
+                .Show(isAiPrediction);
+
+            predType.ValueChanged += (sender, args) =>
+            {
+                if (args.GetNewValue<StringList>().SelectedIndex == 1)
+                {
+                    aiPredictionMenu.Show(true);
+                    regularPredictionMenu.Show(false);
+                }
+                else
+                {
+                    aiPredictionMenu.Show(false);
+                    regularPredictionMenu.Show(true);
+                }
+            };
+        }
+        
         private static void Program_ValueChanged(object sender, OnValueChangeEventArgs e)
         {
             Config.Item("aiomodes").Show(true);
@@ -274,7 +303,6 @@ namespace OneKeyToWin_AIO_Sebby
             if (tickIndex > 4)
                 tickIndex = 0;
         }
-
 
         public static bool LagFree(int offset)
         {
@@ -332,17 +360,9 @@ namespace OneKeyToWin_AIO_Sebby
 
             if (predIndex == 0)
             {
-                bool aoe2 = false;
-
-                if (QWER.Type == SkillshotType.SkillshotCircle)
-                    aoe2 = true;
-
-                if (QWER.Width > 80 && !QWER.Collision)
-                    aoe2 = true;
-
                 var predInput2 = new PredictionInput
                 {
-                    Aoe = aoe2,
+                    Aoe = false,
                     Collision = QWER.Collision,
                     Speed = QWER.Speed,
                     Delay = QWER.Delay,
@@ -352,6 +372,7 @@ namespace OneKeyToWin_AIO_Sebby
                     Unit = target,
                     Type = QWER.Type
                 };
+                
                 var poutput2 = Prediction.GetPrediction(predInput2);
 
                 //var poutput2 = QWER.GetPrediction(target);
@@ -362,7 +383,9 @@ namespace OneKeyToWin_AIO_Sebby
                 if ((int)hitchance == 6)
                 {
                     if (poutput2.Hitchance >= HitChance.VeryHigh)
+                    {
                         QWER.Cast(poutput2.CastPosition);
+                    }
                     else if (predInput2.Aoe && poutput2.AoeTargetsHitCount > 1 && poutput2.Hitchance >= HitChance.High)
                     {
                         QWER.Cast(poutput2.CastPosition);
@@ -372,7 +395,9 @@ namespace OneKeyToWin_AIO_Sebby
                 else if ((int)hitchance == 5)
                 {
                     if (poutput2.Hitchance >= HitChance.High)
+                    {
                         QWER.Cast(poutput2.CastPosition);
+                    }
 
                 }
                 else if ((int)hitchance == 4)
@@ -390,10 +415,122 @@ namespace OneKeyToWin_AIO_Sebby
             }
             else if (predIndex == 1)
             {
-               
+                SkillshotType CoreType2 = SkillshotType.SkillshotLine;
+                
+                var predInput2 = new PredictionInput
+                {
+                    Aoe = false,
+                    Collision = QWER.Collision,
+                    Speed = QWER.Speed,
+                    Delay = QWER.Delay,
+                    Range = QWER.Range,
+                    From = Player.ServerPosition,
+                    Radius = QWER.Width,
+                    Unit = target,
+                    Type = CoreType2
+                };
+                
+                var poutput2 = Prediction.GetPrediction(predInput2);
+                
+                if ((poutput2.Hitchance >= HitChance.Low &&
+                    poutput2.Hitchance <= HitChance.VeryHigh)
+                    || poutput2.Hitchance == HitChance.Collision)
+                {
+                    var prediction = AIPrediction.GetPrediction(predInput2, poutput2.CastPosition);
+
+                    if (Game.Time - DrawSpellTime > 0.5)
+                    {
+                        DrawSpell = QWER;
+                        DrawSpellTime = Game.Time;
+                    }
+
+                    DrawSpellPos = poutput2;
+
+                    switch (QWER.Slot)
+                    {
+                        case SpellSlot.Q:
+                        {
+                            var targetPrediction = Config.Item("QHitChanceAI", true).GetValue<Slider>().Value / 100.0f;
+                            if (CastSpellPred(QWER, targetPrediction, poutput2, predInput2, prediction))
+                            {
+                                return;
+                            }
+
+                            break;
+                        }
+
+                        case SpellSlot.W:
+                        {
+                            var targetPrediction = Config.Item("WHitChanceAI", true).GetValue<Slider>().Value / 100.0f;
+                            if (CastSpellPred(QWER, targetPrediction, poutput2, predInput2, prediction))
+                            {
+                                return;
+                            }
+
+                            break;
+                        }
+
+                        case SpellSlot.E:
+                        {
+                            var targetPrediction = Config.Item("EHitChanceAI", true).GetValue<Slider>().Value / 100.0f;
+                            if (CastSpellPred(QWER, targetPrediction, poutput2, predInput2, prediction))
+                            {
+                                return;
+                            }
+
+                            break;
+                        }
+
+                        case SpellSlot.R:
+                        {
+                            var targetPrediction = Config.Item("RHitChanceAI", true).GetValue<Slider>().Value / 100.0f;
+
+                            if (CastSpellPred(QWER, targetPrediction, poutput2, predInput2, prediction))
+                            {
+                                return;
+                            }
+                            
+                            break;
+                        }
+
+                        default:
+                        {
+                            return;
+                        }
+                    }
+
+                }
+
+                if (poutput2.Hitchance == HitChance.Immobile ||
+                    poutput2.Hitchance == HitChance.Dashing)
+                {
+                    QWER.Cast(poutput2.CastPosition);
+                }
             }
         }
 
+        private static bool CastSpellPred(Spell QWER, float targetPrediction,
+            PredictionOutput poutput2, PredictionInput input, AIPredictionOutput prediction)
+        {
+            if (prediction.HitchancePath > targetPrediction && prediction.HitchancePath >= prediction.HitchancePosition
+                                                            && (QWER.Slot != SpellSlot.Q || Collision
+                                                                .GetCollision(new List<Vector3> {poutput2.CastPosition}, input).Count <= 1))
+            {
+                Console.WriteLine($"CAST {QWER.Slot.ToString()} PATH: " + prediction.HitchancePath);
+                QWER.Cast(poutput2.CastPosition);
+                return true;
+            }
+            else if (prediction.HitchancePosition > targetPrediction &&
+                     (QWER.Slot != SpellSlot.Q || Collision.GetCollision(new List<Vector3> {input.Unit.ServerPosition}, input).Count <= 1))
+            {
+                Console.WriteLine($"CAST {QWER.Slot.ToString()} POSITION: " + prediction.HitchancePosition);
+                QWER.Cast(input.Unit.ServerPosition);
+                return true;
+            }
+
+            return false;
+        }
+        
         public static void drawText(string msg, Vector3 Hero, System.Drawing.Color color, int weight = 0)
         {
             var wts = Drawing.WorldToScreen(Hero);
