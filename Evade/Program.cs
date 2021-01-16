@@ -551,25 +551,6 @@ namespace Evade
                     DetectedSkillshots.Add(skillshotToAdd);
                 }
 
-                if (skillshot.SpellData.SpellName == "XerathArcanopulse2")
-                {
-                    if (SkillshotDetector.GetHiuLine(skillshot.End, ref skillshot.Start, ref skillshot.End))
-                    {
-                        var skillshotToAdd = new Skillshot(
-                            skillshot.DetectionType, skillshot.SpellData, skillshot.StartTick, skillshot.Start, skillshot.End,
-                            skillshot.Unit);
-
-                        DetectedSkillshots.Add(skillshotToAdd);
-                    }
-                    else
-                    {
-                        if(Config.Debug) Console.WriteLine("NOT FIND LINE");
-                    }
-
-                    return;
-                }
-
-
                 if (skillshot.SpellData.SpellName == "IreliaE2")
                 {
                     var reg = new System.Text.RegularExpressions.Regex("Irelia_.+_E_.+_Indicator");
