@@ -299,8 +299,15 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 if (Q.IsCharging)
                 {
                     Program.CastSpell(Q, t);
-                    if (OktwCommon.GetPassiveTime(Player, "XerathArcanopulseChargeUp") < 1 || Player.CountEnemiesInRange(800) > 0 || Player.Distance(t) > 1450)
-                        Q.Cast(Q.GetPrediction(t).CastPosition);
+                    if (OktwCommon.GetPassiveTime(Player, "XerathArcanopulseChargeUp") < 1 ||
+                        Player.CountEnemiesInRange(800) > 0 || Player.Distance(t) > 1450)
+                    {
+                        var castPosition = Q.GetPrediction(t).CastPosition;
+                        if (castPosition.Distance(Player.ServerPosition) <= 1500)
+                        {
+                            Q.Cast(Q.GetPrediction(t).CastPosition);
+                        }
+                    }
 
                     return;
                 }
