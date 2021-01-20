@@ -79,8 +79,6 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             GameObject.OnCreate += Obj_AI_Base_OnCreate;
         }
 
-        
-
         private void Obj_AI_Base_OnIssueOrder(Obj_AI_Base sender, GameObjectIssueOrderEventArgs args)
         {
             if (args.Order == GameObjectOrder.AttackUnit && Q.IsCharging)
@@ -139,13 +137,8 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
         private void Obj_AI_Base_OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
-            if (sender.IsMe)
-            {
-                if (args.SData.Name == "xerathlocuspulse")
-                {
-                    lastR = Game.Time;
-                }
-            }
+            if (sender.IsMe && args.SData.Name == "xerathlocuspulse")
+                lastR = Game.Time;
         }
 
         private void Orbwalking_BeforeAttack(Orbwalking.BeforeAttackEventArgs args)
@@ -229,7 +222,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 R.Range = R.Range - Config.Item("MaxRangeR", true).GetValue<Slider>().Value;
             
             var t = TargetSelector.GetTarget(R.Range, TargetSelector.DamageType.Magical);
-            if (t.IsValidTarget() )
+            if (t.IsValidTarget())
             {
                 if (Config.Item("useR", true).GetValue<KeyBind>().Active && !IsCastingR)
                 {
@@ -244,8 +237,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 }
                 if (Game.Time - lastR > 0.001 * (float)Config.Item("delayR", true).GetValue<Slider>().Value && IsCastingR)
                 {
-                    Program.CastSpell(R, t);
-                     
+                    Program.CastSpell(R, t);   
                 }
                 Rtarget = R.GetPrediction(t).CastPosition;
             }
@@ -298,17 +290,16 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             {
                 if (Q.IsCharging)
                 {
-                    Program.CastSpell(Q, t);
-                    if (OktwCommon.GetPassiveTime(Player, "XerathArcanopulseChargeUp") < 1 ||
-                        Player.CountEnemiesInRange(800) > 0 || Player.Distance(t) > 1450)
+                    if (OktwCommon.GetPassiveTime(Player, "XerathArcanopulseChargeUp") < 1 || Player.CountEnemiesInRange(800) > 0 || Player.Distance(t) > 1450)
                     {
-                        var castPosition = Q.GetPrediction(t).CastPosition;
-                        if (castPosition.Distance(Player.ServerPosition) <= 1500)
+                        var qPred = Q.GetPrediction(t);
+                        if (qPred.Hitchance >= HitChance.Low)
                         {
-                            Q.Cast(castPosition);
+                            if(Q.Cast(qPred.CastPosition)) return;
                         }
                     }
 
+                    Program.CastSpell(Q, t);
                     return;
                 }
                 else if (t.IsValidTarget(Q.Range - 300))
@@ -319,7 +310,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                     {
                         Q.StartCharging();
                     }
-                    else if (Program.Harass &&  t.IsValidTarget(1200) &&  Config.Item("harassQ", true).GetValue<bool>() && Player.Mana > RMANA + EMANA + QMANA + QMANA && Config.Item("Harass" + t.ChampionName).GetValue<bool>() && !Player.UnderTurret(true) && OktwCommon.CanHarras())
+                    else if (Program.Harass && t.IsValidTarget(1200) &&  Config.Item("harassQ", true).GetValue<bool>() && Player.Mana > RMANA + EMANA + QMANA + QMANA && Config.Item("Harass" + t.ChampionName).GetValue<bool>() && !Player.UnderTurret(true) && OktwCommon.CanHarras())
                     {
                         Q.StartCharging();
                     }
@@ -363,9 +354,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
         {
             get
             {
-                return Player.HasBuff("XerathLocusOfPower2") ||
-                       (ObjectManager.Player.LastCastedSpellName() == "XerathLocusOfPower2" &&
-                        Utils.TickCount - ObjectManager.Player.LastCastedSpellT() < 500);
+                return Player.HasBuff("XerathLocusOfPower2") || (ObjectManager.Player.LastCastedSpellName() == "XerathLocusOfPower2" && Utils.TickCount - ObjectManager.Player.LastCastedSpellT() < 500);
             }
         }
 
