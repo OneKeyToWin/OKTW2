@@ -305,7 +305,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                         var castPosition = Q.GetPrediction(t).CastPosition;
                         if (castPosition.Distance(Player.ServerPosition) <= 1500)
                         {
-                            Q.Cast(Q.GetPrediction(t).CastPosition);
+                            Q.Cast(castPosition);
                         }
                     }
 
