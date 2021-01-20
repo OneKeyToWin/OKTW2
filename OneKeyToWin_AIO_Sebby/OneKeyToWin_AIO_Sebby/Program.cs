@@ -510,6 +510,12 @@ namespace OneKeyToWin_AIO_Sebby
         private static bool CastSpellPred(Spell QWER, float targetPrediction,
             PredictionOutput poutput2, PredictionInput input, AIPredictionOutput prediction)
         {
+            var maxCollisions = 0;
+            if (HeroManager.Player.ChampionName == "Lux")
+            {
+                maxCollisions = 1;
+            }
+
             if (prediction.HitchancePath > targetPrediction && prediction.HitchancePath >= prediction.HitchancePosition)
             {
                 if (QWER.Collision)
@@ -518,7 +524,7 @@ namespace OneKeyToWin_AIO_Sebby
                     var originalUnit = input.Unit;
                     poutput2.CollisionObjects = Collision.GetCollision(positions, input);
                     poutput2.CollisionObjects.RemoveAll(x => x.NetworkId == originalUnit.NetworkId);
-                    if (poutput2.CollisionObjects.Count > 0)
+                    if (poutput2.CollisionObjects.Count > maxCollisions)
                         return false;
                 }
                  Console.WriteLine($"CAST {QWER.Slot.ToString()} PATH: " + prediction.HitchancePath);
@@ -533,7 +539,7 @@ namespace OneKeyToWin_AIO_Sebby
                     var originalUnit = input.Unit;
                     poutput2.CollisionObjects = Collision.GetCollision(positions, input);
                     poutput2.CollisionObjects.RemoveAll(x => x.NetworkId == originalUnit.NetworkId);
-                    if (poutput2.CollisionObjects.Count > 0)
+                    if (poutput2.CollisionObjects.Count > maxCollisions)
                         return false;
                 }
                 Console.WriteLine($"CAST {QWER.Slot.ToString()} POSITION: " + prediction.HitchancePosition);
