@@ -183,14 +183,11 @@ namespace Evade
 
                 if (spellData.DashDelayedAction == -1)
                 {
-                    if(Malphite != null)
+                    if(Malphite != null && Malphite.NetworkId == sender.NetworkId)
                     {
-                        if(Malphite.NetworkId == caster.NetworkId)
-                        {
-                            Console.WriteLine("MALPH " + MalphiteRCD + " " + Malphite.Spellbook.GetSpell(SpellSlot.R).Cooldown);
-                            if(!MalphiteIsVisable || MalphiteRCD <= Malphite.Spellbook.GetSpell(SpellSlot.R).Cooldown)
-                                TriggerOnDetectSkillshot(DetectionType.ProcessSpell, spellData, Utils.TickCount - Game.Ping / 2, startPos, endPos, sender.Position.To2D(), caster);
-                        }
+                        if (!MalphiteIsVisable || MalphiteRCD <= Malphite.Spellbook.GetSpell(SpellSlot.R).Cooldown || Malphite.HasBuffOfType(BuffType.Slow) || args.Speed > 700 )
+                            TriggerOnDetectSkillshot(DetectionType.ProcessSpell, spellData, Utils.TickCount - Game.Ping / 2, startPos, endPos, sender.Position.To2D(), caster);
+                        
                     }
                     else if (spellData.CanDetectDash(sender, args))
                     {
