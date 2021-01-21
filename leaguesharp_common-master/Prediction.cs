@@ -50,6 +50,7 @@ namespace LeagueSharp.Common
         public SkillshotType Type = SkillshotType.SkillshotLine;
         public Obj_AI_Base Unit = ObjectManager.Player;
         public bool UseBoundingRadius = true;
+        public SpellSlot Slot = SpellSlot.Unknown;
         private Vector3 _from;
         private Vector3 _rangeCheckFrom;
 
@@ -292,7 +293,6 @@ namespace LeagueSharp.Common
 
         internal static PredictionOutput GetPositionOnPath(PredictionInput input, List<Vector2> path, float speed = -1)
         {
-
             speed = (Math.Abs(speed - (-1)) < float.Epsilon) ? SpeedFromVelocity(input.Unit) : speed;
 
             if (path.Count <= 1 || (input.Unit.IsWindingUp && !input.Unit.IsDashing()))
