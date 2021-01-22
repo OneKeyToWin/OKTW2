@@ -72,7 +72,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
         private void Obj_AI_Base_OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
-            if (sender.IsMe && args.SData.Name == "RocketGrabMissile")
+            if (sender.IsMe && args.Slot == SpellSlot.Q)
             {
                 Utility.DelayAction.Add(500, Orbwalking.ResetAutoAttackTimer);
                 grab++;
