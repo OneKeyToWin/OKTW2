@@ -804,7 +804,7 @@
                 to.Select(h => h.To3D()).ToList(),
                 new PredictionInput
                     {
-                        From = from.To3D(), Type = this.Type, Radius = this.Width,
+                        Slot= this.Slot, From = from.To3D(), Type = this.Type, Radius = this.Width,
                         Delay = delayOverride > 0 ? delayOverride : this.Delay, Speed = this.Speed
                     });
         }
@@ -896,7 +896,7 @@
                 Prediction.GetPrediction(
                     new PredictionInput
                         {
-                            Unit = unit, Delay = this.Delay, Radius = this.Width, Speed = this.Speed, From = this.From,
+                            Slot = this.Slot, Unit = unit, Delay = this.Delay, Radius = this.Width, Speed = this.Speed, From = this.From,
                             Range = (overrideRange > 0) ? overrideRange : this.Range, Collision = this.Collision,
                             Type = this.Type, RangeCheckFrom = this.RangeCheckFrom, Aoe = aoe,
                             CollisionObjects =
