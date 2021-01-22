@@ -253,7 +253,8 @@ namespace LeagueSharp.Common
             if (Player.IsCastingInterruptableSpell())
                 return false;
 
-
+            if(Player.Spellbook.IsAutoAttacking)
+                return false;
             if (!Player.CanAttack)
             {
                 if (_championName == "Aphelios" || Player.Spellbook.IsChanneling)
@@ -1096,7 +1097,7 @@ namespace LeagueSharp.Common
                             }
                            
                                 var minionToTryKill = minions.Where(x => closestTower.GetAutoAttackDamage(x, true) > x.Health 
-                                                                                    && Player.GetAutoAttackDamage(nextMinion, true) < x.Health ).LastOrDefault();
+                                                                                    && Player.GetAutoAttackDamage(x, true) < x.Health ).LastOrDefault();
                                 if (minionToTryKill != null)
                                     return minionToTryKill;
                             
