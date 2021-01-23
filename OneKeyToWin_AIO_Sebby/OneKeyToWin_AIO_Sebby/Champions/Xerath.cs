@@ -302,7 +302,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                     Program.CastSpell(Q, t);
                     return;
                 }
-                else if (t.IsValidTarget(Q.Range - 300))
+                else if (t.IsValidTarget(Q.Range))
                 {
                     if(t.Health < OktwCommon.GetKsDamage(t, Q))
                         Q.StartCharging();
