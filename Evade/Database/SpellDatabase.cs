@@ -2963,7 +2963,7 @@ namespace Evade
                 new SpellData
                 {
                     ChampionName = "Morgana",
-                    SpellName = "TormentedSoil",
+                    SpellName = "MorganaW",
                     Slot = SpellSlot.W,
                     Type = SkillShotType.SkillshotCircle,
                     Delay = 950,
@@ -2976,7 +2976,7 @@ namespace Evade
                     DangerValue = 3,
                     IsDangerous = true,
                     MissileSpellName = "",
-                    SourceObjectName = "morgana_base_w.+troy",
+                    SourceObjectName = "morgana.+w_cas",
                     CanBeRemoved = true,
                 });
 
@@ -4175,7 +4175,7 @@ namespace Evade
                 new SpellData
                 {
                     ChampionName = "Tristana",
-                    SpellName = "RocketJump",
+                    SpellName = "TristanaW",
                     Slot = SpellSlot.W,
                     Type = SkillShotType.SkillshotCircle,
                     Delay = 500,
