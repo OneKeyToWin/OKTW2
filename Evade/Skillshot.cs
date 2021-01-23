@@ -289,7 +289,7 @@ namespace Evade
                     {
                         StartTick = Utils.TickCount - SpellData.Delay;
                         Start = Unit.ServerPosition.To2D();
-                        End = Unit.ServerPosition.To2D() + 1000 * Unit.Direction.To2D().Perpendicular();
+                        End = Unit.ServerPosition.To2D() + 1000 * Unit.Direction.To2D().Perpendicular().Rotated(Utils.ToRadians(-90)) ;
                         Direction = (End - Start).Normalized();
                         UpdatePolygon();
                     }
