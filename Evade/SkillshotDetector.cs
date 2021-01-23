@@ -35,11 +35,7 @@ namespace Evade
         private static Obj_AI_Hero Jhin = null;
         private static Vector3 JhinLastRDirection;
         private static int JhinLastTimeR = 0;
-        private static Obj_AI_Hero Malphite = null;
         private static Obj_AI_Hero MissFortune = null;
-        private static float MalphiteRCD = 0;
-        private static bool MalphiteIsVisable = false;
-
         static SkillshotDetector()
         {
             foreach (var hero in ObjectManager.Get<Obj_AI_Hero>())
@@ -48,8 +44,6 @@ namespace Evade
                 {
                     if (hero.ChampionName == "Jhin")
                         Jhin = hero;
-                    if (hero.ChampionName == "Malphite")
-                        Malphite = hero;
                     if (hero.ChampionName == "MissFortune")
                         MissFortune = hero;
                 }
@@ -59,7 +53,7 @@ namespace Evade
             Obj_AI_Base.OnNewPath += Obj_AI_Base_OnNewPath;
             Game.OnUpdate += Game_OnUpdate;
             Obj_AI_Base.OnBuffAdd += Obj_AI_Base_OnBuffAdd;
-
+            Obj_AI_Base.OnBuffRemove += OnBuffRemove;
             //Detect when projectiles collide.
             GameObject.OnDelete += ObjSpellMissileOnOnDelete;
             GameObject.OnCreate += ObjSpellMissileOnOnCreate;
@@ -67,19 +61,14 @@ namespace Evade
             GameObject.OnDelete += GameObject_OnDelete;
         }
 
+        private static void OnBuffRemove(Obj_AI_Base sender, Obj_AI_BaseBuffRemoveEventArgs args)
+        {
+           
+        }
+
         private static void Obj_AI_Base_OnBuffAdd(Obj_AI_Base sender, Obj_AI_BaseBuffAddEventArgs args)
         {
-           //if(sender is Obj_AI_Hero && args.Buff.Name == "LucianR")
-           // {
-           //     if (args.Buff.Name == "LucianR")
-           //     {
-           //         var spellData = SpellDatabase.GetByName("LucianRMis");
-           //         var startPos = sender.Position.To2D();
-           //         var endPos = startPos + sender.Direction.To2D() * spellData.Range;
-
-           //         TriggerOnDetectSkillshot(DetectionType.ProcessSpell, spellData, Utils.TickCount - Game.Ping / 2 - spellData.ParticleDetectDelay, startPos, endPos, endPos, sender);
-           //     }
-           // }
+           
         }
 
         private static void Game_OnUpdate(EventArgs args)
@@ -121,13 +110,7 @@ namespace Evade
                     JhinLastRDirection = new Vector3();
                 }
             }
-
-            if (Malphite != null && !Malphite.IsDashing())
-            {
-                MalphiteIsVisable = Malphite.IsVisible;
-                MalphiteRCD = Malphite.Spellbook.GetSpell(SpellSlot.R).Cooldown;
-            }
-
+        
             //Get the skillshot data.
             var spellData = SpellDatabase.GetByName(ObjectManager.Player.Spellbook.GetSpell(SpellSlot.Q).SData.Name);
 
@@ -183,13 +166,7 @@ namespace Evade
 
                 if (spellData.DashDelayedAction == -1)
                 {
-                    if(Malphite != null && Malphite.NetworkId == sender.NetworkId)
-                    {
-                        if (!MalphiteIsVisable || MalphiteRCD <= Malphite.Spellbook.GetSpell(SpellSlot.R).Cooldown || Malphite.HasBuffOfType(BuffType.Slow) || args.Speed > 700 )
-                            TriggerOnDetectSkillshot(DetectionType.ProcessSpell, spellData, Utils.TickCount - Game.Ping / 2, startPos, endPos, sender.Position.To2D(), caster);
-                        
-                    }
-                    else if (spellData.CanDetectDash(sender, args))
+                    if (spellData.CanDetectDash(sender, args))
                     {
                         TriggerOnDetectSkillshot(DetectionType.ProcessSpell, spellData, Utils.TickCount - Game.Ping / 2, startPos, endPos, sender.Position.To2D(), caster);
                     }

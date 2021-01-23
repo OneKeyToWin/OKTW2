@@ -155,8 +155,8 @@ namespace Evade
             foreach (var buff in unit.Buffs)
             {
                 if (buff.IsActive && Game.Time <= buff.EndTime &&
-                    (buff.Type == BuffType.Charm || buff.Type == BuffType.Knockup || buff.Type == BuffType.Stun ||
-                     buff.Type == BuffType.Suppression || buff.Type == BuffType.Snare))
+                    (buff.Type == BuffType.Charm || buff.Type == BuffType.Knockup || buff.Type == BuffType.Knockback || buff.Type == BuffType.Stun ||
+                     buff.Type == BuffType.Suppression || buff.Type == BuffType.Snare || buff.Type == BuffType.Sleep))
                 {
                     result = Math.Max(result, buff.EndTime);
                 }
