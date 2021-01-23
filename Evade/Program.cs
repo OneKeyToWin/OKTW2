@@ -761,8 +761,6 @@ namespace Evade
                 //Inside the danger polygon.
                 if (!safeResult.IsSafe)
                 {
-                    
-
                     //Search for an evade point:
                     TryToEvade(safeResult.SkillshotList, EvadeToPoint.IsValid() ? EvadeToPoint : Game.CursorPos.To2D());
                 }
@@ -1078,21 +1076,6 @@ namespace Evade
             {
                 if (evadeSpell.Enabled && evadeSpell.DangerLevel <= dangerLevel)
                 {
-                    //SpellShields
-                    if (evadeSpell.IsSpellShield && ObjectManager.Player.Spellbook.CanUseSpell(evadeSpell.Slot) == SpellState.Ready)
-                    {
-                        if (evadeSpell.Name == "Samira W")
-                            if (!HitBy.Exists(x => x.SpellData.MissileSpeed > 0 && x.SpellData.MissileSpeed != int.MaxValue))
-                                continue;
-
-                        if (IsAboutToHit(ObjectManager.Player, evadeSpell.Delay))
-                            ObjectManager.Player.Spellbook.CastSpell(evadeSpell.Slot, ObjectManager.Player);
-
-                        //Let the user move freely inside the skillshot.
-                        NoSolutionFound = true;
-                        return;
-                    }
-
                     //Walking
                     if (evadeSpell.Name == "Walking")
                     {
@@ -1109,6 +1092,33 @@ namespace Evade
                             Evading = true;
                             return;
                         }
+                    }
+
+                    //SpellShields
+                    if (evadeSpell.IsSpellShield && ObjectManager.Player.Spellbook.CanUseSpell(evadeSpell.Slot) == SpellState.Ready)
+                    {
+                        if (evadeSpell.Name == "Samira W")
+                            if (!HitBy.Exists(x => x.SpellData.MissileSpeed > 0 && x.SpellData.MissileSpeed != int.MaxValue))
+                                continue;
+
+                        if (IsAboutToHit(ObjectManager.Player, evadeSpell.Delay))
+                            ObjectManager.Player.Spellbook.CastSpell(evadeSpell.Slot, ObjectManager.Player);
+
+                        //Let the user move freely inside the skillshot.
+                        NoSolutionFound = true;
+                        return;
+                    }
+
+                    //Shields
+                    if (evadeSpell.IsShield && ObjectManager.Player.Spellbook.CanUseSpell(evadeSpell.Slot) == SpellState.Ready)
+                    {
+                        if (IsAboutToHit(ObjectManager.Player, evadeSpell.Delay))
+                        {
+                            ObjectManager.Player.Spellbook.CastSpell(evadeSpell.Slot, ObjectManager.Player);
+                            NoSolutionFound = true;
+                            return;
+                        }
+                        //Let the user move freely inside the skillshot.
                     }
 
                     if (evadeSpell.IsReady())
@@ -1261,8 +1271,82 @@ namespace Evade
                             }
                         }
 
-                        //Blinks
-                        if (evadeSpell.IsBlink)
+                        //Invulnerabilities, like Fizz's E
+                        if (evadeSpell.IsInvulnerability)
+                        {
+                            if (evadeSpell.IsTargetted)
+                            {
+                                var targets = Evader.GetEvadeTargets(evadeSpell.ValidTargets, int.MaxValue, 0, evadeSpell.MaxRange, true, false, true);
+
+                                if (targets.Count > 0)
+                                {
+                                    if (IsAboutToHit(ObjectManager.Player, evadeSpell.Delay))
+                                    {
+                                        var closestTarget = Utils.Closest(targets, to);
+                                        EvadePoint = closestTarget.ServerPosition.To2D();
+                                        Evading = true;
+                                        ObjectManager.Player.Spellbook.CastSpell(evadeSpell.Slot, closestTarget);
+                                    }
+
+                                    //Let the user move freely inside the skillshot.
+                                    NoSolutionFound = true;
+                                    return;
+                                }
+                            }
+                            else
+                            {
+                                if (IsAboutToHit(ObjectManager.Player, evadeSpell.Delay))
+                                {
+                                    if (evadeSpell.SelfCast)
+                                        ObjectManager.Player.Spellbook.CastSpell(evadeSpell.Slot);
+                                    else
+                                        ObjectManager.Player.Spellbook.CastSpell(evadeSpell.Slot, ObjectManager.Player.ServerPosition);
+                                }
+                            }
+
+                            //Let the user move freely inside the skillshot.
+                            NoSolutionFound = true;
+                            return;
+                        }
+                    }
+
+                    //Zhonyas
+                    if (evadeSpell.Name == "Zhonyas")
+                    {
+                        if (Items.CanUseItem((int)ItemId.Zhonyas_Hourglass))
+                        {
+                            if (IsAboutToHit(ObjectManager.Player, 150))
+                            {
+                                NoSolutionFound = true;
+                                Items.UseItem((int)ItemId.Zhonyas_Hourglass);
+                            }
+                            return;
+                        }
+                        
+                        if (Items.CanUseItem((int)ItemId.Stopwatch))
+                        {
+                            if (IsAboutToHit(ObjectManager.Player, 150))
+                            {
+                                NoSolutionFound = true;
+                                Items.UseItem((int)ItemId.Stopwatch);
+                            }
+                            return;
+                        }
+                        if (Items.CanUseItem((int)ItemId.Perfectly_Timed_Stopwatch))
+                        {
+                            if (IsAboutToHit(ObjectManager.Player, 150))
+                            {
+                                NoSolutionFound = true;
+                                Items.UseItem((int)ItemId.Perfectly_Timed_Stopwatch);
+                            }
+                            return;
+                        }
+                    }
+
+                    //Blinks
+                    if (evadeSpell.IsReady())
+                    {
+                        if (evadeSpell.IsBlink && IsAboutToHit(ObjectManager.Player, evadeSpell.Delay))
                         {
                             //Targetted blinks
                             if (evadeSpell.IsTargetted)
@@ -1332,104 +1416,30 @@ namespace Evade
                                 var points = Evader.GetEvadePoints(int.MaxValue, evadeSpell.Delay, true);
 
                                 // Remove the points out of range
-                                points.RemoveAll(item => item.Distance(ObjectManager.Player.ServerPosition) > evadeSpell.MaxRange);
+                                points.RemoveAll(item => item.Distance(ObjectManager.Player.ServerPosition) > evadeSpell.MaxRange || item.IsWall());
 
-                                //Dont blink just to the edge:
-                                for (var i = 0; i < points.Count; i++)
-                                {
-                                    var k = (int)(evadeSpell.MaxRange - PlayerPosition.Distance(points[i]));
-                                    k = k - new Random(Utils.TickCount).Next(k);
-                                    var extended = points[i] + k * (points[i] - PlayerPosition).Normalized();
-                                    if (IsSafe(extended).IsSafe)
-                                        points[i] = extended;
-                                }
-
+                                //points.OrderBy(x=> x.Distance)
                                 if (points.Count > 0)
                                 {
-                                    if (IsAboutToHit(ObjectManager.Player, evadeSpell.Delay))
+                                    foreach (var extraPoint in Utils.CirclePoints(30, evadeSpell.MaxRange, HeroManager.Player.ServerPosition))
                                     {
-                                        EvadePoint = to.Closest(points);
-                                        Evading = true;
-                                        if (evadeSpell.IsSummonerSpell)
-                                            ObjectManager.Player.Spellbook.CastSpell(evadeSpell.Slot, EvadePoint.To3D());
-                                        else
-                                            ObjectManager.Player.Spellbook.CastSpell(evadeSpell.Slot, EvadePoint.To3D());
+                                        if(!extraPoint.IsWall() && IsSafeToBlink(extraPoint.To2D(), Config.EvadingFirstTimeOffset, evadeSpell.Delay))
+                                        {
+                                            points.Add(extraPoint.To2D());
+                                        }
                                     }
-
+                                    EvadePoint = Game.CursorPos.To2D().Closest(points);
+                                    Evading = true;
+                                    ObjectManager.Player.Spellbook.CastSpell(evadeSpell.Slot, EvadePoint.To3D());
                                     //Let the user move freely inside the skillshot.
                                     NoSolutionFound = true;
                                     return;
                                 }
                             }
                         }
-
-                        //Invulnerabilities, like Fizz's E
-                        if (evadeSpell.IsInvulnerability)
-                        {
-                            if (evadeSpell.IsTargetted)
-                            {
-                                var targets = Evader.GetEvadeTargets(evadeSpell.ValidTargets, int.MaxValue, 0, evadeSpell.MaxRange, true, false, true);
-
-                                if (targets.Count > 0)
-                                {
-                                    if (IsAboutToHit(ObjectManager.Player, evadeSpell.Delay))
-                                    {
-                                        var closestTarget = Utils.Closest(targets, to);
-                                        EvadePoint = closestTarget.ServerPosition.To2D();
-                                        Evading = true;
-                                        ObjectManager.Player.Spellbook.CastSpell(evadeSpell.Slot, closestTarget);
-                                    }
-
-                                    //Let the user move freely inside the skillshot.
-                                    NoSolutionFound = true;
-                                    return;
-                                }
-                            }
-                            else
-                            {
-                                if (IsAboutToHit(ObjectManager.Player, evadeSpell.Delay))
-                                {
-                                    if (evadeSpell.SelfCast)
-                                        ObjectManager.Player.Spellbook.CastSpell(evadeSpell.Slot);
-                                    else
-                                        ObjectManager.Player.Spellbook.CastSpell(evadeSpell.Slot, ObjectManager.Player.ServerPosition);
-                                }
-                            }
-
-                            //Let the user move freely inside the skillshot.
-                            NoSolutionFound = true;
-                            return;
-                        }
-                    }
-
-                    //Zhonyas
-                    if (evadeSpell.Name == "Zhonyas" && (Items.CanUseItem("ZhonyasHourglass")))
-                    {
-                        if (IsAboutToHit(ObjectManager.Player, 100))
-                        {
-                            //Let the user move freely inside the skillshot.
-                            NoSolutionFound = true;
-                            Items.UseItem("ZhonyasHourglass");
-                            return;
-                        }
-                    }
-
-                    //Shields
-                    if (evadeSpell.IsShield && ObjectManager.Player.Spellbook.CanUseSpell(evadeSpell.Slot) == SpellState.Ready)
-                    {
-                        if (IsAboutToHit(ObjectManager.Player, evadeSpell.Delay))
-                        {
-                            ObjectManager.Player.Spellbook.CastSpell(evadeSpell.Slot, ObjectManager.Player);
-                            NoSolutionFound = true;
-                            return;
-                        }
-
-                        //Let the user move freely inside the skillshot.
-                       
                     }
                 }
             }
-
             NoSolutionFound = true;
         }
 
