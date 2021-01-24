@@ -121,12 +121,17 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             }
         }
 
+        public double GetRTargetDamage(Obj_AI_Hero hero)
+        {
+            return (R.Level * 150) + (hero.MaxHealth - hero.Health) * (0.15 + 0.05 * R.Level);
+        }
+        
         private void LogicR()
         {
             foreach (var target in HeroManager.Enemies.Where(target =>
                 target.IsValidTarget(R.Range) && OktwCommon.ValidUlt(target)))
             {
-                var dmgR = OktwCommon.GetKsDamage(target, R, false);
+                var dmgR = GetRTargetDamage(target);
 
                 if (dmgR > target.Health)
                 {
