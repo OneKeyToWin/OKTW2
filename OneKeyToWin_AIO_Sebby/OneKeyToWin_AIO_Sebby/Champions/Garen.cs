@@ -94,7 +94,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 W.Cast();
             else if (Player.Health - dmg < nearEnemys * Player.Level * sensitivity)
                 W.Cast();
-            else if (hpPercentage >= Config.Item("Wdmg", true).GetValue<Slider>().Value)
+            else if (hpPercentage >= 5)
                 W.Cast();
         }
 
