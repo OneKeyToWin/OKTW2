@@ -202,6 +202,9 @@ namespace OneKeyToWin_AIO_Sebby
                     case "Teemo":
                         new Champions.Teemo();
                         break;
+                    case "Garen":
+                        new Champions.Garen();
+                        break;
                 }
                 #endregion
 
@@ -424,6 +427,7 @@ namespace OneKeyToWin_AIO_Sebby
                     Speed = QWER.Speed,
                     Delay = QWER.Delay,
                     Range = QWER.Range,
+                    Slot = QWER.Slot,
                     From = Player.ServerPosition,
                     Radius = QWER.Width,
                     Unit = target,
