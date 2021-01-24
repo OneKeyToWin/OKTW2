@@ -6141,6 +6141,59 @@ namespace Evade
 
             #endregion
 
+            #region Viego
+
+            Spells.Add(
+                new SpellData
+                {
+                    ChampionName = "Viego",
+                    SpellName = "ViegoQ",
+                    Slot = SpellSlot.Q,
+                    Type = SkillShotType.SkillshotLine,
+                    Delay = 400,
+                    Range = 600,
+                    Radius = 70,
+                    MissileSpeed = int.MaxValue,
+                    DangerValue = 3,
+                    FixedRange = true,
+                    AddHitbox = true,
+                });
+            Spells.Add(
+              new SpellData
+              {
+                  ChampionName = "Viego",
+                  SpellName = "ViegoWCast",
+                  Slot = SpellSlot.W,
+                  Type = SkillShotType.SkillshotMissileLine,
+                  Delay = 0,
+                  Range = 1000,
+                  Radius = 70,
+                  MissileSpeed = 1500,
+                  DangerValue = 3,
+                  FixedRange = true,
+                  AddHitbox = true,
+                  MissileSpellName = "ViegoWMis"
+              });
+            Spells.Add(
+               new SpellData
+               {
+                   ChampionName = "Viego",
+                   SpellName = "ViegorR",
+                   Slot = SpellSlot.R,
+                   Type = SkillShotType.SkillshotCircle,
+                   Delay = 600,
+                   Range = 500,
+                   Radius = 270,
+                   DontCross = true,
+                   MissileSpeed = int.MaxValue,
+                   FixedRange = false,
+                   AddHitbox = true,
+                   DangerValue = 5,
+                   IsDangerous = true,
+                   SourceObjectName = "Viego.+R_Tell"
+               });
+            #endregion
+
             #region Rell
             Spells.Add(
                 new SpellData
@@ -6198,6 +6251,7 @@ namespace Evade
                   },
               });
             #endregion
+
             #region MissFortune
             Spells.Add(
                new SpellData
@@ -6258,28 +6312,8 @@ namespace Evade
                     IsDangerous = true,
                 });
            
-            Spells.Add(
-              new SpellData
-              {
-                  ChampionName = "Rell",
-                  SpellName = "RellR",
-                  Slot = SpellSlot.W,
-                  Type = SkillShotType.SkillshotLine,
-                  Delay = 450,
-                  Range = 900,
-                  Radius = 220,
-                  MissileSpeed = 5000,
-                  FixedRange = true,
-                  AddHitbox = true,
-                  DangerValue = 5,
-                  IsDangerous = true,
-                  IsDash = true,
-                  CanDetectDash = (sender, args) =>
-                  {
-                      return Utils.ImmobileTime(sender) == -1;
-                  },
-              });
             #endregion
+
         }
 
         public static SpellData GetByDash(string championName)
