@@ -111,13 +111,9 @@ namespace OneKeyToWin_AIO_Sebby.Champions
         private void LogicE()
         {
             var target = TargetSelector.GetTarget(E.Range, TargetSelector.DamageType.Physical);
-            if (target.IsValidTarget() && Config.Item("Eon" + target.ChampionName, true).GetValue<bool>() &&
-                ((Player.UnderTurret(false) && !Player.UnderTurret(true)) || Program.Combo))
+            if (E.IsInRange(target))
             {
-                if (!Orbwalking.InAutoAttackRange(target))
-                {
-                    E.Cast(target);
-                }
+                E.Cast(target);
             }
         }
 
@@ -125,7 +121,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
         {
             return (R.Level * 150) + (hero.MaxHealth - hero.Health) * (0.15 + 0.05 * R.Level);
         }
-        
+
         private void LogicR()
         {
             foreach (var target in HeroManager.Enemies.Where(target =>
