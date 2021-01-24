@@ -111,7 +111,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
         private void LogicE()
         {
             var target = TargetSelector.GetTarget(E.Range, TargetSelector.DamageType.Physical);
-            if (E.IsInRange(target))
+            if (target.IsValidTarget() && E.IsInRange(target))
             {
                 E.Cast(target);
             }
