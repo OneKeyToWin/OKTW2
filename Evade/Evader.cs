@@ -58,8 +58,8 @@ namespace Evade
                         var s = (distanceToEvadePoint < 200 * 200 && sideDistance > 90 * 90) ? Config.DiagonalEvadePointsCount : 0;
                         for (var j = -s; j <= s; j++)
                         {
-                            bool foundWall;
-                            var candidate = (originalCandidate + j * Config.DiagonalEvadePointsStep * direction).CutVectorWall(myPosition, out foundWall);
+                            //bool foundWall;
+                            var candidate = (originalCandidate + j * Config.DiagonalEvadePointsStep * direction)/*.CutVectorWall(myPosition, out foundWall)*/;
                             var pathToPoint = Orbwalking.GetPath(candidate.To3D()).To2DList();
 
                             if (!isBlink)

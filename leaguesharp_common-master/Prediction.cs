@@ -1426,24 +1426,21 @@ namespace LeagueSharp.Common
                                             true,
                                             input.RangeCheckFrom)))
                             {
+                                if (input.Unit == minion)
+                                    continue;
+
                                 var distanceFromToUnit = minion.ServerPosition.Distance(input.From);
-                                var bOffset = minion.BoundingRadius + input.Unit.BoundingRadius;
-                                if (distanceFromToUnit < bOffset)
-                                {
-                                    result.Add(minion);
-                                }
-                                else if (minion.ServerPosition.Distance(position) < bOffset)
-                                {
-                                    result.Add(minion);
-                                }
-                                else if (minion.ServerPosition.Distance(input.Unit.Position) < bOffset)
+                                var bOffset = minion.BoundingRadius + input.Unit.BoundingRadius - 5;
+
+                                if (distanceFromToUnit < bOffset + 40 || minion.ServerPosition.Distance(position) < bOffset || minion.ServerPosition.Distance(input.Unit.Position) < bOffset)
                                 {
                                     result.Add(minion);
                                 }
                                 else
                                 {
                                     var minionPos = minion.ServerPosition;
-                                    int bonusRadius = 15;
+                                    var bonusRadius = 50 + input.Radius;
+                                    var b = Math.Pow(input.Radius + bonusRadius + minion.BoundingRadius, 2);
                                     if (minion.IsMoving)
                                     {
                                         var predInput2 = new PredictionInput
@@ -1457,11 +1454,18 @@ namespace LeagueSharp.Common
                                             Unit = minion,
                                             Type = input.Type
                                         };
-                                        minionPos = Prediction.GetPrediction(predInput2).CastPosition;
-                                        bonusRadius = 50 + (int)input.Radius;
+
+                                        var a = minionPos.To2D().Distance(input.From.To2D(), position.To2D(), true, true);
+                                        minionPos = Prediction.GetPrediction(predInput2).UnitPosition;
+
+                                        if(a <= b)
+                                            result.Add(minion);
                                     }
 
-                                    if (minionPos.To2D().Distance(input.From.To2D(), position.To2D(), true, true) <= Math.Pow((input.Radius + bonusRadius + minion.BoundingRadius), 2))
+                                    var c = minionPos.To2D().Distance(input.From.To2D(), position.To2D(), true, true);
+                                    var d = minionPos.To2D().Distance(input.From.To2D(), input.Unit.Position.To2D(), true, true);
+
+                                    if (c <= b || d <= b)
                                         result.Add(minion);
                                 }
                             }
