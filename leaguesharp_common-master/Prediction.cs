@@ -253,6 +253,9 @@ namespace LeagueSharp.Common
 
         public static float SpeedFromVelocity(Obj_AI_Base unit)
         {
+            //if (unit.IsDashing())
+            //    return unit.MoveSpeed;
+
             var realVelocity = new Vector3
             {
                 X = unit.Velocity.X * 20,
@@ -502,6 +505,11 @@ namespace LeagueSharp.Common
                 result.CollisionObjects.RemoveAll(x => x.NetworkId == originalUnit.NetworkId);
                 result.Hitchance = result.CollisionObjects.Count > 0 ? HitChance.Collision : result.Hitchance;
             }
+
+            if (Math.Abs(input.Speed - float.MaxValue) > float.Epsilon && Orbwalking.CollisionYasuo(input.From, result.CastPosition))
+            {
+                result.Hitchance = HitChance.Collision;
+            } 
 
             return result;
         }
