@@ -81,6 +81,7 @@
     <Compile Include="Champions\Darius.cs" />
     <Compile Include="Champions\Draven.cs" />
     <Compile Include="Champions\Evelynn.cs" />
+    <Compile Include="Champions\Garen.cs" />
     <Compile Include="Champions\Jhin.cs" />
     <Compile Include="Champions\Karthus.cs" />
     <Compile Include="Champions\Kayle.cs" />
