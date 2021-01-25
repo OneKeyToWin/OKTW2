@@ -102,7 +102,10 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             {
                 var Target = gapcloser.Sender;
                 if (Target.IsValidTarget(E.Range))
+                {
+                    Console.WriteLine("E GAPCLOSER");
                     E.Cast(gapcloser.End);
+                }
             }
         }
 
@@ -345,7 +348,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             {
                 foreach (var enemy in HeroManager.Enemies.Where(enemy => enemy.IsValidTarget(E.Range + 50) && !OktwCommon.CanMove(enemy)))
                 {
-                    E.Cast(enemy);
+                    Program.CastSpell(E, enemy);
                     return;
                 }
                 if (!Program.LagFree(1))
