@@ -180,19 +180,19 @@
         #region Methods
         private static void Obj_AI_Base_OnNewPath(Obj_AI_Base sender, GameObjectNewPathEventArgs args)
         {
-            if (sender is Obj_AI_Hero && args.IsDash && !ActiveGapclosers.Any(h => h.Sender.NetworkId == sender.NetworkId))
-            {
-                ActiveGapclosers.Add(
-                    new ActiveGapcloser
-                    {
-                        Start = sender.Position,
-                        End = args.Path.Last(),
-                        Sender = (Obj_AI_Hero) sender,
-                        TickCount = Utils.TickCount,
-                        SkillType = HeroManager.Enemies.Any(h => h.Team != sender.Team &&h.Distance(args.Path.Last()) < 100)? GapcloserType.Targeted : GapcloserType.Skillshot,
-                        Slot = ((Obj_AI_Hero)sender).Spellbook.ActiveSpellSlot
-                    });
-             }
+            //if (sender is Obj_AI_Hero && args.IsDash && !ActiveGapclosers.Any(h => h.Sender.NetworkId == sender.NetworkId))
+            //{
+            //    ActiveGapclosers.Add(
+            //        new ActiveGapcloser
+            //        {
+            //            Start = sender.Position,
+            //            End = args.Path.Last(),
+            //            Sender = (Obj_AI_Hero) sender,
+            //            TickCount = Utils.TickCount,
+            //            SkillType = HeroManager.Enemies.Any(h => h.Team != sender.Team &&h.Distance(args.Path.Last()) < 100)? GapcloserType.Targeted : GapcloserType.Skillshot,
+            //            Slot = ((Obj_AI_Hero)sender).Spellbook.ActiveSpellSlot
+            //        });
+            // }
         }
         /// <summary>
         ///     Fired when the game updates.
@@ -200,6 +200,27 @@
         /// <param name="args">The <see cref="EventArgs" /> instance containing the event data.</param>
         private static void Game_OnGameUpdate(EventArgs args)
         {
+            foreach (var enemy in HeroManager.Enemies)
+            {
+                if (enemy.IsDashing() && enemy.IsValidTarget() && !ActiveGapclosers.Any(h => h.Sender.NetworkId == enemy.NetworkId))
+                {
+                    var dashInfo = enemy.GetDashInfo();
+                    if (HeroManager.Player.Distance(dashInfo.EndPos) < 500)
+                    {
+                        ActiveGapclosers.Add(
+                        new ActiveGapcloser
+                        {
+                            Start = enemy.Position,
+                            End = dashInfo.EndPos.To3D(),
+                            Sender = enemy,
+                            TickCount = Utils.TickCount,
+                            SkillType = HeroManager.Enemies.Any(h => h.Team != enemy.Team && h.Distance(dashInfo.EndPos.To3D()) < 100) ? GapcloserType.Targeted : GapcloserType.Skillshot,
+                            Slot = enemy.Spellbook.ActiveSpellSlot
+                        });
+                    }
+                }
+            }
+
             ActiveGapclosers.RemoveAll(entry => Utils.TickCount > entry.TickCount + 900);
             if (OnEnemyGapcloser == null)
             {
@@ -215,6 +236,7 @@
                             && ObjectManager.Player.Distance(gapcloser.Sender, true) < 250000))) // 500 * 500
             {
                 OnEnemyGapcloser(gapcloser);
+                
             }
         }
 
