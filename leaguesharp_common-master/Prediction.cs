@@ -253,8 +253,8 @@ namespace LeagueSharp.Common
 
         public static float SpeedFromVelocity(Obj_AI_Base unit)
         {
-            //if (unit.IsDashing())
-            //    return unit.MoveSpeed;
+            if (unit.IsDashing())
+                return unit.MoveSpeed;
 
             if (unit.Type != GameObjectType.obj_AI_Hero)
                 return unit.MoveSpeed;
@@ -301,7 +301,9 @@ namespace LeagueSharp.Common
         {
             speed = (Math.Abs(speed - (-1)) < float.Epsilon) ? SpeedFromVelocity(input.Unit) : speed;
 
-            if (path.Count <= 1 || (input.Unit.IsWindingUp && !input.Unit.IsDashing()))
+            var pLength = path.PathLength();
+
+            if (pLength < 5)
             {
                 return new PredictionOutput
                 {
@@ -311,8 +313,6 @@ namespace LeagueSharp.Common
                     Hitchance = HitChance.High
                 };
             }
-
-            var pLength = path.PathLength();
 
             //Skillshots with only a delay
             var tDistance = input.Delay * speed - input.RealRadius;
@@ -503,9 +503,7 @@ namespace LeagueSharp.Common
             if (checkCollision && input.Collision)
             {
                 var positions = new List<Vector3> {result.CastPosition};
-                var originalUnit = input.Unit;
                 result.CollisionObjects = Collision.GetCollision(positions, input);
-                result.CollisionObjects.RemoveAll(x => x.NetworkId == originalUnit.NetworkId);
                 result.Hitchance = result.CollisionObjects.Count > 0 ? HitChance.Collision : result.Hitchance;
             }
 
@@ -521,10 +519,15 @@ namespace LeagueSharp.Common
         {
             var speed = input.Unit.MoveSpeed;
 
-            if (input.Unit.Distance(input.From, true) < 230 * 230)
+            if (input.Unit.Type == GameObjectType.obj_AI_Hero)
             {
-                input.Delay /= 2;
-                speed /= 1.5f;
+                speed = SpeedFromVelocity(input.Unit);
+                
+                if (input.Unit.Distance(input.From, true) < 230 * 230)
+                {
+                    input.Delay /= 2;
+                    speed /= 1.5f;
+                }
             }
 
             var result = GetPositionOnPath(input, input.Unit.GetWaypoints(), speed);
@@ -1449,10 +1452,10 @@ namespace LeagueSharp.Common
                                 }
                                 else
                                 {
-                                    var minionPos = minion.ServerPosition;
-                                    var bonusRadius = 50 + input.Radius;
+                                    var minionPos = minion.Position;
+                                    var bonusRadius = 10 + input.Radius;
                                     var b = Math.Pow(input.Radius + bonusRadius + minion.BoundingRadius, 2);
-                                    if (minion.IsMoving)
+                                    if (minion.GetWaypoints().PathLength() > 0)
                                     {
                                         var predInput2 = new PredictionInput
                                         {
@@ -1465,18 +1468,16 @@ namespace LeagueSharp.Common
                                             Unit = minion,
                                             Type = input.Type
                                         };
+                                      
+                                        var d = Prediction.GetPrediction(predInput2).UnitPosition.To2D().Distance(input.From.To2D(), position.To2D(), true, true);
 
-                                        var a = minionPos.To2D().Distance(input.From.To2D(), position.To2D(), true, true);
-                                        minionPos = Prediction.GetPrediction(predInput2).UnitPosition;
-
-                                        if(a <= b)
+                                        if (d <= b)
                                             result.Add(minion);
                                     }
 
-                                    var c = minionPos.To2D().Distance(input.From.To2D(), position.To2D(), true, true);
-                                    var d = minionPos.To2D().Distance(input.From.To2D(), input.Unit.Position.To2D(), true, true);
-
-                                    if (c <= b || d <= b)
+                                    var a = minionPos.To2D().Distance(input.From.To2D(), position.To2D(), true, true);
+                                    
+                                    if (a <= b)
                                         result.Add(minion);
                                 }
                             }
@@ -1492,8 +1493,7 @@ namespace LeagueSharp.Common
                             {
                                 input.Unit = hero;
                                 var prediction = Prediction.GetPrediction(input, false, false);
-                                if (prediction.UnitPosition.To2D()
-                                        .Distance(input.From.To2D(), position.To2D(), true, true)
+                                if (prediction.UnitPosition.To2D().Distance(input.From.To2D(), position.To2D(), true, true)
                                     <= Math.Pow((input.Radius + 50 + hero.BoundingRadius), 2))
                                 {
                                     result.Add(hero);
