@@ -1443,33 +1443,30 @@ namespace LeagueSharp.Common
                                 if (input.Unit == minion)
                                     continue;
 
-                                var distanceFromToUnit = minion.ServerPosition.Distance(input.From);
-                                var bOffset = minion.BoundingRadius + input.Unit.BoundingRadius - 5;
+                                var minionIsMoving = minion.GetWaypoints().PathLength() > 0;
+                                var bOffset = minion.BoundingRadius + input.Unit.BoundingRadius + input.Delay * 40;
 
-                                if (distanceFromToUnit < bOffset + 40 || minion.ServerPosition.Distance(position) < bOffset || minion.ServerPosition.Distance(input.Unit.Position) < bOffset)
+                                if (minionIsMoving)
+                                    bOffset += 10;
+
+                                if (minion.ServerPosition.Distance(input.From) < bOffset + 30 || minion.ServerPosition.Distance(position) < bOffset || minion.ServerPosition.Distance(input.Unit.Position) < bOffset)
                                 {
                                     result.Add(minion);
                                 }
                                 else
                                 {
                                     var minionPos = minion.Position;
-                                    var bonusRadius = 10 + input.Radius;
-                                    var b = Math.Pow(input.Radius + bonusRadius + minion.BoundingRadius, 2);
-                                    if (minion.GetWaypoints().PathLength() > 0)
+                                    var b = Math.Pow(input.Radius + 10 + input.Radius + minion.BoundingRadius, 2);
+
+                                    if (minionIsMoving)
                                     {
                                         var predInput2 = new PredictionInput
                                         {
-                                            Collision = false,
-                                            Speed = input.Speed,
-                                            Delay = input.Delay,
-                                            Range = input.Range,
-                                            From = input.From,
-                                            Radius = input.Radius,
-                                            Unit = minion,
-                                            Type = input.Type
+                                            Collision = false, Speed = input.Speed, Delay = input.Delay, Range = input.Range,
+                                            From = input.From, Radius = input.Radius, Unit = minion, Type = input.Type
                                         };
                                       
-                                        var d = Prediction.GetPrediction(predInput2).UnitPosition.To2D().Distance(input.From.To2D(), position.To2D(), true, true);
+                                        var d = Prediction.GetPrediction(predInput2, false, false).UnitPosition.To2D().Distance(input.From.To2D(), position.To2D(), true, true);
 
                                         if (d <= b)
                                             result.Add(minion);
