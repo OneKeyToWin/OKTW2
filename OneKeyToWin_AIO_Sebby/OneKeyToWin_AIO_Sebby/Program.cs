@@ -418,8 +418,6 @@ namespace OneKeyToWin_AIO_Sebby
             }
             else if (predIndex == 1)
             {
-                SkillshotType CoreType2 = SkillshotType.SkillshotLine;
-                
                 var predInput2 = new PredictionInput
                 {
                     Aoe = false,
@@ -431,7 +429,7 @@ namespace OneKeyToWin_AIO_Sebby
                     From = Player.ServerPosition,
                     Radius = QWER.Width,
                     Unit = target,
-                    Type = CoreType2
+                    Type = QWER.Type
                 };
 
                 var poutput2 = Prediction.GetPrediction(predInput2);
