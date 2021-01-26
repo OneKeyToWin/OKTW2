@@ -256,6 +256,9 @@ namespace LeagueSharp.Common
             //if (unit.IsDashing())
             //    return unit.MoveSpeed;
 
+            if (unit.Type != GameObjectType.obj_AI_Hero)
+                return unit.MoveSpeed;
+
             var realVelocity = new Vector3
             {
                 X = unit.Velocity.X * 20,
