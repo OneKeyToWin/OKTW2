@@ -247,19 +247,19 @@
         /// <param name="args">The <see cref="GameObjectProcessSpellCastEventArgs" /> instance containing the event data.</param>
         private static void Obj_AI_Base_OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
-            if (!SpellIsGapcloser(args))
-            {
-                return;
-            }
+            //if (!SpellIsGapcloser(args))
+            //{
+            //    return;
+            //}
 
-            ActiveGapclosers.Add(
-                new ActiveGapcloser
-                    {
-                        Start = args.Start, End = args.End, Sender = (Obj_AI_Hero)sender, TickCount = Utils.TickCount,
-                        SkillType =
-                            (args.Target != null && args.Target.IsMe) ? GapcloserType.Targeted : GapcloserType.Skillshot,
-                        Slot = ((Obj_AI_Hero)sender).GetSpellSlot(args.SData.Name)
-                    });
+            //ActiveGapclosers.Add(
+            //    new ActiveGapcloser
+            //        {
+            //            Start = args.Start, End = args.End, Sender = (Obj_AI_Hero)sender, TickCount = Utils.TickCount,
+            //            SkillType =
+            //                (args.Target != null && args.Target.IsMe) ? GapcloserType.Targeted : GapcloserType.Skillshot,
+            //            Slot = ((Obj_AI_Hero)sender).GetSpellSlot(args.SData.Name)
+            //        });
         }
 
         /// <summary>
