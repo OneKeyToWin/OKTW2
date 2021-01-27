@@ -1949,7 +1949,6 @@ namespace Evade
                     DangerValue = 3,
                     IsDangerous = true,
                 });
-
             Spells.Add(
                 new SpellData
                 {
@@ -1965,7 +1964,7 @@ namespace Evade
                     AddHitbox = true,
                     DangerValue = 2,
                     IsDangerous = true,
-                    MissileSpellName = "JarvanIVDemacianStandard",
+                    SourceObjectName = "JarvanIV_.+_E_tar_red",
                 });
 
             #endregion JarvanIV
@@ -2185,36 +2184,33 @@ namespace Evade
                     DangerValue = 2,
                     IsDangerous = true,
                     MissileSpellName = "KarmaQMissile",
-                    
                     CanBeRemoved = true,
                     CollisionObjects =
                         new[]
                         {CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall},
                 });
 
-            //TODO: add the circle at the end.
+            
             Spells.Add(
-                new SpellData
-                {
-                    ChampionName = "Karma",
-                    SpellName = "KarmaQMantra",
-                    Slot = SpellSlot.Q,
-                    Type = SkillShotType.SkillshotMissileLine,
-                    Delay = 250,
-                    Range = 950,
-                    Radius = 80,
-                    MissileSpeed = 1700,
-                    FixedRange = true,
-                    AddHitbox = true,
-                    DangerValue = 2,
-                    IsDangerous = true,
-                    MissileSpellName = "KarmaQMissileMantra",
-                    
-                    CanBeRemoved = true,
-                    CollisionObjects =
-                        new[]
-                        {CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall},
-                });
+               new SpellData
+               {
+                   ChampionName = "Karma",
+                   SpellName = "KarmaQMantraCircle",
+                   Slot = SpellSlot.Q,
+                   Type = SkillShotType.SkillshotCircle,
+                   Delay = 1800,
+                   Range = 1000,
+                   Radius = 240,
+                   MissileSpeed = int.MaxValue,
+                   FixedRange = false,
+                   AddHitbox = true,
+                   DangerValue = 2,
+                   IsDangerous = true,
+                   SourceObjectName = "Karm.+Q_impact_R_01",
+
+                   CanBeRemoved = true,
+                   
+               });
 
             #endregion Karma
 
@@ -3206,22 +3202,40 @@ namespace Evade
                 new SpellData
                 {
                     ChampionName = "Orianna",
-                    SpellName = "OrianaDissonanceCommand-",
+                    SpellName = "OrianaW",
                     Slot = SpellSlot.W,
                     Type = SkillShotType.SkillshotCircle,
                     Delay = 250,
-                    Range = 0,
+                    Range = 1500,
                     Radius = 255,
                     MissileSpeed = int.MaxValue,
-                    FixedRange = true,
+                    FixedRange = false,
                     AddHitbox = true,
                     DangerValue = 2,
                     IsDangerous = true,
                     MissileSpellName = "OrianaDissonanceCommand-",
                     FromObject = "yomu_ring_",
-                    SourceObjectName = "w_dissonance_ball" //Orianna_Base_W_Dissonance_ball_green.troy & Orianna_Base_W_Dissonance_cas_green.troy
+                    SourceObjectName = "Orianna_.+_W_Dissonance_cas_green", //Orianna_Base_W_Dissonance_ball_green.troy & Orianna_Base_W_Dissonance_cas_green.troy 
                 });
-
+            Spells.Add(
+               new SpellData
+               {
+                   ChampionName = "Orianna",
+                   SpellName = "OriannaW2",
+                   Slot = SpellSlot.W,
+                   Type = SkillShotType.SkillshotCircle,
+                   Delay = 250,
+                   Range = 1500,
+                   Radius = 255,
+                   MissileSpeed = int.MaxValue,
+                   FixedRange = false,
+                   AddHitbox = true,
+                   DangerValue = 2,
+                   IsDangerous = true,
+                   MissileSpellName = "OrianaDissonanceCommand-",
+                   FromObject = "yomu_ring_",
+                   SourceObjectName = "Orianna_.+_W_Dissonance_ball_green", //Orianna_Base_W_Dissonance_ball_green.troy & Orianna_Base_W_Dissonance_cas_green.troy 
+                });
             Spells.Add(
                 new SpellData
                 {
@@ -3245,20 +3259,18 @@ namespace Evade
                 new SpellData
                 {
                     ChampionName = "Orianna",
-                    SpellName = "OrianaDetonateCommand-",
+                    SpellName = "OrianaR",
                     Slot = SpellSlot.R,
                     Type = SkillShotType.SkillshotCircle,
                     Delay = 700,
-                    Range = 0,
-                    Radius = 410,
+                    Range = 1500,
+                    Radius = 400,
                     MissileSpeed = int.MaxValue,
-                    FixedRange = true,
+                    FixedRange = false,
                     AddHitbox = true,
                     DangerValue = 5,
                     IsDangerous = true,
-                    MissileSpellName = "OrianaDetonateCommand-",
-                    FromObject = "yomu_ring_",
-                    SourceObjectName = "r_vacuumindicator", //Orianna_Base_R_VacuumIndicator.troy
+                    SourceObjectName = "Orianna.+R_VacuumIndicator", //Orianna_Base_R_VacuumIndicator.troy
                 });
 
             #endregion Orianna
@@ -4756,11 +4768,11 @@ namespace Evade
                     Delay = 250,
                     Range = 1800,
                     Radius = 250,
-                    MissileSpeed = 1500,
+                    MissileSpeed = 1200,
                     AddHitbox = true,
                     DangerValue = 3,
                     IsDangerous = true,
-                    EndAtParticle = "zac_.+_e_tar_red"
+                    SourceObjectName = "Zac.+E_Tar"
                 });
 
             #endregion Zac
@@ -6052,9 +6064,9 @@ namespace Evade
                     SpellName = "SeraphineQ",
                     Slot = SpellSlot.Q,
                     Type = SkillShotType.SkillshotCircle,
-                    Delay = 250,
+                    Delay = 400,
                     Range = 900,
-                    Radius = 350,
+                    Radius = 340,
                     MissileSpeed = 1300,
                     AddHitbox = true,
                     DangerValue = 2,
@@ -6072,7 +6084,7 @@ namespace Evade
                     Type = SkillShotType.SkillshotMissileLine,
                     Delay = 250,
                     Range = 1300,
-                    Radius = 70,
+                    Radius = 80,
                     MissileSpeed = 1200,
                     AddHitbox = true,
                     DangerValue = 3,
