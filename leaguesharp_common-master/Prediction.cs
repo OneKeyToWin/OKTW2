@@ -1446,12 +1446,12 @@ namespace LeagueSharp.Common
                                     continue;
 
                                 var minionIsMoving = minion.GetWaypoints().PathLength() > 0;
-                                var bOffset = minion.BoundingRadius + input.Unit.BoundingRadius + input.Delay * 40;
+                                var bOffset = minion.BoundingRadius + input.Unit.BoundingRadius;
 
                                 if (minionIsMoving)
                                     bOffset += 10;
 
-                                if (minion.ServerPosition.Distance(input.From) < bOffset + 30 || minion.ServerPosition.Distance(position) < bOffset || minion.ServerPosition.Distance(input.Unit.Position) < bOffset)
+                                if (minion.ServerPosition.Distance(input.From) < bOffset + 30 || minion.ServerPosition.Distance(position) < bOffset)
                                 {
                                     result.Add(minion);
                                 }
