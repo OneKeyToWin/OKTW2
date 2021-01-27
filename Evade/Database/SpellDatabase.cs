@@ -946,15 +946,14 @@ namespace Evade
                     Type = SkillShotType.SkillshotCircle,
                     Delay = 750,
                     Range = 0,
-                    Radius = 425 - 50,
+                    Radius = 425,
                     MissileSpeed = int.MaxValue, 
                     FixedRange = true,
                     AddHitbox = true,
                     DangerValue = 3,
                     IsDangerous = true,
-                    MissileSpellName = "DariusCleave",
                     FollowCaster = true,
-                    DisabledByDefault = true,
+                    SourceObjectName = "Darius.+Q_Ring_Windup"
                 });
 
             Spells.Add(
@@ -966,7 +965,7 @@ namespace Evade
                     Type = SkillShotType.SkillshotCone,
                     Delay = 250,
                     Range = 550,
-                    Radius = 80,
+                    Radius = 60,
                     MissileSpeed = int.MaxValue,
                     FixedRange = true,
                     AddHitbox = false,
@@ -1585,7 +1584,7 @@ namespace Evade
                     Slot = SpellSlot.E,
                     Type = SkillShotType.SkillshotMissileLine,
                     Delay = 0,
-                    Range = 950,
+                    Range = 800,
                     Radius = 200,
                     MissileSpeed = 1200,
                     FixedRange = true,
@@ -1596,6 +1595,12 @@ namespace Evade
                     
                     CanBeRemoved = true,
                     ExtraRange = 300,
+                    IsDash = true,
+
+                    CanDetectDash = (sender, args) =>
+                    {
+                        return Utils.ImmobileTime(sender) == -1;
+                    },
                     CollisionObjects = new[] {CollisionObjectTypes.Champions, CollisionObjectTypes.Minion},
                 });
 
@@ -1606,15 +1611,14 @@ namespace Evade
                     SpellName = "GragasR",
                     Slot = SpellSlot.R,
                     Type = SkillShotType.SkillshotCircle,
-                    Delay = 250,
+                    Delay = 1000,
                     Range = 1050,
                     Radius = 375,
-                    MissileSpeed = 1800,
+                    MissileSpeed = int.MaxValue,
                     FixedRange = false,
                     AddHitbox = true,
                     DangerValue = 5,
                     IsDangerous = true,
-                    MissileSpellName = "GragasRBoom",
                     CollisionObjects = new[] {CollisionObjectTypes.YasuoWall},
                 });
 
@@ -2611,7 +2615,7 @@ namespace Evade
                     Type = SkillShotType.SkillshotMissileLine,
                     Delay = 250,
                     Range = 905,
-                    Radius = 70,
+                    Radius = 75,
                     MissileSpeed = 2000,
                     FixedRange = true,
                     AddHitbox = true,
@@ -2619,7 +2623,7 @@ namespace Evade
                     IsDangerous = true,
                     TakeClosestPath = true,
                     MissileSpellName = "LeonaZenithBladeMissile",
-                    
+
                     CollisionObjects = new[] {CollisionObjectTypes.YasuoWall},
                 });
 
@@ -2632,14 +2636,34 @@ namespace Evade
                     Type = SkillShotType.SkillshotCircle,
                     Delay = 1000,
                     Range = 1200,
-                    Radius = 300,
+                    Radius = 140,
                     MissileSpeed = int.MaxValue,
                     FixedRange = false,
                     AddHitbox = true,
                     DangerValue = 5,
                     IsDangerous = true,
-                    MissileSpellName = "LeonaSolarFlare",
+                    SourceObjectName = "Leona.+R_hit_aoe_",
                 });
+
+            //Spells.Add(
+            //   new SpellData
+            //   {
+            //       ChampionName = "Leona",
+            //       SpellName = "LeonaR2",
+            //       ExtraSpellNames = new string[] {  },
+            //       Slot = SpellSlot.R,
+            //       Type = SkillShotType.SkillshotCircle,
+            //       Delay = 1000,
+            //       Range = 1200,
+            //       Radius = 290,
+            //       MissileSpeed = int.MaxValue,
+            //       FixedRange = false,
+            //       AddHitbox = true,
+            //       DangerValue = 5,
+            //       IsDangerous = true,
+            //       SourceObjectName = "Leona.+R_hit_aoe_",
+            //       DontCheckForDuplicates = true,
+            //   });
 
             #endregion Leona
 

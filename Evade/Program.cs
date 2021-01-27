@@ -1220,25 +1220,13 @@ namespace Evade
                                         points[i] = PlayerPosition.Extend(points[i], evadeSpell.MaxRange);
 
                                     for (var i = points.Count - 1; i > 0; i--)
-                                        if (!IsSafe(points[i]).IsSafe)
+                                        if (!IsSafe(points[i]).IsSafe || points[i].IsWall())
                                             points.RemoveAt(i);
                                 }
-                                else
-                                {
-                                    for (var i = 0; i < points.Count; i++)
-                                    {
-                                        var k = (int)(evadeSpell.MaxRange - PlayerPosition.Distance(points[i]));
-                                        k -= Math.Max(RandomN.Next(k) - 100, 0);
-                                        var extended = points[i] + k * (points[i] - PlayerPosition).Normalized();
-
-                                        if (IsSafe(extended).IsSafe)
-                                            points[i] = extended;
-                                    }
-                                }
-
+                               
                                 if (points.Count > 0)
                                 {
-                                    EvadePoint = to.Closest(points);
+                                    EvadePoint = Game.CursorPos.To2D().Closest(points);
                                     Evading = true;
 
                                     if (!evadeSpell.Invert)
@@ -1251,8 +1239,7 @@ namespace Evade
                                                 Game.Ping / 2 + 100,
                                                 delegate
                                                 {
-                                                    ObjectManager.Player.Spellbook.CastSpell(
-                                                        theSpell.Slot, EvadePoint.To3D());
+                                                    ObjectManager.Player.Spellbook.CastSpell( theSpell.Slot, EvadePoint.To3D());
                                                 });
                                         }
                                         else
@@ -1265,7 +1252,7 @@ namespace Evade
                                         var castPoint = PlayerPosition - (EvadePoint - PlayerPosition);
                                         ObjectManager.Player.Spellbook.CastSpell(evadeSpell.Slot, castPoint.To3D());
                                     }
-
+                                    NoSolutionFound = true;
                                     return;
                                 }
                             }
