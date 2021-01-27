@@ -3215,7 +3215,7 @@ namespace Evade
                     IsDangerous = true,
                     MissileSpellName = "OrianaDissonanceCommand-",
                     FromObject = "yomu_ring_",
-                    SourceObjectName = "Orianna_.+_W_Dissonance_cas_green", //Orianna_Base_W_Dissonance_ball_green.troy & Orianna_Base_W_Dissonance_cas_green.troy 
+                    SourceObjectName = "Orianna_.+_W_Dissonance_cas_red", //Orianna_Base_W_Dissonance_ball_green.troy & Orianna_Base_W_Dissonance_cas_green.troy 
                 });
             Spells.Add(
                new SpellData
@@ -3234,7 +3234,7 @@ namespace Evade
                    IsDangerous = true,
                    MissileSpellName = "OrianaDissonanceCommand-",
                    FromObject = "yomu_ring_",
-                   SourceObjectName = "Orianna_.+_W_Dissonance_ball_green", //Orianna_Base_W_Dissonance_ball_green.troy & Orianna_Base_W_Dissonance_cas_green.troy 
+                   SourceObjectName = "Orianna_.+_W_Dissonance_ball_red", //Orianna_Base_W_Dissonance_ball_green.troy & Orianna_Base_W_Dissonance_cas_green.troy 
                 });
             Spells.Add(
                 new SpellData
@@ -6064,26 +6064,27 @@ namespace Evade
                     SpellName = "SeraphineQ",
                     Slot = SpellSlot.Q,
                     Type = SkillShotType.SkillshotCircle,
-                    Delay = 400,
+                    Delay = 600,
                     Range = 900,
-                    Radius = 340,
+                    Radius = 290,
                     MissileSpeed = 1300,
                     AddHitbox = true,
                     DangerValue = 2,
                     IsDangerous = true,
                     FixedRange = false,
-                    MissileSpellName = "SeraphineQInitialMissile"
+                    //MissileSpellName = "SeraphineQInitialMissile",
+                    SourceObjectName = "Seraphine_Base_Q_AOE_Indicator",
                 });
 
             Spells.Add(
                 new SpellData
                 {
                     ChampionName = "Seraphine",
-                    SpellName = "SeraphineE",
+                    SpellName = "SeraphineECast",
                     Slot = SpellSlot.E,
                     Type = SkillShotType.SkillshotMissileLine,
                     Delay = 250,
-                    Range = 1300,
+                    Range = 1350,
                     Radius = 80,
                     MissileSpeed = 1200,
                     AddHitbox = true,
@@ -6101,7 +6102,7 @@ namespace Evade
                     Slot = SpellSlot.R,
                     Type = SkillShotType.SkillshotMissileLine,
                     Delay = 500,
-                    Range = 1250,
+                    Range = 2500,
                     Radius = 160,
                     MissileSpeed = 1600,
                     AddHitbox = true,
@@ -6110,6 +6111,23 @@ namespace Evade
                     FixedRange = true,
                     MissileSpellName = "SeraphineR"
                 });
+            Spells.Add(
+               new SpellData
+               {
+                   ChampionName = "Seraphine",
+                   SpellName = "SeraphineRfow",
+                   Slot = SpellSlot.R,
+                   Type = SkillShotType.SkillshotLine,
+                   Delay = 500,
+                   Range = 1300,
+                   Radius = 160,
+                   MissileSpeed = int.MaxValue,
+                   AddHitbox = true,
+                   DangerValue = 5,
+                   IsDangerous = true,
+                   FixedRange = true,
+                   SourceObjectName = "Seraphine.+R_Mis_Warning"
+               });
 
             #endregion Seraphine
 
