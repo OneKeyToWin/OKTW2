@@ -72,8 +72,13 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             {
                 var targetR = TargetSelector.GetTarget(R.Range, TargetSelector.DamageType.True);
                 if (targetR.IsValidTarget())
+                {
                     R.Cast(targetR, true);
+                }
             }
+
+            if (Config.Item("autoR", true).GetValue<bool>())
+                LogicR();
 
             if (Program.LagFree(2) && Q.IsReady())
                 LogicQ();
@@ -81,8 +86,6 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 LogicW();
             if (Program.LagFree(2) && E.IsReady())
                 LogicE();
-            if (Program.LagFree(3) && R.IsReady() && Config.Item("autoR", true).GetValue<bool>())
-                LogicR();
         }
 
         private void LogicQ()
@@ -92,7 +95,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 Q.Cast();
             }
         }
-        
+
         private void LogicW()
         {
             double dmg = OktwCommon.GetIncomingDamage(Player);
@@ -124,7 +127,8 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             if (target.IsValidTarget() && E.IsInRange(target))
             {
                 E.Cast();
-            } else if (Program.LaneClear)
+            }
+            else if (Program.LaneClear)
             {
                 E.Cast();
             }

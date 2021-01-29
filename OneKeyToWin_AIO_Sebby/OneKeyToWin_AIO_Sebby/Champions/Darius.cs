@@ -166,9 +166,6 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             {
                 var dmgR = OktwCommon.GetKsDamage(target, R, false);
 
-                if (target.HasBuff("dariushemo"))
-                    dmgR += R.GetDamage(target) * target.GetBuff("dariushemo").Count * 0.2f;
-
                 if (dmgR > target.Health)
                 {
                     R.Cast(target);
