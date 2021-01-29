@@ -86,35 +86,35 @@ namespace Evade
                             skillShots.AddSubMenu(subMenu);
                         }
                     }
-                    if (hero.ChampionName == "Viego" && !Config.TestOnAllies)
-                    {
-                        foreach (var hero2 in ObjectManager.Get<Obj_AI_Hero>())
-                        {
-                            if (hero2.Team != hero.Team)
-                            {
-                                foreach (var spell in SpellDatabase.Spells)
-                                {
-                                    if (spell.Slot != SpellSlot.R)
-                                    {
-                                        var subMenu = new Menu(spell.MenuItemName, spell.MenuItemName);
+                    //if (hero.ChampionName == "Viego" && !Config.TestOnAllies)
+                    //{
+                    //    foreach (var hero2 in ObjectManager.Get<Obj_AI_Hero>())
+                    //    {
+                    //        if (hero2.Team != hero.Team)
+                    //        {
+                    //            foreach (var spell in SpellDatabase.Spells)
+                    //            {
+                    //                if (spell.Slot != SpellSlot.R)
+                    //                {
+                    //                    var subMenu = new Menu(spell.MenuItemName, spell.MenuItemName);
 
-                                        subMenu.AddItem(
-                                            new MenuItem("DangerLevel" + spell.MenuItemName, "Danger level").SetValue(
-                                                new Slider(spell.DangerValue, 5, 1)));
+                    //                    subMenu.AddItem(
+                    //                        new MenuItem("DangerLevel" + spell.MenuItemName, "Danger level").SetValue(
+                    //                            new Slider(spell.DangerValue, 5, 1)));
 
-                                        subMenu.AddItem(
-                                            new MenuItem("IsDangerous" + spell.MenuItemName, "Is Dangerous").SetValue(
-                                                spell.IsDangerous));
+                    //                    subMenu.AddItem(
+                    //                        new MenuItem("IsDangerous" + spell.MenuItemName, "Is Dangerous").SetValue(
+                    //                            spell.IsDangerous));
 
-                                        subMenu.AddItem(new MenuItem("Draw" + spell.MenuItemName, "Draw").SetValue(true));
-                                        subMenu.AddItem(new MenuItem("Enabled" + spell.MenuItemName, "Enabled").SetValue(!spell.DisabledByDefault));
+                    //                    subMenu.AddItem(new MenuItem("Draw" + spell.MenuItemName, "Draw").SetValue(true));
+                    //                    subMenu.AddItem(new MenuItem("Enabled" + spell.MenuItemName, "Enabled").SetValue(!spell.DisabledByDefault));
 
-                                        skillShots.AddSubMenu(subMenu);
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    //                    skillShots.AddSubMenu(subMenu);
+                    //                }
+                    //            }
+                    //        }
+                    //    }
+                    //}
                 }
             }
 
