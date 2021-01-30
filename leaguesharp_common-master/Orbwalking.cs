@@ -127,7 +127,7 @@ namespace LeagueSharp.Common
         private static int _delay;
         private static AttackableUnit _lastTarget;
         private static float _minDistance = 100;
-        private static float BrainFarmInt = - 30;
+        private static float BrainFarmInt = - 60;
         private static float DelayOnFire = 0;
         private static int DelayOnFireId = 0;
 
@@ -186,10 +186,10 @@ namespace LeagueSharp.Common
                         float x = Utils.TickCount - DelayOnFire;
 
                         if (x < 80)
-                            BrainFarmInt -= 2f;
+                            BrainFarmInt -= 3f;
                         else if (x > 90)
-                            BrainFarmInt += 2f;
-                        Console.WriteLine("LASTHIT ADJUST: " + BrainFarmInt);
+                            BrainFarmInt += 3f;
+                        //Console.WriteLine("LASTHIT ADJUST: " + BrainFarmInt);
                     }
                 }
             }
@@ -539,11 +539,9 @@ namespace LeagueSharp.Common
 
                         if (!DisableNextAttack)
                         {
-                            if (Player.ForceIssueOrder(GameObjectOrder.AttackUnit, target))
-                            {
-                                LastAttackCommandT = Utils.GameTimeTickCount;
-                                _lastTarget = target;
-                            }
+                            Player.ForceIssueOrder(GameObjectOrder.AttackUnit, target);
+                            LastAttackCommandT = Utils.GameTimeTickCount;
+                            _lastTarget = target;
                             return;
                         }
                     }
@@ -559,7 +557,7 @@ namespace LeagueSharp.Common
                 }
 
                 if (CanMove(extraWindup) && Move)
-                {
+                { 
                     MoveTo(position, Math.Max(holdAreaRadius, 30), false, useFixedDistance, randomizeMinDistance);
                 }
             }
@@ -984,7 +982,7 @@ namespace LeagueSharp.Common
 
                     foreach (var minion in MinionList)
                     {
-                        var t = AttackCastDelay * 1000f + 40f + BrainFarmInt + 1000f * Math.Max(0, Player.Distance(minion)-Player.BoundingRadius) / GetMyProjectileSpeed();
+                        var t = AttackCastDelay * 1000f + 20f + BrainFarmInt + 1000f * Math.Max(0, Player.Distance(minion)-Player.BoundingRadius) / GetMyProjectileSpeed();
 
                         if (mode == OrbwalkingMode.Freeze)
                         {
@@ -1150,7 +1148,7 @@ namespace LeagueSharp.Common
                         //    }
                         //}
 
-                        var t = (int)(AttackCastDelay * 1000) - 20 + 1000 * (int)Math.Max(0, 500)/ (int)GetMyProjectileSpeed();
+                        var t = (int)(AttackCastDelay * 1000) - 30 + 1000 * (int)Math.Max(0, 500)/ (int)GetMyProjectileSpeed();
                         float laneClearDelay = Player.AttackDelay * 1000 * LaneClearWaitTimeMod + t;
 
                         var results = (from minion in
@@ -1208,8 +1206,6 @@ namespace LeagueSharp.Common
             {
                 this._orbwalkingPoint = point;
             }
-
-
 
             public bool ShouldWait()
             {
@@ -1321,6 +1317,7 @@ namespace LeagueSharp.Common
                     }
 
                     var target = this.GetTarget();
+
                     Orbwalk(target, this._orbwalkingPoint.To2D().IsValid() ? this._orbwalkingPoint : Game.CursorPos,
                         _config.Item("ExtraWindup").GetValue<Slider>().Value,
                         Math.Max(_config.Item("HoldPosRadius").GetValue<Slider>().Value, 30));
