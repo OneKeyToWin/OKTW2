@@ -2181,20 +2181,19 @@ namespace Evade
                     Type = SkillShotType.SkillshotMissileLine,
                     Delay = 250,
                     Range = 1050,
-                    Radius = 60,
+                    Radius = 80,
                     MissileSpeed = 1700,
                     FixedRange = true,
                     AddHitbox = true,
-                    DangerValue = 2,
+                    DangerValue = 3,
                     IsDangerous = true,
                     MissileSpellName = "KarmaQMissile",
-                    CanBeRemoved = true,
+                    ExtraMissileNames = new string[] { "KarmaQMissileMantra"},
                     CollisionObjects =
                         new[]
                         {CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall},
                 });
 
-            
             Spells.Add(
                new SpellData
                {
@@ -2208,12 +2207,9 @@ namespace Evade
                    MissileSpeed = int.MaxValue,
                    FixedRange = false,
                    AddHitbox = true,
-                   DangerValue = 2,
+                   DangerValue = 3,
                    IsDangerous = true,
                    SourceObjectName = "Karm.+Q_impact_R_01",
-
-                   CanBeRemoved = true,
-                   
                });
 
             #endregion Karma
