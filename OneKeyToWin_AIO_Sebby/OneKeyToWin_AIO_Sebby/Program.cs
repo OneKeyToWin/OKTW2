@@ -19,7 +19,7 @@ namespace OneKeyToWin_AIO_Sebby
             UtilityOnly = 2,
         }
 
-        public static string[] SuportedChampions = { "Ahri", "Anivia", "Annie", "Ashe", "Blitzcrank", "Brand", "Braum", "Caitlyn", "Corki", "Darius", "Draven", "Ekko", "Evelynn", "Ezreal",
+        public static string[] SuportedChampions = { "Ahri", "Amumu", "Anivia", "Annie", "Ashe", "Blitzcrank", "Brand", "Braum", "Caitlyn", "Corki", "Darius", "Draven", "Ekko", "Evelynn", "Ezreal",
                                                     "Graves", "Jayce", "Jhin", "Jinx", "Kalista", "Karthus", "Kayle", "Kindred", "KogMaw", "Lucian", "Lux", "Malzahar", "MissFortune", "Morgana" ,
                                                     "Orianna", "Quinn", "Sivir", "Swain", "Syndra", "Thresh", "Tristana", "TwistedFate", "Twitch", "Urgot", "Varus", "Vayne", "Velkoz", "Xerath" };
 
@@ -204,6 +204,9 @@ namespace OneKeyToWin_AIO_Sebby
                         break;
                     case "Garen":
                         new Champions.Garen();
+                        break;
+                    case "Amumu":
+                        new Champions.Amumu();
                         break;
                 }
                 #endregion

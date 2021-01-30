@@ -248,7 +248,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 {
                     foreach (var enemy in HeroManager.Enemies.Where(enemy => enemy.IsValidTarget(W.Range) && !OktwCommon.CanMove(enemy) && !enemy.HasBuff("caitlynyordletrapinternal")))
                     {
-                        W.Cast(enemy);
+                        Program.CastSpell(W, enemy);
                     }
                 }
 
@@ -297,11 +297,11 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 if ((Program.Combo || Program.Harass) && Player.Mana > RMANA + QMANA && Player.CountEnemiesInRange(400) == 0)
                 {
                     foreach (var enemy in HeroManager.Enemies.Where(enemy => enemy.IsValidTarget(Q.Range) && (!OktwCommon.CanMove(enemy) || enemy.HasBuff("caitlynyordletrapinternal"))))
-                        Q.Cast(enemy, true);
+                        Program.CastSpell(Q, enemy);
                     if (Player.CountEnemiesInRange(bonusRange()) == 0 && OktwCommon.CanHarras())
                     {
                         if (t.HasBuffOfType(BuffType.Slow) && Config.Item("Qslow", true).GetValue<bool>())
-                            Q.Cast(t);
+                            Program.CastSpell(Q, t);
                         if (Config.Item("Qaoe", true).GetValue<bool>())
                             Q.CastIfWillHit(t, 2, true);
                     }
