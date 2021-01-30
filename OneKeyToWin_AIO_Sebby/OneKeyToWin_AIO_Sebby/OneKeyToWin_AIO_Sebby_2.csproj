@@ -74,6 +74,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Champions\Ahri.cs" />
+    <Compile Include="Champions\Amumu.cs" />
     <Compile Include="Champions\Blitzcrank.cs" />
     <Compile Include="Champions\Brand.cs" />
     <Compile Include="Champions\Braum.cs" />
