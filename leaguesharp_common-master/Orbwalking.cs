@@ -474,12 +474,16 @@ namespace LeagueSharp.Common
 
         public static void MoveTo(Vector3 position, float holdAreaRadius = 0, bool overrideTimer = false, bool useFixedDistance = true, bool randomizeMinDistance = true)
         {
+            if (Utils.GameTimeTickCount - LastMoveCommandT < 70 + Math.Min(60, Game.Ping))
+                return;
+
             var playerPosition = Player.ServerPosition;
 
             if (playerPosition.Distance(position, true) < holdAreaRadius * holdAreaRadius)
             {
                 if (Player.Path.Length > 0)
                 {
+                    Console.WriteLine(Utils.TickCount + " SEND STOP ISSUE");
                     Player.ForceIssueOrder(GameObjectOrder.Stop, playerPosition);
                     LastMoveCommandPosition = playerPosition;
                     LastMoveCommandT = Utils.GameTimeTickCount - 70;
@@ -516,6 +520,7 @@ namespace LeagueSharp.Common
             if (angle >= 60 && Utils.GameTimeTickCount - LastMoveCommandT < 60)
                 return;
 
+            Console.WriteLine(Utils.TickCount + " SEND MOVE ISSUE " + CanAttack());
             Player.ForceIssueOrder(GameObjectOrder.MoveTo, point);
             LastMoveCommandPosition = movePath[1];
             LastMoveCommandT = Utils.GameTimeTickCount;
@@ -523,7 +528,7 @@ namespace LeagueSharp.Common
 
         public static void Orbwalk(AttackableUnit target, Vector3 position, float extraWindup = 90, float holdAreaRadius = 0, bool useFixedDistance = true, bool randomizeMinDistance = true)
         {
-            if (Utils.GameTimeTickCount - LastAttackCommandT < 70 + Math.Min(60, Game.Ping))
+            if (Utils.GameTimeTickCount - LastAttackCommandT < 100 + Math.Min(60, Game.Ping))
             {
                 return;
             }
@@ -539,9 +544,11 @@ namespace LeagueSharp.Common
 
                         if (!DisableNextAttack)
                         {
-                            Player.ForceIssueOrder(GameObjectOrder.AttackUnit, target);
-                            LastAttackCommandT = Utils.GameTimeTickCount;
-                            _lastTarget = target;
+                            if (Player.ForceIssueOrder(GameObjectOrder.AttackUnit, target))
+                            {
+                                LastAttackCommandT = Utils.GameTimeTickCount;
+                                _lastTarget = target;
+                            }
                             return;
                         }
                     }
