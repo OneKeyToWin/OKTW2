@@ -149,12 +149,11 @@
                 target,
                 Utils.GameTimeTickCount,
                 sender.AttackCastDelay * 1000f,
-                sender.AttackDelay * 1000f + (sender is Obj_AI_Turret ? 50 : 0),
+                sender.AttackDelay * 1000f + (sender is Obj_AI_Turret ? 100 : 0),
                 sender.IsMelee() ? int.MaxValue : (int)args.SData.MissileSpeed,
-                (float)sender.GetAutoAttackDamage(target, true));
+                (int)sender.GetAutoAttackDamage(target, true));
             ActiveAttacks.Add(sender.NetworkId, attackData);
         }
-
 
         private static void SpellbookOnStopCast(Spellbook spellbook, SpellbookStopCastEventArgs args)
         {
