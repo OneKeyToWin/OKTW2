@@ -127,7 +127,7 @@ namespace LeagueSharp.Common
         private static int _delay;
         private static AttackableUnit _lastTarget;
         private static float _minDistance = 100;
-        private static float BrainFarmInt = - 50;
+        private static float BrainFarmInt = - 30;
         private static float DelayOnFire = 0;
         private static int DelayOnFireId = 0;
 
@@ -175,28 +175,21 @@ namespace LeagueSharp.Common
                     ResetAutoAttackTimer();
             }
 
-
             if(missile != null && missile.SData != null && missile.SData.IsAutoAttack())
             {
-
                 var caster = missile.SpellCaster;
                 if (caster != null && caster.IsMe)
                 {
                     var target = missile.Target;
-                    if(target != null)
+                    if(target != null && DelayOnFire != 0 && DelayOnFireId == target.NetworkId)
                     {
+                        float x = Utils.TickCount - DelayOnFire;
 
-                        if (DelayOnFire != 0 && DelayOnFireId == target.NetworkId)
-                        {
-                            float x = Utils.TickCount - DelayOnFire;
-
-                            if (x < 80)
-                                BrainFarmInt -= 2f;
-                            else if (x > 90)
-                                BrainFarmInt += 2f;
-                            Console.WriteLine("brain: " + BrainFarmInt);
-                        }
-
+                        if (x < 80)
+                            BrainFarmInt -= 2f;
+                        else if (x > 90)
+                            BrainFarmInt += 2f;
+                        Console.WriteLine("LASTHIT ADJUST: " + BrainFarmInt);
                     }
                 }
             }
@@ -537,7 +530,7 @@ namespace LeagueSharp.Common
 
             try
             {
-                if (target.IsValidTarget()  && Attack)
+                if (target.IsValidTarget() && Attack)
                 {
                     if (CanAttack())
                     {
@@ -991,7 +984,7 @@ namespace LeagueSharp.Common
 
                     foreach (var minion in MinionList)
                     {
-                        var t = AttackCastDelay * 1000f + BrainFarmInt + 1000f * Math.Max(0, Player.Distance(minion)-Player.BoundingRadius) / GetMyProjectileSpeed();
+                        var t = AttackCastDelay * 1000f + 40f + BrainFarmInt + 1000f * Math.Max(0, Player.Distance(minion)-Player.BoundingRadius) / GetMyProjectileSpeed();
 
                         if (mode == OrbwalkingMode.Freeze)
                         {
