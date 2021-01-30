@@ -12,9 +12,6 @@
 
         #region Constructors and Destructors
 
-        /// <summary>
-        ///     Initializes static members of the <see cref="HealthPrediction" /> class.
-        /// </summary>
         static HealthPrediction()
         {
             Obj_AI_Base.OnProcessSpellCast += ObjAiBaseOnOnProcessSpellCast;
@@ -35,30 +32,24 @@
             return ActiveTurret != null ? ActiveTurret.Source : null;
         }
 
-
-        public static float GetHealthPrediction(Obj_AI_Base unit, int time, int delay = 70)
+        public static float GetHealthPrediction(Obj_AI_Base unit, int time, int delay = 0)
         {
             var predictedDamage = 0f;
-
             foreach (var attack in ActiveAttacks.Values)
             {
-                var attackDamage = 0f;
                 if (!attack.Processed && attack.Source.IsValidTarget(float.MaxValue, false)
                     && attack.Target.IsValidTarget(float.MaxValue, false) && attack.Target.NetworkId == unit.NetworkId)
                 {
                     var landTime = attack.StartTick + attack.Delay
-                                   + 1000 * Math.Max(0, unit.Distance(attack.Source) - attack.Source.BoundingRadius)
-                                   / attack.ProjectileSpeed + delay;
+                                   + 1000f * Math.Max(0f, unit.Distance(attack.Source) - attack.Source.BoundingRadius)
+                                   / attack.ProjectileSpeed + 10f;
 
                     if (landTime < Utils.GameTimeTickCount + time)
                     {
-                        attackDamage = attack.Damage;
+                        predictedDamage += attack.Damage;
                     }
                 }
-
-                predictedDamage += attackDamage;
             }
-
             return unit.Health - predictedDamage;
         }
         public static bool HasMinionAggro(Obj_AI_Minion minion)
@@ -77,29 +68,27 @@
 
             foreach (var attack in ActiveAttacks.Values)
             {
-                var n = 0;
                 if (Utils.GameTimeTickCount - 100 <= attack.StartTick + attack.AnimationTime
                     && attack.Target.IsValidTarget(float.MaxValue, false)
                     && attack.Source.IsValidTarget(float.MaxValue, false) && attack.Target.NetworkId == unit.NetworkId)
                 {
+                    var n = 1;
                     var fromT = attack.StartTick;
                     var toT = Utils.GameTimeTickCount + time;
 
                     while (fromT < toT)
                     {
-                        if (fromT >= Utils.GameTimeTickCount
-                            && (fromT + attack.Delay
-                                + Math.Max(0, unit.Distance(attack.Source) - attack.Source.BoundingRadius)
-                                / attack.ProjectileSpeed < toT))
+                        var travelTime = fromT + attack.Delay + 1000f * Math.Max(0, unit.Distance(attack.Source) - attack.Source.BoundingRadius) / attack.ProjectileSpeed + 10f;
+                        if (fromT >= Utils.GameTimeTickCount && travelTime < toT)
                         {
                             n++;
                         }
+
                         fromT += (int)attack.AnimationTime;
                     }
+                    predictedDamage += n * attack.Damage;
                 }
-                predictedDamage += n * attack.Damage;
             }
-
             return unit.Health - predictedDamage;
         }
 
@@ -110,8 +99,6 @@
                     m => (m.Source is Obj_AI_Turret) && m.Target.NetworkId == minion.NetworkId);
             return ActiveTurret != null ? ActiveTurret.StartTick : 0;
         }
-
-
 
         private static void Game_OnGameUpdate(EventArgs args)
         {
@@ -160,9 +147,9 @@
             var attackData = new PredictedDamage(
                 sender,
                 target,
-                Utils.GameTimeTickCount - Game.Ping / 2,
-                sender.AttackCastDelay * 1000,
-                sender.AttackDelay * 1000 - (sender is Obj_AI_Turret ? 200 : 0),
+                Utils.GameTimeTickCount,
+                sender.AttackCastDelay * 1000f,
+                sender.AttackDelay * 1000f + (sender is Obj_AI_Turret ? 50 : 0),
                 sender.IsMelee() ? int.MaxValue : (int)args.SData.MissileSpeed,
                 (float)sender.GetAutoAttackDamage(target, true));
             ActiveAttacks.Add(sender.NetworkId, attackData);
