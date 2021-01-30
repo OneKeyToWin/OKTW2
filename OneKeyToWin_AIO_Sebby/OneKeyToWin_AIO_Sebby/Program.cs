@@ -377,9 +377,7 @@ namespace OneKeyToWin_AIO_Sebby
                 };
                 
                 var poutput2 = Prediction.GetPrediction(predInput2);
-
-                //var poutput2 = QWER.GetPrediction(target);
-
+                
                 if (QWER.Speed != float.MaxValue && OktwCommon.CollisionYasuo(Player.ServerPosition, poutput2.CastPosition))
                     return;
 
@@ -406,7 +404,9 @@ namespace OneKeyToWin_AIO_Sebby
                 else if ((int)hitchance == 4)
                 {
                     if (poutput2.Hitchance >= HitChance.Medium)
+                    {
                         QWER.Cast(poutput2.CastPosition);
+                    }
                 }
                 if (Game.Time - DrawSpellTime > 0.5)
                 {
@@ -421,7 +421,7 @@ namespace OneKeyToWin_AIO_Sebby
                 var predInput2 = new PredictionInput
                 {
                     Aoe = false,
-                    Collision = false,
+                    Collision = QWER.Collision,
                     Speed = QWER.Speed,
                     Delay = QWER.Delay,
                     Range = QWER.Range,
@@ -436,7 +436,7 @@ namespace OneKeyToWin_AIO_Sebby
                 
                 if (poutput2.Hitchance >= HitChance.Low && poutput2.Hitchance <= HitChance.VeryHigh)
                 {
-                    var prediction = AIPrediction.GetPrediction(predInput2, poutput2.CastPosition);
+                    var prediction = AIPrediction.GetPrediction(predInput2);
 
                     if (Game.Time - DrawSpellTime > 0.5)
                     {
@@ -451,8 +451,9 @@ namespace OneKeyToWin_AIO_Sebby
                         case SpellSlot.Q:
                         {
                             var targetPrediction = Config.Item("QHitChanceAI", true).GetValue<Slider>().Value / 100.0f;
-                            if (CastSpellPred(QWER, targetPrediction, poutput2, predInput2, prediction))
+                            if (prediction.HitchanceFloat > targetPrediction)
                             {
+                                QWER.Cast(prediction.CastPosition);
                                 return;
                             }
 
@@ -462,8 +463,9 @@ namespace OneKeyToWin_AIO_Sebby
                         case SpellSlot.W:
                         {
                             var targetPrediction = Config.Item("WHitChanceAI", true).GetValue<Slider>().Value / 100.0f;
-                            if (CastSpellPred(QWER, targetPrediction, poutput2, predInput2, prediction))
+                            if (prediction.HitchanceFloat > targetPrediction)
                             {
+                                QWER.Cast(prediction.CastPosition);
                                 return;
                             }
 
@@ -473,8 +475,9 @@ namespace OneKeyToWin_AIO_Sebby
                         case SpellSlot.E:
                         {
                             var targetPrediction = Config.Item("EHitChanceAI", true).GetValue<Slider>().Value / 100.0f;
-                            if (CastSpellPred(QWER, targetPrediction, poutput2, predInput2, prediction))
+                            if (prediction.HitchanceFloat > targetPrediction)
                             {
+                                QWER.Cast(prediction.CastPosition);
                                 return;
                             }
 
@@ -484,9 +487,9 @@ namespace OneKeyToWin_AIO_Sebby
                         case SpellSlot.R:
                         {
                             var targetPrediction = Config.Item("RHitChanceAI", true).GetValue<Slider>().Value / 100.0f;
-
-                            if (CastSpellPred(QWER, targetPrediction, poutput2, predInput2, prediction))
+                            if (prediction.HitchanceFloat > targetPrediction)
                             {
+                                QWER.Cast(prediction.CastPosition);
                                 return;
                             }
                             
@@ -509,49 +512,6 @@ namespace OneKeyToWin_AIO_Sebby
             }
         }
 
-        private static bool CastSpellPred(Spell QWER, float targetPrediction,
-            PredictionOutput poutput2, PredictionInput input, AIPredictionOutput prediction)
-        {
-            var maxCollisions = 0;
-            if (HeroManager.Player.ChampionName == "Lux")
-            {
-                maxCollisions = 1;
-            }
-
-            if (prediction.HitchancePath > targetPrediction && prediction.HitchancePath >= prediction.HitchancePosition)
-            {
-                if (QWER.Collision)
-                {
-                    var positions = new List<Vector3> { poutput2.CastPosition };
-                    var originalUnit = input.Unit;
-                    poutput2.CollisionObjects = Collision.GetCollision(positions, input);
-                    poutput2.CollisionObjects.RemoveAll(x => x.NetworkId == originalUnit.NetworkId);
-                    if (poutput2.CollisionObjects.Count > maxCollisions)
-                        return false;
-                }
-                 Console.WriteLine($"CAST {QWER.Slot.ToString()} PATH: " + prediction.HitchancePath);
-                QWER.Cast(poutput2.CastPosition);
-                return true;
-            }
-            else if (prediction.HitchancePosition > targetPrediction)
-            {
-                if (QWER.Collision)
-                {
-                    var positions = new List<Vector3> { input.Unit.ServerPosition };
-                    var originalUnit = input.Unit;
-                    poutput2.CollisionObjects = Collision.GetCollision(positions, input);
-                    poutput2.CollisionObjects.RemoveAll(x => x.NetworkId == originalUnit.NetworkId);
-                    if (poutput2.CollisionObjects.Count > maxCollisions)
-                        return false;
-                }
-                Console.WriteLine($"CAST {QWER.Slot.ToString()} POSITION: " + prediction.HitchancePosition);
-                QWER.Cast(input.Unit.ServerPosition);
-                return true;
-            }
-
-            return false;
-        }
-        
         public static void drawText(string msg, Vector3 Hero, System.Drawing.Color color, int weight = 0)
         {
             var wts = Drawing.WorldToScreen(Hero);
