@@ -127,6 +127,9 @@ namespace LeagueSharp.Common
         private static int _delay;
         private static AttackableUnit _lastTarget;
         private static float _minDistance = 100;
+        private static float BrainFarmInt = - 70;
+        private static float DelayOnFire = 0;
+        private static int DelayOnFireId = 0;
 
         static Orbwalking()
         {
@@ -135,11 +138,8 @@ namespace LeagueSharp.Common
             Obj_AI_Base.OnProcessSpellCast += OnProcessSpell;
             Obj_AI_Base.OnDoCast += Obj_AI_Base_OnDoCast;
             Spellbook.OnStopCast += SpellbookOnStopCast;
-
-            if (Player.ChampionName == "Aphelios")
-            {
-                GameObject.OnDelete += GameObject_OnDelete;
-            }
+            GameObject.OnDelete += GameObject_OnDelete;
+            
             foreach (var hero in ObjectManager.Get<Obj_AI_Hero>())
             {
                 if (hero.IsEnemy && hero.ChampionName == "Yasuo")
@@ -173,6 +173,32 @@ namespace LeagueSharp.Common
             {
                 if (missile.SpellCaster != null && missile.SpellCaster.IsMe)
                     ResetAutoAttackTimer();
+            }
+
+
+            if(missile != null && missile.SData != null && missile.SData.IsAutoAttack())
+            {
+
+                var caster = missile.SpellCaster;
+                if (caster != null && caster.IsMe)
+                {
+                    var target = missile.Target;
+                    if(target != null)
+                    {
+
+                        if (DelayOnFire != 0 && DelayOnFireId == target.NetworkId)
+                        {
+                            float x = Utils.TickCount - DelayOnFire;
+
+                            if (x < 80)
+                                BrainFarmInt -= 2f;
+                            else if (x > 90)
+                                BrainFarmInt += 2f;
+                            Console.WriteLine("brain: " + BrainFarmInt);
+                        }
+
+                    }
+                }
             }
         }
 
@@ -375,8 +401,6 @@ namespace LeagueSharp.Common
                        ? float.MaxValue
                        : Player.BasicAttack.MissileSpeed;
         }
-
-
 
         public static float GetRealAutoAttackRange(AttackableUnit target)
         {
@@ -967,16 +991,14 @@ namespace LeagueSharp.Common
 
                     foreach (var minion in MinionList)
                     {
-                        var t = (int)(AttackCastDelay * 1000) - 20  /*+ Game.Ping / 2*/
-                                + 1000 * (int)Math.Max(0, this.Player.Distance(minion) - this.Player.BoundingRadius)
-                                / (int)GetMyProjectileSpeed();
+                        var t = AttackCastDelay * 1000f + BrainFarmInt + 1000f * Math.Max(0, Player.Distance(minion)-Player.BoundingRadius) / GetMyProjectileSpeed();
 
                         if (mode == OrbwalkingMode.Freeze)
                         {
                             t += 200 + Game.Ping / 2;
                         }
 
-                        var predHealth = HealthPrediction.GetHealthPrediction(minion, t, 0);
+                        var predHealth = HealthPrediction.GetHealthPrediction(minion, (int)t, 0);
 
                         if (minion.Team != GameObjectTeam.Neutral && this.ShouldAttackMinion(minion))
                         {
@@ -1002,6 +1024,11 @@ namespace LeagueSharp.Common
                                     }
                                     else
                                     {
+                                        if (CanAttack() && t != 0)
+                                        {
+                                            DelayOnFire = Utils.TickCount + t;
+                                            DelayOnFireId = minion.NetworkId;
+                                        }
                                         return minion;
                                     }
                                 }
