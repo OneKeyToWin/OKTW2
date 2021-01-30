@@ -19,7 +19,6 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             E = new Spell(SpellSlot.E, 350);
             R = new Spell(SpellSlot.R, 550);
             Q.SetSkillshot(0.25f, 100f, 2000f, true, SkillshotType.SkillshotLine);
-
             Config.SubMenu(Player.ChampionName)
                 .AddItem(new MenuItem("showBandageStats", "Show statistics", true).SetValue(true));
 
@@ -208,11 +207,11 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             {
                 if (target != null)
                 {
-                    enoughMana = GetPlayerManaPercent() >= Config.Item("wComboUntil", true).GetValue<Slider>().Value;
+                    enoughMana = Player.ManaPercent >= Config.Item("wComboUntil", true).GetValue<Slider>().Value;
                 }
                 else
                 {
-                    enoughMana = GetPlayerManaPercent() >= Config.Item("wFarmUntil", true).GetValue<Slider>().Value;
+                    enoughMana = Player.ManaPercent >= Config.Item("wFarmUntil", true).GetValue<Slider>().Value;
                 }
 
                 if (IsWTurnedOff() && enoughMana)
@@ -242,11 +241,11 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             {
                 if (target != null)
                 {
-                    enoughMana = GetPlayerManaPercent() >= Config.Item("eComboUntil", true).GetValue<Slider>().Value;
+                    enoughMana = Player.ManaPercent >= Config.Item("eComboUntil", true).GetValue<Slider>().Value;
                 }
                 else
                 {
-                    enoughMana = GetPlayerManaPercent() >= Config.Item("eFarmUntil", true).GetValue<Slider>().Value;
+                    enoughMana = Player.ManaPercent >= Config.Item("eFarmUntil", true).GetValue<Slider>().Value;
                 }
 
                 if (enoughMana)
@@ -282,11 +281,6 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                    && enemy.HasBuff("Stun")
                    && !enemy.HasBuff("CurseoftheSadMummy")
                    && enemy.GetBuff("Stun").Caster.NetworkId == Player.NetworkId;
-        }
-
-        private float GetPlayerManaPercent()
-        {
-            return (ObjectManager.Player.Mana / ObjectManager.Player.MaxMana) * 100f;
         }
 
         private void TurnOnW()
