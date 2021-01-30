@@ -51,7 +51,32 @@ namespace SebbyLib
             }
         }
 
-       
+        public bool ShouldWaitForMinion(float delay)
+        {
+            var minionListAA = ObjectManager.Get<Obj_AI_Minion>().Where(minion => minion.IsValidTarget()
+                        && minion.Team != GameObjectTeam.Neutral && Orbwalking.InAutoAttackRange(minion) && MinionManager.IsMinion(minion, false));
+
+            var minionsAlly = ObjectManager.Get<Obj_AI_Minion>().Where(minion => !minion.IsDead
+                        && minion.IsAlly && minion.Distance(Player) < 600 && MinionManager.IsMinion(minion, false));
+
+            int countAlly = minionsAlly.Count();
+
+            if (minionListAA.Count() == 1 && countAlly > 3 && minionListAA.Any(x => x.Health < Player.TotalAttackDamage * 2))
+                return true;
+
+            if (countAlly > 2 && minionListAA.Any(x => x.IsMoving && x.Health < Player.TotalAttackDamage * 2))
+                return true;
+
+            var t = (int)(Player.AttackCastDelay * 1000) - 20 + 1000 * (int)Math.Max(0, 500) / (int)Orbwalking.GetMyProjectileSpeed();
+            float laneClearDelay = delay * 1000 + t;
+            return
+                ObjectManager.Get<Obj_AI_Minion>()
+                    .Any(
+                        minion =>
+                        minion.IsValidTarget() && minion.Team != GameObjectTeam.Neutral
+                        && Orbwalking.InAutoAttackRange(minion) && MinionManager.IsMinion(minion, false)
+                        && HealthPrediction.LaneClearHealthPrediction(minion,(int)(laneClearDelay),0) <= Player.GetAutoAttackDamage(minion));
+        }
 
         public static bool CanHarras()
         {
@@ -60,6 +85,7 @@ namespace SebbyLib
             else
                 return false;
         }
+
         public static bool ShouldWait()
         {
             var attackCalc = (int)(Player.AttackDelay * 1000);
@@ -67,7 +93,6 @@ namespace SebbyLib
                 Cache.GetMinions(Player.Position, 0).Any(
                     minion => HealthPrediction.LaneClearHealthPrediction(minion, attackCalc, 30) <= Player.GetAutoAttackDamage(minion));
         }
-
 
         public static float GetEchoLudenDamage(Obj_AI_Hero target)
         {
@@ -97,7 +122,6 @@ namespace SebbyLib
                 {
                     return true;
                 }
-
             }
             return false;
         }
@@ -146,10 +170,9 @@ namespace SebbyLib
                     totalDmg -= t.Mana / 2f;
                 }
             }
-            //if (Thunderlord && !Player.HasBuff( "masterylordsdecreecooldown"))
-            //totalDmg += (float)Player.CalcDamage(t, Damage.DamageType.Magical, 10 * Player.Level + 0.1 * Player.FlatMagicDamageMod + 0.3 * Player.FlatPhysicalDamageMod);
             if(includeIncomingDamage)
                 totalDmg += (float)GetIncomingDamage(t);
+
             return totalDmg;
         }
 
