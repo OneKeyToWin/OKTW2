@@ -483,7 +483,6 @@ namespace LeagueSharp.Common
             {
                 if (Player.Path.Length > 0)
                 {
-                    Console.WriteLine(Utils.TickCount + " SEND STOP ISSUE");
                     Player.ForceIssueOrder(GameObjectOrder.Stop, playerPosition);
                     LastMoveCommandPosition = playerPosition;
                     LastMoveCommandT = Utils.GameTimeTickCount - 70;
@@ -520,7 +519,6 @@ namespace LeagueSharp.Common
             if (angle >= 60 && Utils.GameTimeTickCount - LastMoveCommandT < 60)
                 return;
 
-            Console.WriteLine(Utils.TickCount + " SEND MOVE ISSUE " + CanAttack());
             Player.ForceIssueOrder(GameObjectOrder.MoveTo, point);
             LastMoveCommandPosition = movePath[1];
             LastMoveCommandT = Utils.GameTimeTickCount;
