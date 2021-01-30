@@ -127,7 +127,7 @@ namespace LeagueSharp.Common
         private static int _delay;
         private static AttackableUnit _lastTarget;
         private static float _minDistance = 100;
-        private static float BrainFarmInt = - 70;
+        private static float BrainFarmInt = - 50;
         private static float DelayOnFire = 0;
         private static int DelayOnFireId = 0;
 
