@@ -21,7 +21,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             W.SetSkillshot(0f, 70f, 1500f, true, SkillshotType.SkillshotLine);
             R.SetSkillshot(0.6f, 270f, float.MaxValue, false, SkillshotType.SkillshotCircle);
 
-            W.SetCharged("ViegoW", "ViegoW", 400,850, 1f);
+            W.SetCharged("ViegoW", "ViegoW", 400, 850, 1f);
 
             Config.SubMenu(Player.ChampionName).SubMenu("Q Config").AddItem(new MenuItem("autoQ", "Auto Q", true).SetValue(true));
             Config.SubMenu(Player.ChampionName).SubMenu("Q Config").AddItem(new MenuItem("harassQ", "Harass Q", true).SetValue(true));
@@ -33,7 +33,6 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             Config.SubMenu(Player.ChampionName).SubMenu("W config").AddItem(new MenuItem("harassW", "Harass W", true).SetValue(true));
 
             Config.SubMenu(Player.ChampionName).SubMenu("R option").AddItem(new MenuItem("autoR", "Auto R", true).SetValue(true));
-
 
             Config.SubMenu(Player.ChampionName).SubMenu("Draw").AddItem(new MenuItem("ComboInfo", "R killable info", true).SetValue(true));
             Config.SubMenu(Player.ChampionName).SubMenu("Draw").AddItem(new MenuItem("qRange", "Q range", true).SetValue(false));
@@ -62,10 +61,10 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
         private void OnBuffAdd(Obj_AI_Base sender, Obj_AI_BaseBuffAddEventArgs args)
         {
-            if(sender.IsMe)
+            if (sender.IsMe)
             {
 
-                Console.WriteLine("buffname: " +    args.Buff.Name);
+                Console.WriteLine("buffname: " + args.Buff.Name);
             }
         }
 
@@ -105,27 +104,50 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
         private void Game_OnUpdate(EventArgs args)
         {
-            if (Player.ChampionName != "Viego")
+            if (!Player.CharData.BaseSkinName.Contains("Viego"))
             {
-               if(Player.InventoryItems.Count() == 2)
+                if (!Program.LagFree(0))
+                    return;
+                var t = TargetSelector.GetTarget(R.Range + R.Width, TargetSelector.DamageType.Physical);
+                var pred = Prediction.GetPrediction(t, 0.4f).CastPosition;
+                if (t.IsValidTarget())
                 {
-                    Console.WriteLine("EMPTY");
+                    if (Player.InventoryItems.Count() == 2 && Program.LagFree(0)) // empty
+                    {
+                        Program.CastSpell(R, t);
+                    }
+                    else
+                    {
+                        for (var i = 0; i < 4; i++)
+                        {
+                            var spell = Player.Spellbook.Spells[i];
+                            if (spell.SData != null && ObjectManager.Player.Spellbook.CanUseSpell(spell.Slot) == SpellState.Ready)
+                            {
+                                if (spell.SData.TargettingType == SpellDataTargetType.Unit || spell.SData.TargettingType == SpellDataTargetType.SelfAndUnit)
+                                {
+                                    ObjectManager.Player.Spellbook.CastSpell(spell.Slot, t, true);
+                                }
+                                else if (spell.SData.TargettingType != SpellDataTargetType.Self && spell.SData.TargettingType != SpellDataTargetType.SelfAoe)
+                                {
+                                    if (spell.SData.LineWidth > 0 || spell.SData.LineWidth > 0)
+                                    {
+                                        ObjectManager.Player.Spellbook.CastSpell(spell.Slot, pred, true);
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
 
                 return;
             }
 
-           
-          
-            {
-                
-            }
             var viegosoul = ObjectManager.Get<Obj_AI_Minion>().Where(
                                 minion =>
                                 minion.Team == GameObjectTeam.Neutral
                                 && minion.CharData.BaseSkinName == "ViegoSoul" && minion.IsHPBarRendered
                                 && minion.IsValidTarget(600)).FirstOrDefault();
-            if(viegosoul != null)
+            if (viegosoul != null)
             {
                 //Console.WriteLine("VIEGO SOUL");
                 Orbwalker.SetOrbwalkingPoint(viegosoul.Position);
@@ -150,7 +172,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             {
 
                 //Console.WriteLine("viegopassivecasting " + Player.HasBuff("viegopassivecasting") + " viegopassivetransform " + Player.HasBuff("viegopassivetransform"));
-               
+
             }
 
             //if (Program.LagFree(1) && E.IsReady() && Config.Item("autoE", true).GetValue<bool>())
@@ -194,15 +216,21 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
         private void LogicW()
         {
-            var t = TargetSelector.GetTarget(W.Range, TargetSelector.DamageType.Magical);
+            var t = TargetSelector.GetTarget(W.ChargedMaxRange, TargetSelector.DamageType.Physical);
             if (t.IsValidTarget())
             {
+                if(!Player.HasBuff("ViegoW"))
+                {
+                    W.StartCharging();
+                    return;
+                }
+
                 var wDmg = OktwCommon.GetKsDamage(t, W);
-                if (wDmg + Q.GetDamage(t) > t.Health )
+                if (wDmg + Q.GetDamage(t) > t.Health)
                 {
                     Program.CastSpell(W, t);
                 }
-                else if (Program.Combo && Player.Mana > RMANA + WMANA )
+                else if (Program.Combo && Player.Mana > RMANA + WMANA)
                 {
                     Program.CastSpell(W, t);
                 }
@@ -227,14 +255,13 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                         W.Cast(mob);
                         return;
                     }
-
                 }
             }
         }
 
         private void LogicR()
         {
-            if (Config.Item("autoR", true).GetValue<bool>() )
+            if (Config.Item("autoR", true).GetValue<bool>())
             {
                 foreach (var target in HeroManager.Enemies.Where(target => target.IsValidTarget(R.Range + R.Width) && OktwCommon.ValidUlt(target)))
                 {
