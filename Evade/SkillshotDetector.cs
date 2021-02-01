@@ -317,6 +317,10 @@ namespace Evade
                 {
                     Program.DetectedSkillshots.RemoveAt(i);
                 }
+                if (skillshot.SpellData.EndAtParticle != "" && new Regex(skillshot.SpellData.EndAtParticle, System.Text.RegularExpressions.RegexOptions.IgnoreCase).IsMatch(sender.Name) && !skillshot.IsSafe(sender.Position.To2D()))
+                {
+                    Program.DetectedSkillshots.RemoveAt(i);
+                }
             }
         }
 

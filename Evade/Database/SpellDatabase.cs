@@ -4937,7 +4937,7 @@ namespace Evade
                     Slot = SpellSlot.W,
                     Type = SkillShotType.SkillshotCircle,
                     Delay = 250,
-                    ExtraDuration = 5000,
+                    
                     Range = 1000,
                     Radius = 275,
                     MissileSpeed = 1750,
@@ -4946,10 +4946,31 @@ namespace Evade
                     DangerValue = 2,
                     IsDangerous = true,
                     MissileSpellName = "ZiggsW",
-                    ToggleParticleName = "Ziggs.+_W_aoe",
                     DontCross = true,
                     CollisionObjects = new[] {CollisionObjectTypes.YasuoWall},
                 });
+
+            Spells.Add(
+              new SpellData
+              {
+                  ChampionName = "Ziggs",
+                  SpellName = "ZiggsWtrap",
+                  Slot = SpellSlot.W,
+                  Type = SkillShotType.SkillshotCircle,
+                  Delay = 250,
+                  ExtraDuration = 5000,
+                  Range = 1000,
+                  Radius = 275,
+                  MissileSpeed = 1750,
+                  FixedRange = false,
+                  AddHitbox = true,
+                  DangerValue = 2,
+                  IsDangerous = true,
+                  SourceObjectName = "Ziggs.+_W_aoe",
+                  ToggleParticleName = "Ziggs.+_W_aoe",
+                  DontCross = true,
+                  CollisionObjects = new[] { CollisionObjectTypes.YasuoWall },
+              });
 
             Spells.Add(
                 new SpellData
