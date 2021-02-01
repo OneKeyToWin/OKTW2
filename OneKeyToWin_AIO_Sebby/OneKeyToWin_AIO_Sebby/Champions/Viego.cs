@@ -159,6 +159,13 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
                 return;
             }
+            else
+            {
+                if (Player.InventoryItems.Count() == 2) // empty
+                {
+                    R.Cast(Game.CursorPos);
+                }
+            }
 
 
             if (Program.LagFree(0))

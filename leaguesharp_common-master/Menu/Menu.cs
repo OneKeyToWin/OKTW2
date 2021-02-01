@@ -1,4 +1,6 @@
-﻿namespace LeagueSharp.Common
+﻿using System.Runtime.Serialization;
+
+namespace LeagueSharp.Common
 {
     using System;
     using System.Collections.Generic;
@@ -28,6 +30,8 @@
         ///     The root menus.
         /// </summary>
         public static Dictionary<string, Menu> RootMenus = new Dictionary<string, Menu>();
+
+        private static bool IsPlayerPlayingViego = HeroManager.Player.ChampionName == "Viego";
 
         /// <summary>
         ///     If the menu should be compact
@@ -503,7 +507,14 @@
         {
             if (championUnique)
             {
-                name = ObjectManager.Player.ChampionName + name;
+                if (IsPlayerPlayingViego)
+                {
+                    name = "Viego" + name;
+                }
+                else
+                {
+                    name = ObjectManager.Player.ChampionName + name;
+                }
             }
 
             //Search in our own items
