@@ -338,7 +338,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
         {
             Config.SubMenu(Player.ChampionName).SubMenu("E option")
                 .AddItem(new MenuItem("eFarmUntil", "[Farm] Use E until Mana %", true)).SetValue(new Slider(20));
-            Config.SubMenu(Player.ChampionName).SubMenu("W option")
+            Config.SubMenu(Player.ChampionName).SubMenu("E option")
                 .AddItem(new MenuItem("eComboUntil", "[Combo] Use E until Mana %", true)).SetValue(new Slider(10));
         }
 
