@@ -87,6 +87,7 @@
     <Compile Include="Champions\Karthus.cs" />
     <Compile Include="Champions\Kayle.cs" />
     <Compile Include="Champions\Kindred.cs" />
+    <Compile Include="Champions\Viego.cs" />
     <Compile Include="Champions\Lux.cs" />
     <Compile Include="Champions\Malzahar.cs" />
     <Compile Include="Champions\Morgana.cs" />

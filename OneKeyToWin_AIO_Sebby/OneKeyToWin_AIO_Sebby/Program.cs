@@ -208,6 +208,9 @@ namespace OneKeyToWin_AIO_Sebby
                     case "Amumu":
                         new Champions.Amumu();
                         break;
+                    case "Viego":
+                        new Champions.Viego();
+                        break;
                 }
                 #endregion
 
