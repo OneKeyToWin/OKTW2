@@ -115,8 +115,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 return;
             }
 
-           
-          
+            
             {
                 
             }
@@ -140,7 +139,6 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
             if (Program.LagFree(0))
             {
-                SetMana();
                 Jungle();
             }
             //viegopassivecasting
@@ -179,11 +177,11 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 var eDmg = E.GetDamage(t);
                 if (t.IsValidTarget(W.Range) && qDmg + eDmg > t.Health)
                     Program.CastSpell(Q, t);
-                else if (Program.Combo && Player.Mana > RMANA + QMANA * 2 + EMANA)
+                else if (Program.Combo)
                     Program.CastSpell(Q, t);
-                else if ((Program.Harass && Player.Mana > RMANA + EMANA + QMANA * 2 + WMANA) && Config.Item("harassQ", true).GetValue<bool>() && !Player.UnderTurret(true))
+                else if ((Program.Harass) && Config.Item("harassQ", true).GetValue<bool>() && !Player.UnderTurret(true))
                     Program.CastSpell(Q, t);
-                else if ((Program.Combo || Program.Harass) && Player.Mana > RMANA + QMANA + EMANA)
+                else if ((Program.Combo || Program.Harass))
                 {
                     foreach (var enemy in HeroManager.Enemies.Where(enemy => enemy.IsValidTarget(Q.Range) && !OktwCommon.CanMove(enemy)))
                         Q.Cast(enemy, true);
@@ -202,7 +200,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 {
                     Program.CastSpell(W, t);
                 }
-                else if (Program.Combo && Player.Mana > RMANA + WMANA )
+                else if (Program.Combo )
                 {
                     Program.CastSpell(W, t);
                 }
@@ -211,7 +209,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
         private void Jungle()
         {
-            if (Program.LaneClear && Player.Mana > RMANA + QMANA)
+            if (Program.LaneClear)
             {
                 var mobs = Cache.GetMinions(Player.ServerPosition, 650, MinionTeam.Neutral);
                 if (mobs.Count > 0)
@@ -247,28 +245,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 }
             }
         }
-
-        private void SetMana()
-        {
-            if ((Config.Item("manaDisable", true).GetValue<bool>() && Program.Combo) || Player.HealthPercent < 20)
-            {
-                QMANA = 0;
-                WMANA = 0;
-                EMANA = 0;
-                RMANA = 0;
-                return;
-            }
-
-            QMANA = Q.Instance.ManaCost;
-            WMANA = W.Instance.ManaCost;
-            EMANA = E.Instance.ManaCost;
-
-            if (!R.IsReady())
-                RMANA = QMANA - Player.PARRegenRate * Q.Instance.Cooldown;
-            else
-                RMANA = R.Instance.ManaCost;
-        }
-
+        
         private void drawText(string msg, Obj_AI_Hero Hero, System.Drawing.Color color)
         {
             var wts = Drawing.WorldToScreen(Hero.Position);
