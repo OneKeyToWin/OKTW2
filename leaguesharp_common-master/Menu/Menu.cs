@@ -31,7 +31,7 @@ namespace LeagueSharp.Common
         /// </summary>
         public static Dictionary<string, Menu> RootMenus = new Dictionary<string, Menu>();
 
-        private static bool IsPlayerPlayingViego = ObjectManager.Player.ChampionName == "Viego";
+        private static bool IsPlayerPlayingViego = HeroManager.Player.ChampionName == "Viego";
 
         /// <summary>
         ///     If the menu should be compact
@@ -509,7 +509,7 @@ namespace LeagueSharp.Common
             {
                 if (IsPlayerPlayingViego)
                 {
-                    name = "Viego";
+                    name = "Viego" + name;
                 }
                 else
                 {
