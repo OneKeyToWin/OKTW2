@@ -206,7 +206,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             var t = TargetSelector.GetTarget(W.ChargedMaxRange, TargetSelector.DamageType.Physical);
             if (t.IsValidTarget())
             {
-                if(!Player.HasBuff("ViegoW"))
+                if(!Player.HasBuff("ViegoW") && Program.Combo)
                 {
                     W.StartCharging();
                     return;
@@ -217,8 +217,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 {
                     Program.CastSpell(W, t);
                 }
-                else if (Program.Combo )
-
+                else if (Program.Combo)
                 {
                     Program.CastSpell(W, t);
                 }
