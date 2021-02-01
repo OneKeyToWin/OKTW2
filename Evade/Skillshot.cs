@@ -250,7 +250,10 @@ namespace Evade
                 if (Unit.IsVisible)
                 {
                     End = Unit.ServerPosition.To2D();
+                    
                     Direction = (End - Start).Normalized();
+                    if (SpellData.ExtraRange != -1)
+                        End = End + Math.Min(SpellData.ExtraRange, SpellData.Range - End.Distance(Start)) * Direction;
                     UpdatePolygon();
                 }
             }

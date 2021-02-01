@@ -5353,7 +5353,7 @@ namespace Evade
                     Type = SkillShotType.SkillshotMissileLine,
                     Delay = 250,
                     Range = 1100,
-                    Radius = 80,
+                    Radius = 70,
                     MissileSpeed = 2000,
                     AddHitbox = true,
                     DangerValue = 4,
@@ -5376,6 +5376,8 @@ namespace Evade
                     AddHitbox = true,
                     DangerValue = 3,
                     MissileFollowsUnit = true,
+                    BehindStart = 200,
+                    ExtraRange = 200,
                     IsDangerous = true,
                     CollisionObjects = new[] { CollisionObjectTypes.YasuoWall },
                 });
