@@ -1619,7 +1619,26 @@ namespace Evade
                     AddHitbox = true,
                     DangerValue = 5,
                     IsDangerous = true,
-                    CollisionObjects = new[] {CollisionObjectTypes.YasuoWall},
+                    CollisionObjects = new[] { CollisionObjectTypes.YasuoWall },
+                });
+            Spells.Add(
+                new SpellData
+                {
+                    ChampionName = "Gragas",
+                    SpellName = "GragasRfow",
+                    Slot = SpellSlot.R,
+                    Type = SkillShotType.SkillshotCircle,
+                    Delay = 1000,
+                    Range = 1050,
+                    Radius = 375,
+                    MissileSpeed = 1300,
+                    FixedRange = false,
+                    AddHitbox = true,
+                    DangerValue = 5,
+                    IsDangerous = true,
+                    MissileSpellName = "GragasRBoom",
+                    EndAtParticle = "Gragas_Base_R_End",
+                    CollisionObjects = new[] { CollisionObjectTypes.YasuoWall },
                 });
 
             #endregion Gragas
