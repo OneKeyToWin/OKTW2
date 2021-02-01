@@ -105,13 +105,21 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
         private void Game_OnUpdate(EventArgs args)
         {
-            if (Player.HasBuff("viegopassivecasting"))
+            if (Player.ChampionName != "Viego")
             {
+               if(Player.InventoryItems.Count() == 2)
+                {
+                    Console.WriteLine("EMPTY");
+                }
 
                 return;
             }
-            
 
+           
+          
+            {
+                
+            }
             var viegosoul = ObjectManager.Get<Obj_AI_Minion>().Where(
                                 minion =>
                                 minion.Team == GameObjectTeam.Neutral
@@ -269,24 +277,6 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
         private void Drawing_OnDraw(EventArgs args)
         {
-
-            if (Config.Item("ComboInfo", true).GetValue<bool>())
-            {
-                var combo = "Harass";
-                foreach (var enemy in HeroManager.Enemies.Where(enemy => enemy.IsValidTarget()))
-                {
-                    if (R.GetDamage(enemy) > enemy.Health)
-                    {
-                        combo = "KILL R";
-                        drawText(combo, enemy, System.Drawing.Color.GreenYellow);
-                    }
-                    else
-                    {
-                        combo = (int)(enemy.Health / R.GetDamage(enemy)) + " R";
-                        drawText(combo, enemy, System.Drawing.Color.Red);
-                    }
-                }
-            }
             if (Config.Item("qRange", true).GetValue<bool>())
             {
                 if (Config.Item("onlyRdy", true).GetValue<bool>())
