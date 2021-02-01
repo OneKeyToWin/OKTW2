@@ -33,6 +33,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             Config.SubMenu(Player.ChampionName).SubMenu("W config").AddItem(new MenuItem("harassW", "Harass W", true).SetValue(true));
 
             Config.SubMenu(Player.ChampionName).SubMenu("R option").AddItem(new MenuItem("autoR", "Auto R", true).SetValue(true));
+            Config.SubMenu(Player.ChampionName).AddItem(new MenuItem("PassiveCast", "Passive cast spells", true).SetValue(true));
 
             Config.SubMenu(Player.ChampionName).SubMenu("Draw").AddItem(new MenuItem("ComboInfo", "R killable info", true).SetValue(true));
             Config.SubMenu(Player.ChampionName).SubMenu("Draw").AddItem(new MenuItem("qRange", "Q range", true).SetValue(false));
@@ -61,11 +62,11 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
         private void OnBuffAdd(Obj_AI_Base sender, Obj_AI_BaseBuffAddEventArgs args)
         {
-            if (sender.IsMe)
-            {
+            //if (sender.IsMe)
+            //{
 
-                Console.WriteLine("buffname: " + args.Buff.Name);
-            }
+            //    Console.WriteLine("buffname: " + args.Buff.Name);
+            //}
         }
 
         private void AntiGapcloser_OnEnemyGapcloser(ActiveGapcloser gapcloser)
@@ -109,14 +110,15 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 if (!Program.LagFree(0))
                     return;
                 var t = TargetSelector.GetTarget(R.Range + R.Width, TargetSelector.DamageType.Physical);
-                var pred = Prediction.GetPrediction(t, 0.4f).CastPosition;
+                
                 if (t.IsValidTarget())
                 {
+                    var pred = Prediction.GetPrediction(t, 0.4f).CastPosition;
                     if (Player.InventoryItems.Count() == 2) // empty
                     {
                         Program.CastSpell(R, t);
                     }
-                    else
+                    else if (Config.Item("PassiveCast", true).GetValue<bool>())
                     {
                         for (var i = 0; i < 4; i++)
                         {
@@ -149,7 +151,6 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                                 && minion.IsValidTarget(600)).FirstOrDefault();
             if (viegosoul != null)
             {
-                //Console.WriteLine("VIEGO SOUL");
                 Orbwalker.SetOrbwalkingPoint(viegosoul.Position);
                 Orbwalker.ForceTarget(viegosoul);
             }
@@ -159,23 +160,10 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 Orbwalker.ForceTarget(null);
             }
 
-
             if (Program.LagFree(0))
             {
                 Jungle();
             }
-            //viegopassivecasting
-            //buffname: viegopassivetransform
-            //Barrel
-            if (Program.Combo)
-            {
-
-                //Console.WriteLine("viegopassivecasting " + Player.HasBuff("viegopassivecasting") + " viegopassivetransform " + Player.HasBuff("viegopassivetransform"));
-
-            }
-
-            //if (Program.LagFree(1) && E.IsReady() && Config.Item("autoE", true).GetValue<bool>())
-            //    LogicE();
 
             if (!Orbwalking.CanMove(50))
                 return;
