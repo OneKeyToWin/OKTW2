@@ -105,6 +105,22 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
         private void Game_OnUpdate(EventArgs args)
         {
+            var viegosoul = ObjectManager.Get<Obj_AI_Minion>().Where(
+                                minion =>
+                                minion.Team == GameObjectTeam.Neutral
+                                && minion.CharData.BaseSkinName == "ViegoSoul" && minion.IsHPBarRendered
+                                && minion.IsValidTarget(600)).FirstOrDefault();
+            if (viegosoul != null)
+            {
+                Orbwalker.SetOrbwalkingPoint(viegosoul.Position);
+                Orbwalker.ForceTarget(viegosoul);
+            }
+            else
+            {
+                Orbwalker.SetOrbwalkingPoint(new SharpDX.Vector3());
+                Orbwalker.ForceTarget(null);
+            }
+
             if (!Player.CharData.BaseSkinName.Contains("Viego"))
             {
                 if (!Program.LagFree(0))
@@ -144,21 +160,6 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 return;
             }
 
-            var viegosoul = ObjectManager.Get<Obj_AI_Minion>().Where(
-                                minion =>
-                                minion.Team == GameObjectTeam.Neutral
-                                && minion.CharData.BaseSkinName == "ViegoSoul" && minion.IsHPBarRendered
-                                && minion.IsValidTarget(600)).FirstOrDefault();
-            if (viegosoul != null)
-            {
-                Orbwalker.SetOrbwalkingPoint(viegosoul.Position);
-                Orbwalker.ForceTarget(viegosoul);
-            }
-            else
-            {
-                Orbwalker.SetOrbwalkingPoint(new SharpDX.Vector3());
-                Orbwalker.ForceTarget(null);
-            }
 
             if (Program.LagFree(0))
             {
