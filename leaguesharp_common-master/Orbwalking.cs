@@ -91,7 +91,7 @@ namespace LeagueSharp.Common
                 "xenzhaocombotarget", "yorickspectral", "reksaiq",
                 "itemtitanichydracleave", "masochism", "illaoiw",
                 "elisespiderw", "fiorae", "meditate", "sejuaninorthernwinds",
-                "asheq", "camilleq", "camilleq2"
+                "asheq", "camilleq", "camilleq2", "ViegoQDoubleAttack"
             };
 
         private static readonly string[] Attacks =
