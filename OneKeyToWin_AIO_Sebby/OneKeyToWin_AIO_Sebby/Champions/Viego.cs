@@ -112,7 +112,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 var pred = Prediction.GetPrediction(t, 0.4f).CastPosition;
                 if (t.IsValidTarget())
                 {
-                    if (Player.InventoryItems.Count() == 2 && Program.LagFree(0)) // empty
+                    if (Player.InventoryItems.Count() == 2) // empty
                     {
                         Program.CastSpell(R, t);
                     }
