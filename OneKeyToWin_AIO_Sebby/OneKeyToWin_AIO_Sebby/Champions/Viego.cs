@@ -42,8 +42,6 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 .AddItem(new MenuItem("autoR", "Auto R", true).SetValue(true));
             Config.SubMenu(Player.ChampionName)
                 .AddItem(new MenuItem("PassiveCast", "Passive cast spells", true).SetValue(true));
-            Config.SubMenu(Player.ChampionName)
-                .AddItem(new MenuItem("LateGame", "IsLateGame", true).SetValue(false));
 
             Config.SubMenu(Player.ChampionName).SubMenu("Draw")
                 .AddItem(new MenuItem("ComboInfo", "R killable info", true).SetValue(true));
@@ -126,13 +124,11 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
         private void Game_OnUpdate(EventArgs args)
         {
-            var viegosoul = ObjectManager.Get<Obj_AI_Minion>().Where(
-                minion =>
-                    minion.Team == GameObjectTeam.Neutral
-                    && minion.CharData.BaseSkinName == "ViegoSoul" && minion.IsHPBarRendered
-                    && minion.IsValidTarget(600)).FirstOrDefault();
-            if (viegosoul != null && (!Config.Item("LateGame").GetValue<bool>() ||
-                                      Player.ServerPosition.CountEnemiesInRange(1000) == 0 ||
+            var viegosoul = ObjectManager.Get<Obj_AI_Minion>()
+                .FirstOrDefault(minion => minion.Team == GameObjectTeam.Neutral
+                                          && minion.CharData.BaseSkinName == "ViegoSoul" && minion.IsHPBarRendered
+                                          && minion.IsValidTarget(600));
+            if (viegosoul != null && (Player.ServerPosition.CountEnemiesInRange(1000) == 0 ||
                                       Player.HealthPercent < 25))
             {
                 Orbwalker.SetOrbwalkingPoint(viegosoul.Position);

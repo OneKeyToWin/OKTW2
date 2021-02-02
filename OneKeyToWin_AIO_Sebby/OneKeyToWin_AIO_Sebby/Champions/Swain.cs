@@ -19,13 +19,14 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
         public Swain()
         {
-            Q = new Spell(SpellSlot.Q, 700);
-            W = new Spell(SpellSlot.W, 900);
-            E = new Spell(SpellSlot.E, 625);
-            R = new Spell(SpellSlot.R, 675);
+            Q = new Spell(SpellSlot.Q, 725);
+            W = new Spell(SpellSlot.W, 5500);
+            E = new Spell(SpellSlot.E, 850);
+            R = new Spell(SpellSlot.R, 650);
 
-            Q.SetSkillshot(0.5f, 200f, float.MaxValue, false, SkillshotType.SkillshotCircle);
-            W.SetSkillshot(1.5f, 240f, float.MaxValue, false, SkillshotType.SkillshotCircle);
+            Q.SetSkillshot(0.25f, 32f, float.MaxValue, false, SkillshotType.SkillshotCone);
+            W.SetSkillshot(0.25f, 325f, float.MaxValue, false, SkillshotType.SkillshotCircle);
+            E.SetSkillshot(0.25f, 100f, float.MaxValue, false, SkillshotType.SkillshotLine);
 
             Config.SubMenu(Player.ChampionName).SubMenu("Draw").AddItem(new MenuItem("qRange", "Q range", true).SetValue(false));
             Config.SubMenu(Player.ChampionName).SubMenu("Draw").AddItem(new MenuItem("wRange", "W range", true).SetValue(false));
@@ -235,17 +236,17 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             if (t.IsValidTarget())
             {
                 if (t.Health < OktwCommon.GetKsDamage(t, Q) + E.GetDamage(t))
-                    Q.Cast(t);
+                    Program.CastSpell(Q, t);
                 if (!Config.Item("Quse" + t.ChampionName, true).GetValue<bool>())
                     return;
                 if (Program.Combo && Player.Mana > RMANA + EMANA)
-                    Q.Cast(t);
+                    Program.CastSpell(Q, t);
                 else if (Program.Harass && Config.Item("harassQ", true).GetValue<bool>() && Player.Mana > RMANA + EMANA + WMANA + EMANA && Config.Item("Harass" + t.ChampionName).GetValue<bool>())
-                    Q.Cast(t);
+                    Program.CastSpell(Q, t);
                 else if ((Program.Combo || Program.Harass))
                 {
                     foreach (var enemy in HeroManager.Enemies.Where(enemy => enemy.IsValidTarget(Q.Range) && !OktwCommon.CanMove(enemy)))
-                        Q.Cast(enemy);
+                        Program.CastSpell(Q, enemy);
                 }
             }
         }
@@ -257,13 +258,13 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             {
 
                 if (t.Health < E.GetDamage(t) + OktwCommon.GetKsDamage(t, Q))
-                    E.CastOnUnit(t);
+                    Program.CastSpell(Q, t);
                 if (!Config.Item("Euse" + t.ChampionName, true).GetValue<bool>())
                     return;
                 if (Program.Combo && Player.Mana > RMANA + EMANA)
-                    E.CastOnUnit(t);
+                    Program.CastSpell(Q, t);
                 else if (Program.Harass && Config.Item("harassE", true).GetValue<bool>() && Player.Mana > RMANA + EMANA + WMANA + EMANA && Config.Item("Harass" + t.ChampionName).GetValue<bool>())
-                    E.CastOnUnit(t);
+                    Program.CastSpell(Q, t);
             }
         }
 
