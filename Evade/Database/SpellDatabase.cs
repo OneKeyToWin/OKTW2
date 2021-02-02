@@ -5386,12 +5386,14 @@ namespace Evade
                 new SpellData
                 {
                     ChampionName = "Pyke",
-                    SpellName = "PykeR",
+                    SpellName = "PykessR",
                     Slot = SpellSlot.R,
                     Type = SkillShotType.SkillshotLine,
                     Delay = 500,
+                    ExtraDuration = 500,
                     Range = 750,
                     Radius = 85,
+                    ToggleParticleName = "Pyke.+R_GroundIndicator",
                     MissileSpeed = int.MaxValue,
                     AddHitbox = true,
                     DangerValue = 5,
