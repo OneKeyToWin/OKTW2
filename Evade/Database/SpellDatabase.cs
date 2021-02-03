@@ -2137,7 +2137,28 @@ namespace Evade
                         new[]
                         {CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall},
                 });
-
+            Spells.Add(
+               new SpellData
+               {
+                   ChampionName = "Jinx",
+                   SpellName = "JinxE",
+                   Slot = SpellSlot.E,
+                   Type = SkillShotType.SkillshotCircle,
+                   Delay = 1200,
+                   ExtraDuration = 5500,
+                   DontAddExtraDuration = true,
+                   Range = 900,
+                   Radius = 60,
+                   MissileSpeed = 1750,
+                   FixedRange = false,
+                   AddHitbox = true,
+                   DangerValue = 3,
+                   IsDangerous = true,
+                   DontCross = true,
+                   MissileSpellName = "JinxEHit",
+                   DontCheckForDuplicates = true,
+                   CollisionObjects =new[] {CollisionObjectTypes.YasuoWall},
+               });
             Spells.Add(
                 new SpellData
                 {
