@@ -22,7 +22,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
             W.SetSkillshot(0.6f, 60f, 3300f, true, SkillshotType.SkillshotLine);
             E.SetSkillshot(1.2f, 100f, 1750f, false, SkillshotType.SkillshotCircle);
-            R.SetSkillshot(0.7f, 140f, 1500f, false, SkillshotType.SkillshotLine);
+            R.SetSkillshot(0.5f, 140f, 1500f, false, SkillshotType.SkillshotLine);
 
             Config.SubMenu(Player.ChampionName).SubMenu("Draw").AddItem(new MenuItem("noti", "Show notification", true).SetValue(false));
             Config.SubMenu(Player.ChampionName).SubMenu("Draw").AddItem(new MenuItem("semi", "Semi-manual R target", true).SetValue(false));
@@ -430,7 +430,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             }
         }
 
-        private float bonusRange() { return 640f + Player.BoundingRadius + 25 * Player.Spellbook.GetSpell(SpellSlot.Q).Level; }
+        private float bonusRange() { return 665f + Player.BoundingRadius + 25 * Player.Spellbook.GetSpell(SpellSlot.Q).Level; }
 
         private bool FishBoneActive { get { return Player.HasBuff("JinxQ"); } }
 
