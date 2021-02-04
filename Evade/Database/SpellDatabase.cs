@@ -3077,7 +3077,6 @@ namespace Evade
             #endregion Morgana
 
             #region Nami
-
             Spells.Add(
                 new SpellData
                 {
@@ -3093,9 +3092,9 @@ namespace Evade
                     AddHitbox = true,
                     DangerValue = 3,
                     IsDangerous = true,
-                    MissileSpellName = "namiqmissile",
+                    SourceObjectName = "Nami.+Q_indicator_red",
+                    ParticleDetectDelay = 150
                 });
-
             Spells.Add(
                 new SpellData
                 {
@@ -6146,7 +6145,7 @@ namespace Evade
                 new SpellData
                 {
                     ChampionName = "Seraphine",
-                    SpellName = "SeraphineQ",
+                    SpellName = "SeraphineQCast",
                     Slot = SpellSlot.Q,
                     Type = SkillShotType.SkillshotCircle,
                     Delay = 600,
@@ -6160,7 +6159,25 @@ namespace Evade
                     //MissileSpellName = "SeraphineQInitialMissile",
                     SourceObjectName = "Seraphine_Base_Q_AOE_Indicator",
                 });
-
+            Spells.Add(
+                new SpellData
+                {
+                    ChampionName = "Seraphine",
+                    SpellName = "SeraphineQCastEcho",
+                    Slot = SpellSlot.Q,
+                    Type = SkillShotType.SkillshotCircle,
+                    Delay = 600,
+                    ExtraDuration = 200,
+                    Range = 900,
+                    Radius = 290,
+                    MissileSpeed = 1300,
+                    AddHitbox = true,
+                    DangerValue = 2,
+                    IsDangerous = true,
+                    FixedRange = false,
+                    //MissileSpellName = "SeraphineQInitialMissile",
+                    SourceObjectName = "Seraphine_Base_Q_AOE_Indicator",
+                });
             Spells.Add(
                 new SpellData
                 {
@@ -6178,7 +6195,23 @@ namespace Evade
                     FixedRange = true,
                     MissileSpellName = "SeraphineEMissile"
                 });
-
+            Spells.Add(
+               new SpellData
+               {
+                   ChampionName = "Seraphine",
+                   SpellName = "SeraphineECastEcho",
+                   Slot = SpellSlot.E,
+                   Type = SkillShotType.SkillshotMissileLine,
+                   Delay = 250,
+                   Range = 1350,
+                   Radius = 80,
+                   MissileSpeed = 1200,
+                   AddHitbox = true,
+                   DangerValue = 3,
+                   IsDangerous = true,
+                   FixedRange = true,
+                   MissileSpellName = "SeraphineEMissile"
+               });
             Spells.Add(
                 new SpellData
                 {
