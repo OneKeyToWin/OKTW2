@@ -138,29 +138,22 @@ namespace Evade
                  EndAtParticle = "",
 
              });
-            //Spells.Add(
-            //  new SpellData
-            //  {
-            //      ChampionName = "Azir",
-            //      SpellName = "AzirW",
-            //      Slot = SpellSlot.W,
-            //      Type = SkillShotType.SkillshotCircle,
-            //      Delay = 500,
-            //      ExtraDuration = 1800,
-            //      DontAddExtraDuration = true,
-            //      DontCross = true,
-            //      Range = 750,
-            //      Radius = 220,
-            //      MissileSpeed = 1600,
-            //      FixedRange = false,
-            //      AddHitbox = true,
-            //      DangerValue = 2,
-            //      MissileSpellName = "",
-            //      ToggleParticleName = "",
-            //      SourceObjectName = "AzirSoldier",
-            //      EndAtParticle ="",
-
-            //  });
+            Spells.Add(
+              new SpellData
+              {
+                  ChampionName = "Azir",
+                  SpellName = "AzirR",
+                  Slot = SpellSlot.W,
+                  Type = SkillShotType.SkillshotMissileLine,
+                  Delay = 250,
+                  Range = 900,
+                  Radius = 350,
+                  MissileSpeed = 1600,
+                  FixedRange = true,
+                  BehindStart = 300,
+                  AddHitbox = true,
+                  DangerValue = 4,
+              });
             #endregion
 
             #region Aatrox
