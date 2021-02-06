@@ -372,7 +372,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 
                 if (minionList.Count >= FarmMinions)
                 {
-                    var minionAttack = minionList.FirstOrDefault(x => Q.GetDamage(x) > SebbyLib.HealthPrediction.GetHealthPrediction(x, 300));
+                    var minionAttack = minionList.FirstOrDefault(x => Q.GetDamage(x) > HealthPrediction.GetHealthPrediction(x, 300));
                     if(minionAttack.IsValidTarget())
                         Q.CastOnUnit(minionAttack);
                 }

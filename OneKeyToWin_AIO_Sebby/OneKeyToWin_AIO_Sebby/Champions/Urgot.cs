@@ -303,7 +303,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
                 foreach (var minion in minions.Where(minion => Orbwalker.InAutoAttackRange(minion) && orbTarget != minion.NetworkId))
                 {
-                    var hpPred = SebbyLib.HealthPrediction.GetHealthPrediction(minion, 300);
+                    var hpPred = HealthPrediction.GetHealthPrediction(minion, 300);
                     var dmgMinion = minion.GetAutoAttackDamage(minion);
                     var qDmg = Q.GetDamage(minion);
                     if (hpPred < qDmg)

@@ -481,7 +481,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 foreach (var minion in minions.Where(minion => minion.IsValidTarget() && orbTarget != minion.NetworkId && !Orbwalker.InAutoAttackRange(minion)))
                 {
                     int delay = (int)((minion.Distance(Player) / Q.Speed + Q.Delay) * 1000);
-                    var hpPred = SebbyLib.HealthPrediction.GetHealthPrediction(minion, delay);
+                    var hpPred = HealthPrediction.GetHealthPrediction(minion, delay);
                     if (hpPred > 0 && hpPred < Q.GetDamage(minion))
                     {
                         if (Q.Cast(minion) == Spell.CastStates.SuccessfullyCasted)
@@ -498,7 +498,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 foreach (var minion in minions.Where(minion => Orbwalker.InAutoAttackRange(minion)))
                 {
                     int delay = (int)((minion.Distance(Player) / Q.Speed + Q.Delay) * 1000);
-                    var hpPred = SebbyLib.HealthPrediction.GetHealthPrediction(minion, delay);
+                    var hpPred = HealthPrediction.GetHealthPrediction(minion, delay);
                     if (hpPred < 20)
                         continue;
                     

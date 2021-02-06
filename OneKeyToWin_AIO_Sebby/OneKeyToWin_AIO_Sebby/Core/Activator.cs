@@ -45,7 +45,7 @@ namespace OneKeyToWin_AIO_Sebby
             GLP800= new Items.Item(3030, 800f),
 
             //def
-        FaceOfTheMountain = new Items.Item(3401, 600f),
+            FaceOfTheMountain = new Items.Item(3401, 600f),
             Zhonya = new Items.Item(3157, 0),
             Seraph = new Items.Item(3040, 0),
             Solari = new Items.Item(3190, 600f),

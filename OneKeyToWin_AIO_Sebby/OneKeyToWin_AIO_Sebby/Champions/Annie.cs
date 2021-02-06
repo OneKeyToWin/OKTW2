@@ -256,7 +256,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             var minionsList = Cache.GetMinions(Player.ServerPosition, Q.Range);
             if (Q.IsReady())
             {
-                var minion = minionsList.Where(x => SebbyLib.HealthPrediction.LaneClearHealthPrediction(x, 250, 50) < Q.GetDamage(x) && x.Health > Player.GetAutoAttackDamage(x)).FirstOrDefault();
+                var minion = minionsList.Where(x => HealthPrediction.LaneClearHealthPrediction(x, 250, 50) < Q.GetDamage(x) && x.Health > Player.GetAutoAttackDamage(x)).FirstOrDefault();
                 Q.Cast(minion);
             }
             else if (FarmSpells && W.IsReady() && Config.Item("farmW", true).GetValue<bool>())

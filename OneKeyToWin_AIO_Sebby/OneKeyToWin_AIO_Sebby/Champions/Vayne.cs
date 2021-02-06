@@ -146,7 +146,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                     foreach (var minion in Cache.GetMinions(dashPosition, 0).Where(minion => m.NetworkId != minion.NetworkId))
                     {
                         var time = (int)(Player.AttackCastDelay * 1000) + Game.Ping / 2 + 1000 * (int)Math.Max(0, Player.Distance(minion) - Player.BoundingRadius) / (int)Player.BasicAttack.MissileSpeed;
-                        var predHealth = SebbyLib.HealthPrediction.GetHealthPrediction(minion, time);
+                        var predHealth = HealthPrediction.GetHealthPrediction(minion, time);
                         if (predHealth < Player.GetAutoAttackDamage(minion) + Q.GetDamage(minion) && predHealth > 0)
                             Q.Cast(dashPosition, true);
                     }

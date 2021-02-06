@@ -223,7 +223,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 {
                     foreach (var minion in allMinions.Where(minion => minion.IsValidTarget(Q.Range) && (!Orbwalker.InAutoAttackRange(minion) || (!minion.UnderTurret(true) && minion.UnderTurret()))))
                     {
-                        var hpPred = SebbyLib.HealthPrediction.GetHealthPrediction(minion, 1100);
+                        var hpPred = HealthPrediction.GetHealthPrediction(minion, 1100);
                         if (hpPred < GetQDamage(minion) * 0.9 && hpPred > minion.Health - hpPred * 2)
                         {
                             Q.Cast(minion);
@@ -236,7 +236,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 {
                     foreach (var minion in allMinions.Where(minion => minion.IsValidTarget(Q.Range) && Orbwalker.InAutoAttackRange(minion)))
                     {    
-                        var hpPred = SebbyLib.HealthPrediction.GetHealthPrediction(minion, 1100);
+                        var hpPred = HealthPrediction.GetHealthPrediction(minion, 1100);
                         if (hpPred < GetQDamage(minion) * 0.9 && hpPred > minion.Health - hpPred * 2)
                         {
                             Q.Cast(minion);

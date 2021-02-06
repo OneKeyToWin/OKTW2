@@ -222,7 +222,6 @@ namespace OneKeyToWin_AIO_Sebby
                 AddPredictionSpellMenuItem("R");
                 
                 Config.SubMenu("Prediction MODE").AddItem(new MenuItem("debugPred", "Draw Aiming OKTW© PREDICTION").SetValue(false));
-                new Core.OktwTs();
             }
 
             if (Config.Item("debug").GetValue<bool>())

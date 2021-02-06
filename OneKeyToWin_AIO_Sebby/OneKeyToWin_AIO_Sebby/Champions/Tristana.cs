@@ -168,12 +168,12 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                     {
                         if (Orbwalking.InAutoAttackRange(enemy))
                         {
-                            if (playerAaDmg * 2 + GetEDmg(enemy) < SebbyLib.HealthPrediction.GetHealthPrediction(enemy,700))
+                            if (playerAaDmg * 2 + GetEDmg(enemy) < HealthPrediction.GetHealthPrediction(enemy,700))
                                 Program.CastSpell(W, enemy);
                         }
                         else
                         {
-                            if (playerAaDmg + GetEDmg(enemy) < SebbyLib.HealthPrediction.GetHealthPrediction(enemy, 700))
+                            if (playerAaDmg + GetEDmg(enemy) < HealthPrediction.GetHealthPrediction(enemy, 700))
                                 Program.CastSpell(W, enemy);
                         }
                     }

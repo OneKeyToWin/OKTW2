@@ -103,7 +103,6 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 var Target = gapcloser.Sender;
                 if (Target.IsValidTarget(E.Range))
                 {
-                    Console.WriteLine("E GAPCLOSER");
                     Game.SendPing(PingCategory.Danger, gapcloser.End);
                     E.Cast(gapcloser.End);
                 }
@@ -174,7 +173,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 foreach (var minion in Cache.GetMinions(Player.Position, bonusRange() + 30).Where(
                 minion => !Orbwalking.InAutoAttackRange(minion) && GetRealPowPowRange(minion) < GetRealDistance(minion) && bonusRange() < GetRealDistance(minion)))
                 {
-                    var hpPred = SebbyLib.HealthPrediction.GetHealthPrediction(minion, 400, 70);
+                    var hpPred = HealthPrediction.GetHealthPrediction(minion, 400, 70);
                     if (hpPred < Player.GetAutoAttackDamage(minion) * 1.1 && hpPred > 5)
                     {
                         Orbwalker.ForceTarget(minion);
