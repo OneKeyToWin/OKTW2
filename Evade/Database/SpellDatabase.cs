@@ -163,6 +163,46 @@ namespace Evade
             //  });
             #endregion
 
+            #region Aatrox
+
+            Spells.Add(
+                new SpellData
+                {
+                    ChampionName = "XinZhao",
+                    SpellName = "XinZhaoR",
+                    Slot = SpellSlot.Q,
+                    Type = SkillShotType.SkillshotCircle,
+                    Delay = 500,
+                    Range = 0,
+                    Radius = 500,
+                    MissileSpeed = int.MaxValue,
+                    FixedRange = false,
+                    AddHitbox = true,
+                    DangerValue = 3,
+                    IsDangerous = true,
+                    SourceObjectName = "Aatrox_Base_Q_Indicator_01",
+                });
+
+            Spells.Add(
+                new SpellData
+                {
+                    ChampionName = "XinZhao",
+                    SpellName = "XinZhaoW",
+                    Slot = SpellSlot.W,
+                    Type = SkillShotType.SkillshotMissileLine,
+                    Delay = 250,
+                    Range = 900,
+                    Radius = 60,
+                    MissileSpeed = 1600,
+                    FixedRange = true,
+                    AddHitbox = true,
+                    DangerValue = 3,
+                    IsDangerous = true,
+                    SourceObjectName = "XinZhao.+W_IndicatorProjection",
+                    CollisionObjects = new[] { CollisionObjectTypes.YasuoWall, CollisionObjectTypes.Minion, CollisionObjectTypes.Champions }
+                });
+
+            #endregion Aatrox
 
             #region Aatrox
 
@@ -176,16 +216,12 @@ namespace Evade
                     Delay = 500,
                     Range = 700,
                     Radius = 90,
-                    ExtraDuration = 1500,
-                    DontAddExtraDuration = true,
+                    MissileSpeed = int.MaxValue,
                     FixedRange = false,
                     AddHitbox = true,
                     DangerValue = 3,
                     IsDangerous = true,
-                    DontCross = true,
-                    DontRemove = true,
                     SourceObjectName = "Aatrox_Base_Q_Indicator_01",
-                    EndAtParticle = "Aatrox_Base_Q_Indicator_01"
                 });
 
             Spells.Add(
