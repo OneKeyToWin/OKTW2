@@ -70,7 +70,6 @@ namespace OneKeyToWin_AIO_Sebby
                 Config.AddSubMenu(new Menu("Orbwalking", "Orbwalking"));
                 Orbwalker = new Orbwalking.Orbwalker(Config.SubMenu("Orbwalking"));
                 #region LOAD CHAMPIONS
-
                 switch (Player.ChampionName)
                 {
                     case "Jinx":

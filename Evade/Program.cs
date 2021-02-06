@@ -457,8 +457,7 @@ namespace Evade
                     if (skillshot.SpellData.SpellName == "DianaQ")
                     {
                         var skillshotToAdd = new Skillshot(
-                        skillshot.DetectionType, SpellDatabase.GetByName("DianaArcArc"), skillshot.StartTick, skillshot.Start, skillshot.End,
-                        skillshot.Unit);
+                        skillshot.DetectionType, SpellDatabase.GetByName("DianaArcArc"), skillshot.StartTick, skillshot.Start, skillshot.End, skillshot.Unit);
 
                         DetectedSkillshots.Add(skillshotToAdd);
                     }
