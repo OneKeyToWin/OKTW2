@@ -8,12 +8,12 @@ using SebbyLib;
 
 namespace OneKeyToWin_AIO_Sebby.Champions
 {
-    class Jinx : Base
+    class Kaisa : Base
     {
         public double lag = 0, WCastTime = 0, QCastTime = 0, DragonTime = 0, grabTime = 0;
         public float DragonDmg = 0;
 
-        public Jinx()
+        public Kaisa()
         {
             Q = new Spell(SpellSlot.Q);
             W = new Spell(SpellSlot.W, 1500f);
@@ -56,7 +56,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             Config.SubMenu(Player.ChampionName).SubMenu("Farm").AddItem(new MenuItem("farmQout", "Q farm out range AA", true).SetValue(true));
             Config.SubMenu(Player.ChampionName).SubMenu("Farm").AddItem(new MenuItem("farmQ", "Q LaneClear Q", true).SetValue(true));
 
-            Game.OnUpdate += Game_OnUpdate;
+           // Game.OnUpdate += Game_OnUpdate;
             Orbwalking.BeforeAttack += BeforeAttack;
             Obj_AI_Base.OnProcessSpellCast += Obj_AI_Base_OnProcessSpellCast;
             AntiGapcloser.OnEnemyGapcloser += AntiGapcloser_OnEnemyGapcloser;
@@ -104,6 +104,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 if (Target.IsValidTarget(E.Range))
                 {
                     Console.WriteLine("E GAPCLOSER");
+                    Game.SendPing(PingCategory.Danger, gapcloser.End);
                     E.Cast(gapcloser.End);
                 }
             }
@@ -116,7 +117,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
             if (unit.IsMe)
             {
-                if (args.SData.Name == "JinxWMissile")
+                if (args.SData.Name == "KaisaWMissile")
                     WCastTime = Game.Time;
             }
             if (E.IsReady())
@@ -130,6 +131,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                     grabTime = Game.Time;
                 }
             }
+
         }
 
         private void Game_OnUpdate(EventArgs args)
@@ -431,7 +433,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
         private float bonusRange() { return 665f + Player.BoundingRadius + 25 * Player.Spellbook.GetSpell(SpellSlot.Q).Level; }
 
-        private bool FishBoneActive { get { return Player.HasBuff("JinxQ"); } }
+        private bool FishBoneActive { get { return Player.HasBuff("KaisaQ"); } }
 
         private float GetRealPowPowRange(GameObject target)
         {
@@ -525,7 +527,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
         {
             float distance = Vector3.Distance(source.ServerPosition, targetpos);
             float missilespeed = speed;
-            if (source.ChampionName == "Jinx" && distance > 1350)
+            if (source.ChampionName == "Kaisa" && distance > 1350)
             {
                 const float accelerationrate = 0.3f; //= (1500f - 1350f) / (2200 - speed), 1 unit = 0.3units/second
                 var acceldifference = distance - 1350f;
