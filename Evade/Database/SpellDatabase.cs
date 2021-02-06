@@ -5743,7 +5743,7 @@ namespace Evade
                     Slot = SpellSlot.E,
                     Type = SkillShotType.SkillshotMissileLine,
                     Delay = 250,
-                    Range = 800,
+                    Range = 900,
                     ExtraRange = 100,
                     Radius = 60,
                     MissileSpeed = 1700,
@@ -5763,16 +5763,18 @@ namespace Evade
                     SpellName = "ZoeEBubble",
                     Slot = SpellSlot.E,
                     Type = SkillShotType.SkillshotCircle,
-                    Delay = 900,
+                    Delay = 1000,
                     Range = 900,
-                    ExtraDuration = 4500,
+                    //ExtraDuration = 4500,
+                    DontAddExtraDuration = true,
+                    DontCross = true,
                     Radius = 250,
                     MissileSpeed = int.MaxValue,
                     AddHitbox = true,
                     DangerValue = 3,
                     IsDangerous = true,
                     MissileDelayed = true,
-                    MissileSpellName = "ZoeEc"
+                    MissileSpellName = "ZoeEc",
                 });
 
             #endregion Zoe
