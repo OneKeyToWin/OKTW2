@@ -231,7 +231,9 @@ namespace OneKeyToWin_AIO_Sebby
 
             if (AioModeSet != AioMode.ChampionOnly)
             {
-                new Activator().LoadOKTW();
+                Summoners summonners = new Summoners();
+                ItemsActivator itemsActivator = new ItemsActivator();
+
                 new Core.OKTWward().LoadOKTW();
                 new Core.AutoLvlUp().LoadOKTW();
                 new Core.OKTWdraws().LoadOKTW();

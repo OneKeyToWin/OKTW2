@@ -73,6 +73,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Activator\ItemsActivator.cs" />
     <Compile Include="Champions\Ahri.cs" />
     <Compile Include="Champions\Amumu.cs" />
     <Compile Include="Champions\Blitzcrank.cs" />
@@ -105,7 +106,7 @@
     <Compile Include="Champions\Vayne.cs" />
     <Compile Include="Champions\Velkoz.cs" />
     <Compile Include="Champions\Xerath.cs" />
-    <Compile Include="Core\Activator.cs" />
+    <Compile Include="Activator\Summoners.cs" />
     <Compile Include="Champions\Anivia.cs" />
     <Compile Include="Champions\Annie.cs" />
     <Compile Include="Champions\Ashe.cs" />
