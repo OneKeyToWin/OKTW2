@@ -1109,10 +1109,34 @@ namespace Evade
                     AddHitbox = true,
                     DangerValue = 4,
                     IsDangerous = true,
-                    MissileSpellName = "ekkoqmis",
+                    MissileSpellName = "EkkoQMis",
                     CanBeRemoved = true,
+                    DontCross = true,
                     CollisionObjects =
                         new[] {CollisionObjectTypes.Champions, CollisionObjectTypes.YasuoWall}
+                });
+
+            Spells.Add(
+                new SpellData
+                {
+                    ChampionName = "Ekko",
+                    SpellName = "EkkoQball",
+                    Slot = SpellSlot.Q,
+                    Type = SkillShotType.SkillshotLine,
+                    Delay = 600,
+                    Range = 950,
+                    ExtraDuration = 2200,
+                    Radius = 150,
+                    MissileSpeed = int.MaxValue,
+                    FixedRange = true,
+                    AddHitbox = true,
+                    DangerValue = 4,
+                    IsDangerous = true,
+                    MissileSpellName = "EkkoQMis",
+                    CanBeRemoved = true,
+                    DontCross = true,
+                    CollisionObjects =
+                        new[] { CollisionObjectTypes.Champions, CollisionObjectTypes.YasuoWall }
                 });
 
             Spells.Add(
@@ -1122,16 +1146,16 @@ namespace Evade
                     SpellName = "EkkoW",
                     Slot = SpellSlot.W,
                     Type = SkillShotType.SkillshotCircle,
-                    Delay = 3750,
+                    Delay = 3500,
                     Range = 1600,
-                    Radius = 375,
-                    MissileSpeed = 1650,
+                    Radius = 350,
+                    MissileSpeed = int.MaxValue,
                     FixedRange = false,
-                    DisabledByDefault = true,
                     AddHitbox = false,
                     DangerValue = 3,
                     IsDangerous = true,
-                    MissileSpellName = "EkkoW",
+                    ParticleDetectDelay = 300,
+                    SourceObjectName = "Ekko.+W_Indicator",
                     CanBeRemoved = true
                 });
 
@@ -1142,17 +1166,15 @@ namespace Evade
                     SpellName = "EkkoR",
                     Slot = SpellSlot.R,
                     Type = SkillShotType.SkillshotCircle,
-                    Delay = 250,
-                    Range = 1600,
+                    Delay = 800,
+                    Range = 3000,
                     Radius = 375,
-                    MissileSpeed = 1650,
+                    MissileSpeed = int.MaxValue,
                     FixedRange = true,
                     AddHitbox = true,
                     DangerValue = 3,
                     IsDangerous = true,
-                    MissileSpellName = "EkkoR",
                     CanBeRemoved = true,
-                    FromObjects = new[] {"Ekko_Base_R_TrailEnd.troy"}
                 });
 
             #endregion Ekko

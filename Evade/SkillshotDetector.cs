@@ -639,8 +639,25 @@ namespace Evade
                 TriggerOnDetectSkillshot(DetectionType.ProcessSpell, spellData, startTime, startPos, endPos, endPos, sender);
                 return;
             }
+            if(spellData.SpellName == "EkkoR")
+            {
+                var obj = ObjectManager.Get<Obj_AI_Minion>().FirstOrDefault(x => x.Name.Contains("Ekko"));
+               if(obj != null)
+                    endPos = obj.Position.To2D();
+
+            }
+           
             //Trigger the skillshot detection callbacks.
+
             TriggerOnDetectSkillshot(DetectionType.ProcessSpell, spellData, startTime, startPos, endPos, args.End.To2D(), sender);
+            if (spellData.SpellName == "EkkoQ")
+            {
+                startPos = endPos - 450 * direction;
+                endPos = endPos + 150 * direction;
+                
+                TriggerOnDetectSkillshot(DetectionType.ProcessSpell, SpellDatabase.GetByName("EkkoQball"), startTime, startPos, endPos, args.End.To2D(), sender);
+
+            }
         }
 
         
