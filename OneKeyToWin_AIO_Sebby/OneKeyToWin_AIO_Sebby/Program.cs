@@ -301,7 +301,7 @@ namespace OneKeyToWin_AIO_Sebby
             {
                 Combo = Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo;
 
-                if(Config.Item("harassMixed").GetValue<bool>())
+                if(Config.Item("harassMixed") != null && Config.Item("harassMixed").GetValue<bool>())
                     Harass = Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed;
                 else
                     Harass = Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear || Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed || Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Freeze;
