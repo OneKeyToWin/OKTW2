@@ -271,7 +271,13 @@ namespace Evade
                 Rectangle = new Geometry.Rectangle(Start, End, SpellData.Radius);
                 UpdatePolygon();
             }
-
+            if (SpellData.SpellName == "XayahR" && Unit.HasBuff("XayahR"))
+            {
+                Start = Unit.Position.To2D();
+                End = Start + Direction * this.SpellData.Range;
+                Sector = new Geometry.Sector(Start, Direction, SpellData.Radius, SpellData.Range);
+                UpdatePolygon();
+            }
             if (SpellData.SpellName == "SionR")
             {
                 if (_helperTick == 0)

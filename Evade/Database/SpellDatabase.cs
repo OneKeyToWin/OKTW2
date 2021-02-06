@@ -6007,6 +6007,29 @@ namespace Evade
                     CollisionObjects = new[] { CollisionObjectTypes.YasuoWall }
                 });
 
+
+            Spells.Add(
+               new SpellData
+               {
+                   ChampionName = "Xayah",
+                   SpellName = "XayahR",
+                   Slot = SpellSlot.R,
+                   Type = SkillShotType.SkillshotCone,
+                   Delay = 1000,
+                   Range = 1200,
+                   Radius = 50,
+                   MissileSpeed = 2400,
+                   AddHitbox = true,
+                   DangerValue = 2,
+                   IsDangerous = true,
+                   MissileDelayed = true,
+                   CanBeRemoved = true,
+                   FixedRange = true,
+                   SourceObjectName = "Xayah_Base_R_Ground_Cas",
+
+                   CollisionObjects = new[] { CollisionObjectTypes.YasuoWall }
+               });
+
             #endregion Xayah
 
             #region Pantheon
