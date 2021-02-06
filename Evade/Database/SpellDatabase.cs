@@ -713,6 +713,34 @@ namespace Evade
 
             #endregion Braum
 
+            #region Gankplank
+
+          
+            Spells.Add(
+                new SpellData
+                {
+                    ChampionName = "Gangplank",  
+                    SpellName = "GangplanakE",
+                    Slot = SpellSlot.E,
+                    Type = SkillShotType.SkillshotCircle,
+                    Delay = 1350,
+                    ExtraDuration = 23000,
+                    DontAddExtraDuration = true,
+                    Range = 800,
+                    Radius = 250,
+                    MissileSpeed = int.MaxValue,
+                    FixedRange = false,
+                    AddHitbox = true,
+                    DontCross = true,
+                    DangerValue = 2,
+                    IsDangerous = true,
+                    DontCheckForDuplicates = true,
+                    SourceObjectName = "Barrel",
+                    EndAtParticle = "_Tar",
+                });
+
+            #endregion Gankplank
+
             #region Caitlyn
 
             Spells.Add(
