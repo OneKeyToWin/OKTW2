@@ -1141,9 +1141,29 @@ namespace Evade
                     CanBeRemoved = true,
                     DontCross = true,
                     CollisionObjects =
-                        new[] {CollisionObjectTypes.Champions, CollisionObjectTypes.YasuoWall}
+                        new[] {CollisionObjectTypes.YasuoWall}
                 });
-
+            Spells.Add(
+               new SpellData
+               {
+                   ChampionName = "Ekko",
+                   SpellName = "EkkoQReturn",
+                   Slot = SpellSlot.Q,
+                   Type = SkillShotType.SkillshotMissileLine,
+                   Delay = 250,
+                   Range = 950,
+                   Radius = 60,
+                   MissileSpeed = 2300,
+                   FixedRange = true,
+                   AddHitbox = true,
+                   DangerValue = 4,
+                   IsDangerous = true,
+                   MissileSpellName = "EkkoQReturn",
+                   CanBeRemoved = true,
+                   DontCross = true,
+                   CollisionObjects =
+                       new[] { CollisionObjectTypes.YasuoWall }
+               });
             Spells.Add(
                 new SpellData
                 {
@@ -1164,7 +1184,7 @@ namespace Evade
                     CanBeRemoved = true,
                     DontCross = true,
                     CollisionObjects =
-                        new[] { CollisionObjectTypes.Champions, CollisionObjectTypes.YasuoWall }
+                        new[] { CollisionObjectTypes.YasuoWall }
                 });
 
             Spells.Add(
@@ -4096,18 +4116,18 @@ namespace Evade
                 new SpellData
                 {
                     ChampionName = "Taliyah",
-                    SpellName = "TaliyahW",
+                    SpellName = "TaliyahWVC",
                     Slot = SpellSlot.W,
                     Type = SkillShotType.SkillshotCircle,
-                    Delay = 600,
+                    Delay = 800,
                     Range = 900,
-                    Radius = 200,
+                    Radius = 190,
                     MissileSpeed = int.MaxValue,
                     FixedRange = false,
                     AddHitbox = true,
                     DangerValue = 2,
                     IsDangerous = true,
-                    MissileSpellName = "TaliyahW",
+                    SourceObjectName = "OffsetMinion",
                 });
 
             #endregion Taliyah
