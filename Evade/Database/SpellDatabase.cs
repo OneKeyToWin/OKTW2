@@ -210,6 +210,32 @@ namespace Evade
 
             #endregion Aatrox
 
+            #region Camille
+
+            Spells.Add(
+               new SpellData
+               {
+                   ChampionName = "Camille",
+                   SpellName = "CamilleE",
+                   Slot = SpellSlot.E,
+                   Type = SkillShotType.SkillshotMissileLine,
+                   Delay = 0,
+                   Range = 900,
+                   Radius = 80,
+                   MissileSpeed = 2300,
+                   FixedRange = true,
+                   AddHitbox = true,
+                   DangerValue = 3,
+                   IsDangerous = true,
+                   SourceObjectName = "Camille_.+_E_indicator_dash_.+",
+                   CanBeRemoved = true,
+                   CollisionObjects =
+                       new[]
+                       {CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall}
+               });
+
+
+            #endregion Camille
             #region Ahri
 
             Spells.Add(
