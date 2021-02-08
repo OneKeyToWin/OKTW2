@@ -474,7 +474,7 @@ namespace LeagueSharp.Common
 
         public static void MoveTo(Vector3 position, float holdAreaRadius = 0, bool overrideTimer = false, bool useFixedDistance = true, bool randomizeMinDistance = true)
         {
-            if (Utils.GameTimeTickCount - LastMoveCommandT < 70 + Math.Min(60, Game.Ping))
+            if (Utils.GameTimeTickCount - LastMoveCommandT < 100 + Math.Min(60, Game.Ping))
                 return;
 
             var playerPosition = Player.ServerPosition;
@@ -524,51 +524,42 @@ namespace LeagueSharp.Common
             LastMoveCommandT = Utils.GameTimeTickCount;
         }
 
-        public static void Orbwalk(AttackableUnit target, Vector3 position, float extraWindup = 90, float holdAreaRadius = 0, bool useFixedDistance = true, bool randomizeMinDistance = true)
+        public static void Orbwalk(AttackableUnit target, Vector3 position, float extraWindup = 60, float holdAreaRadius = 0, bool useFixedDistance = true, bool randomizeMinDistance = true)
         {
             if (Utils.GameTimeTickCount - LastAttackCommandT < 100 + Math.Min(60, Game.Ping))
-            {
                 return;
-            }
-
-            try
+            
+            if (target.IsValidTarget() && Attack)
             {
-                if (target.IsValidTarget() && Attack)
+                if (CanAttack())
                 {
-                    if (CanAttack())
-                    {
-                        DisableNextAttack = false;
-                        FireBeforeAttack(target);
+                    DisableNextAttack = false;
+                    FireBeforeAttack(target);
 
-                        if (!DisableNextAttack)
-                        {
-                            if (Player.ForceIssueOrder(GameObjectOrder.AttackUnit, target))
-                            {
-                                LastAttackCommandT = Utils.GameTimeTickCount;
-                                _lastTarget = target;
-                            }
-                            return;
-                        }
-                    }
-                    else if (Player.ChampionName == "Caitlyn" && target.Type == GameObjectType.obj_AI_Hero)
+                    if (!DisableNextAttack)
                     {
-                        var targetHero = (Obj_AI_Hero)target;
-                        if (targetHero != null && targetHero.HasBuff("caitlynyordletrapinternal") && Player.ForceIssueOrder(GameObjectOrder.AttackTo, Game.CursorPos))
+                        if (Player.ForceIssueOrder(GameObjectOrder.AttackUnit, target))
                         {
                             LastAttackCommandT = Utils.GameTimeTickCount;
                             _lastTarget = target;
                         }
+                        return;
                     }
                 }
-
-                if (CanMove(extraWindup) && Move)
-                { 
-                    MoveTo(position, Math.Max(holdAreaRadius, 30), false, useFixedDistance, randomizeMinDistance);
+                else if (Player.ChampionName == "Caitlyn" && target.Type == GameObjectType.obj_AI_Hero)
+                {
+                    var targetHero = (Obj_AI_Hero)target;
+                    if (targetHero != null && targetHero.HasBuff("caitlynyordletrapinternal") && Player.ForceIssueOrder(GameObjectOrder.AttackTo, Game.CursorPos))
+                    {
+                        LastAttackCommandT = Utils.GameTimeTickCount;
+                        _lastTarget = target;
+                    }
                 }
             }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
+
+            if (CanMove(extraWindup) && Move)
+            { 
+                MoveTo(position, Math.Max(holdAreaRadius, 30), false, useFixedDistance, randomizeMinDistance);
             }
         }
 
