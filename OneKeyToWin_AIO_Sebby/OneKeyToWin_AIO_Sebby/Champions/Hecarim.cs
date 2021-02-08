@@ -15,16 +15,16 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             Q = new Spell(SpellSlot.Q, 350);
             W = new Spell(SpellSlot.W, 575);
             E = new Spell(SpellSlot.E);
-            R = new Spell(SpellSlot.R, 1100);
-            R1 = new Spell(SpellSlot.R, 1100);
+            R = new Spell(SpellSlot.R, 1000);
+            R1 = new Spell(SpellSlot.R, 1000);
 
             // TODO check width
             R.SetSkillshot(0.0f, 250f, 1100, false, SkillshotType.SkillshotCircle);
             R1.SetSkillshot(0.0f, 250f, 1100, false, SkillshotType.SkillshotLine);
 
-            EMainMenu();
-            RMainMenu();
-            DrawMainMenu();
+            EHeroMenu();
+            RHeroMenu();
+            DrawHeroMenu();
 
             Game.OnUpdate += Game_OnGameUpdate;
             AntiGapcloser.OnEnemyGapcloser += AntiGapcloser_OnEnemyGapcloser;
@@ -35,7 +35,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
         private void Interrupter2_OnInterruptableTarget(Obj_AI_Hero sender, Interrupter2.InterruptableTargetEventArgs args)
         {
             if (E.IsReady() && EMANA + RMANA < Player.Mana
-                && MainMenu.Item("inter", true).GetValue<bool>() && sender.IsValidTarget(W.Range))
+                && HeroMenu.Item("inter", true).GetValue<bool>() && sender.IsValidTarget(W.Range))
             {
                 E.Cast();
             }
@@ -44,7 +44,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
         private void AntiGapcloser_OnEnemyGapcloser(ActiveGapcloser gapcloser)
         {
             if (E.IsReady() && E.IsReady() && EMANA + RMANA < Player.Mana
-                && MainMenu.Item("Gap", true).GetValue<bool>() && gapcloser.Sender.IsValidTarget(W.Range))
+                && HeroMenu.Item("Gap", true).GetValue<bool>() && gapcloser.Sender.IsValidTarget(W.Range))
             {
                 E.Cast();
             }
@@ -68,9 +68,9 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             }
 
 
-            if (MainMenu.Item("qRange", true).GetValue<bool>())
+            if (HeroMenu.Item("qRange", true).GetValue<bool>())
             {
-                if (MainMenu.Item("onlyRdy", true).GetValue<bool>())
+                if (HeroMenu.Item("onlyRdy", true).GetValue<bool>())
                 {
                     if (Q.IsReady())
                         Utility.DrawCircle(Player.Position, Q.Range, System.Drawing.Color.Gray, 1, 1);
@@ -79,9 +79,9 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                     Utility.DrawCircle(Player.Position, Q.Range, System.Drawing.Color.Gray, 1, 1);
             }
             
-            if (MainMenu.Item("wRange", true).GetValue<bool>())
+            if (HeroMenu.Item("wRange", true).GetValue<bool>())
             {
-                if (MainMenu.Item("onlyRdy", true).GetValue<bool>())
+                if (HeroMenu.Item("onlyRdy", true).GetValue<bool>())
                 {
                     if (W.IsReady())
                         Utility.DrawCircle(Player.Position, W.Range, System.Drawing.Color.Gray, 1, 1);
@@ -90,9 +90,9 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                     Utility.DrawCircle(Player.Position, W.Range, System.Drawing.Color.Gray, 1, 1);
             }
 
-            if (MainMenu.Item("rRange", true).GetValue<bool>())
+            if (HeroMenu.Item("rRange", true).GetValue<bool>())
             {
-                if (MainMenu.Item("onlyRdy", true).GetValue<bool>())
+                if (HeroMenu.Item("onlyRdy", true).GetValue<bool>())
                 {
                     if (R.IsReady())
                         Utility.DrawCircle(Player.Position, R.Range, System.Drawing.Color.Gray, 1, 1);
@@ -193,8 +193,8 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
         private void LogicR()
         {
-            bool rKs = MainMenu.Item("rKs", true).GetValue<bool>();
-            var ts = MainMenu.Item("ts", true).GetValue<bool>();
+            bool rKs = HeroMenu.Item("rKs", true).GetValue<bool>();
+            var ts = HeroMenu.Item("ts", true).GetValue<bool>();
 
             if (!Program.Combo)
                 return;
@@ -202,24 +202,24 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             Vector3 bestRposition = new Vector3();
             int aoeCount = 0;
 
-            foreach (var target in HeroManager.Enemies.Where(target => target.IsValidTarget(R.Range + R.Width)))
+            foreach (var target in HeroManager.Enemies.Where(target => target.IsValidTarget(R.Range)))
             {
                 var predictionCircle = R.GetPrediction(target, true);
                 var predictionLine = R1.GetPrediction(target, true);
 
-                if(predictionLine.AoeTargetsHitCount > 0 && aoeCount > predictionLine.AoeTargetsHitCount)
+                if(predictionLine.AoeTargetsHitCount > 0 && aoeCount > predictionLine.AoeTargetsHitCount && predictionLine.Hitchance >= HitChance.High)
                 {
                     bestRposition = predictionLine.CastPosition;
                     aoeCount = predictionLine.AoeTargetsHitCount;
                 }
-                if (predictionCircle.AoeTargetsHitCount > 0 && aoeCount >= predictionLine.AoeTargetsHitCount)
+                if (predictionCircle.AoeTargetsHitCount > 0 && aoeCount >= predictionLine.AoeTargetsHitCount && predictionCircle.Hitchance >= HitChance.High)
                 {
                     bestRposition = predictionCircle.CastPosition;
                     aoeCount = predictionCircle.AoeTargetsHitCount;
                 }
             }
 
-            if (aoeCount > 0)
+            if (aoeCount + 1 >= HeroMenu.Item("Raoe", true).GetValue<int>())
             {
                 if(bestRposition.CountAlliesInRange(1000) > 0)
                     R.Cast(bestRposition);
@@ -253,36 +253,38 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             }
         }
 
-        private void EMainMenu()
+        private void EHeroMenu()
         {
-            MainMenu.SubMenu(Player.ChampionName).SubMenu("E option")
+            HeroMenu.SubMenu("E option")
                 .AddItem(new MenuItem("inter", "OnPossibleToInterrupt", true)).SetValue(true);
-            MainMenu.SubMenu(Player.ChampionName).SubMenu("E option")
+            HeroMenu.SubMenu("E option")
                 .AddItem(new MenuItem("Gap", "OnEnemyGapcloser", true)).SetValue(true);
         }
 
-        private void RMainMenu()
+        private void RHeroMenu()
         {
-            MainMenu.SubMenu(Player.ChampionName).SubMenu("R option")
+            HeroMenu.SubMenu("R option")
                 .AddItem(new MenuItem("ts", "Use common TargetSelector", true).SetValue(true));
-            MainMenu.SubMenu(Player.ChampionName).SubMenu("Q option")
+            HeroMenu.SubMenu("R option")
                 .AddItem(new MenuItem("ts1", "ON - only one target"));
             foreach (var enemy in HeroManager.Enemies)
-                MainMenu.SubMenu(Player.ChampionName).SubMenu("R option").SubMenu("Use R on")
+                HeroMenu.SubMenu("R option").SubMenu("Use R on")
                     .AddItem(new MenuItem("grab" + enemy.ChampionName, enemy.ChampionName).SetValue(true));
-            MainMenu.SubMenu(Player.ChampionName).SubMenu("R option")
+            HeroMenu.SubMenu("R option")
                 .AddItem(new MenuItem("rKs", "R ks", true).SetValue(true));
+            HeroMenu.SubMenu("R option").
+                AddItem(new MenuItem("Raoe", "R aoe", true).SetValue(new Slider(0, 5, 2)));
         }
 
-        private void DrawMainMenu()
+        private void DrawHeroMenu()
         {
-            MainMenu.SubMenu(Player.ChampionName).SubMenu("Draw")
+            HeroMenu.SubMenu("Draw")
                 .AddItem(new MenuItem("qRange", "Q range", true).SetValue(false));
-            MainMenu.SubMenu(Player.ChampionName).SubMenu("Draw")
+            HeroMenu.SubMenu("Draw")
                 .AddItem(new MenuItem("wRange", "W range", true).SetValue(false));
-            MainMenu.SubMenu(Player.ChampionName).SubMenu("Draw")
+            HeroMenu.SubMenu("Draw")
                 .AddItem(new MenuItem("rRange", "R range", true).SetValue(false));
-            MainMenu.SubMenu(Player.ChampionName).SubMenu("Draw")
+            HeroMenu.SubMenu("Draw")
                 .AddItem(new MenuItem("onlyRdy", "Draw when skill rdy", true).SetValue(true));
         }
     }
