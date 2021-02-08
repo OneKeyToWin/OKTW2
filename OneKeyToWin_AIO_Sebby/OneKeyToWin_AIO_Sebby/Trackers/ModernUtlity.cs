@@ -13,7 +13,6 @@ using static LeagueSharp.Common.Packet;
 
 class ModernUtlity : TrackerCore
 {
-
     public Menu Menu { get; set; }
 
     //elements

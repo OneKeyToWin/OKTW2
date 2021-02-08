@@ -84,12 +84,14 @@
     <Compile Include="Champions\Draven.cs" />
     <Compile Include="Champions\Evelynn.cs" />
     <Compile Include="Champions\Garen.cs" />
+    <Compile Include="Champions\Hecarim.cs" />
     <Compile Include="Champions\Jhin.cs" />
     <Compile Include="Champions\Kaisa.cs" />
     <Compile Include="Champions\Karthus.cs" />
     <Compile Include="Champions\Kayle.cs" />
     <Compile Include="Champions\Kindred.cs" />
     <Compile Include="Champions\Leona.cs" />
+    <Compile Include="Champions\Nunu.cs" />
     <Compile Include="Champions\Viego.cs" />
     <Compile Include="Champions\Lux.cs" />
     <Compile Include="Champions\Malzahar.cs" />

@@ -27,7 +27,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             W.SetCharged(nunuW, nunuW, 600, 1510, 1.8f);
             R.SetCharged(nunuR, nunuR, 600, 600, 1.8f);
 
-            DrawConfig();
+            DrawMainMenu();
 
             Game.OnUpdate += Game_OnGameUpdate;
             Drawing.OnDraw += Drawing_OnDraw;
@@ -35,23 +35,23 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
         private void Drawing_OnDraw(EventArgs args)
         {
-            if (Config.Item("qRange", true).GetValue<bool>())
+            if (MainMenu.Item("qRange", true).GetValue<bool>())
             {
-                if (Config.Item("onlyRdy", true).GetValue<bool>())
+                if (MainMenu.Item("onlyRdy", true).GetValue<bool>())
                 {
                     if (Q.IsReady())
                         Utility.DrawCircle(Player.Position,
-                            (float) Config.Item("maxGrab", true).GetValue<Slider>().Value, System.Drawing.Color.Cyan, 1,
+                            (float) MainMenu.Item("maxGrab", true).GetValue<Slider>().Value, System.Drawing.Color.Cyan, 1,
                             1);
                 }
                 else
-                    Utility.DrawCircle(Player.Position, (float) Config.Item("maxGrab", true).GetValue<Slider>().Value,
+                    Utility.DrawCircle(Player.Position, (float) MainMenu.Item("maxGrab", true).GetValue<Slider>().Value,
                         System.Drawing.Color.Cyan, 1, 1);
             }
 
-            if (Config.Item("wRange", true).GetValue<bool>())
+            if (MainMenu.Item("wRange", true).GetValue<bool>())
             {
-                if (Config.Item("onlyRdy", true).GetValue<bool>())
+                if (MainMenu.Item("onlyRdy", true).GetValue<bool>())
                 {
                     if (W.IsReady())
                         Utility.DrawCircle(Player.Position, W.Range, System.Drawing.Color.Gray, 1, 1);
@@ -60,9 +60,9 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                     Utility.DrawCircle(Player.Position, W.Range, System.Drawing.Color.Gray, 1, 1);
             }
 
-            if (Config.Item("eRange", true).GetValue<bool>())
+            if (MainMenu.Item("eRange", true).GetValue<bool>())
             {
-                if (Config.Item("onlyRdy", true).GetValue<bool>())
+                if (MainMenu.Item("onlyRdy", true).GetValue<bool>())
                 {
                     if (E.IsReady())
                         Utility.DrawCircle(Player.Position, E.Range, System.Drawing.Color.Gray, 1, 1);
@@ -71,9 +71,9 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                     Utility.DrawCircle(Player.Position, E.Range, System.Drawing.Color.Gray, 1, 1);
             }
 
-            if (Config.Item("rRange", true).GetValue<bool>())
+            if (MainMenu.Item("rRange", true).GetValue<bool>())
             {
-                if (Config.Item("onlyRdy", true).GetValue<bool>())
+                if (MainMenu.Item("onlyRdy", true).GetValue<bool>())
                 {
                     if (R.IsReady())
                         Utility.DrawCircle(Player.Position, R.Range, System.Drawing.Color.Gray, 1, 1);
@@ -162,17 +162,17 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             }
         }
 
-        private void DrawConfig()
+        private void DrawMainMenu()
         {
-            Config.SubMenu(Player.ChampionName).SubMenu("Draw")
+            MainMenu.SubMenu(Player.ChampionName).SubMenu("Draw")
                 .AddItem(new MenuItem("qRange", "Q range", true).SetValue(false));
-            Config.SubMenu(Player.ChampionName).SubMenu("Draw")
+            MainMenu.SubMenu(Player.ChampionName).SubMenu("Draw")
                 .AddItem(new MenuItem("wRange", "W range", true).SetValue(false));
-            Config.SubMenu(Player.ChampionName).SubMenu("Draw")
+            MainMenu.SubMenu(Player.ChampionName).SubMenu("Draw")
                 .AddItem(new MenuItem("eRange", "E range", true).SetValue(false));
-            Config.SubMenu(Player.ChampionName).SubMenu("Draw")
+            MainMenu.SubMenu(Player.ChampionName).SubMenu("Draw")
                 .AddItem(new MenuItem("rRange", "R range", true).SetValue(false));
-            Config.SubMenu(Player.ChampionName).SubMenu("Draw")
+            MainMenu.SubMenu(Player.ChampionName).SubMenu("Draw")
                 .AddItem(new MenuItem("onlyRdy", "Draw when skill rdy", true).SetValue(true));
         }
 
