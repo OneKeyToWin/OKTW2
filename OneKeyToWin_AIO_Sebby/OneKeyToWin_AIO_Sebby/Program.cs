@@ -209,6 +209,12 @@ namespace OneKeyToWin_AIO_Sebby
                     case "Leona":
                         new Champions.Leona();
                         break;
+                    case "Hecarim":
+                        new Champions.Hecarim();
+                        break;
+                    case "Nunu":
+                        new Champions.Nunu();
+                        break;
                 }
                 #endregion
 
