@@ -60,7 +60,7 @@ class BaseUlt : Program
 
         Ultimate = new Spell(SpellSlot.R);
 
-        Menu = MainMenu.AddSubMenu(new Menu("Base Ult", "Base Ult")).SetFontStyle(System.Drawing.FontStyle.Bold, Color.OrangeRed);
+        Menu = MainMenu.AddSubMenu(new Menu("Base Ult", "Base Ult")).SetFontStyle(System.Drawing.FontStyle.Bold, Color.Yellow);
         Menu.AddItem(new MenuItem("baseUlt", "Base Ult").SetValue(true));
         Menu.AddItem(new MenuItem("panicKey", "No Ult while SBTW").SetValue(new KeyBind(32, KeyBindType.Press))); //32 == space
         Menu.AddItem(new MenuItem("regardlessKey", "No timelimit (hold)").SetValue(new KeyBind(17, KeyBindType.Press))); //17 == ctrl

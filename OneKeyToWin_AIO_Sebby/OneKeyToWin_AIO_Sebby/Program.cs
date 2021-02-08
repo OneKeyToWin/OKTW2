@@ -232,6 +232,7 @@ namespace OneKeyToWin_AIO_Sebby
                 TrackerCore trackerCore = new TrackerCore();
                 BaseUlt baseUlt = new BaseUlt();
                 AutoLvlUp autoLvlUp = new AutoLvlUp();
+                ModernUtlity modernUtlity = new ModernUtlity();
                 new Core.OKTWward().LoadOKTW();
                 //new Core.OKTWdraws().LoadOKTW();
             }
