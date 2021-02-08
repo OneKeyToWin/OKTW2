@@ -19,8 +19,10 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             E = new Spell(SpellSlot.E, 350);
             R = new Spell(SpellSlot.R, 550);
             Q.SetSkillshot(0.25f, 100f, 2000f, true, SkillshotType.SkillshotLine);
-            Config.SubMenu(Player.ChampionName)
-                .AddItem(new MenuItem("showBandageStats", "Show statistics", true).SetValue(true));
+
+           
+
+            HeroMenu.AddItem(new MenuItem("showBandageStats", "Show statistics", true).SetValue(true));
 
             QConfig();
             WConfig();
@@ -38,7 +40,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
         private void Interrupter2_OnInterruptableTarget(Obj_AI_Hero sender,
             Interrupter2.InterruptableTargetEventArgs args)
         {
-            if (R.IsReady() && Config.Item("inter", true).GetValue<bool>() && sender.IsValidTarget(R.Range))
+            if (R.IsReady() && MainMenu.Item("inter", true).GetValue<bool>() && sender.IsValidTarget(R.Range))
             {
                 R.Cast();
             }
@@ -58,7 +60,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
         private void Drawing_OnDraw(EventArgs args)
         {
-            if (Config.Item("showBandageStats", true).GetValue<bool>())
+            if (MainMenu.Item("showBandageStats", true).GetValue<bool>())
             {
                 var percent = 0f;
                 if (grab > 0)
@@ -67,23 +69,23 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                     " grab: " + grab + " grab successful: " + grabS + " grab successful % : " + percent + "%");
             }
 
-            if (Config.Item("qRange", true).GetValue<bool>())
+            if (MainMenu.Item("qRange", true).GetValue<bool>())
             {
-                if (Config.Item("onlyRdy", true).GetValue<bool>())
+                if (MainMenu.Item("onlyRdy", true).GetValue<bool>())
                 {
                     if (Q.IsReady())
                         Utility.DrawCircle(Player.Position,
-                            (float) Config.Item("maxGrab", true).GetValue<Slider>().Value, System.Drawing.Color.Cyan, 1,
+                            (float) MainMenu.Item("maxGrab", true).GetValue<Slider>().Value, System.Drawing.Color.Cyan, 1,
                             1);
                 }
                 else
-                    Utility.DrawCircle(Player.Position, (float) Config.Item("maxGrab", true).GetValue<Slider>().Value,
+                    Utility.DrawCircle(Player.Position, (float) MainMenu.Item("maxGrab", true).GetValue<Slider>().Value,
                         System.Drawing.Color.Cyan, 1, 1);
             }
 
-            if (Config.Item("wRange", true).GetValue<bool>())
+            if (MainMenu.Item("wRange", true).GetValue<bool>())
             {
-                if (Config.Item("onlyRdy", true).GetValue<bool>())
+                if (MainMenu.Item("onlyRdy", true).GetValue<bool>())
                 {
                     if (W.IsReady())
                         Utility.DrawCircle(Player.Position, W.Range, System.Drawing.Color.Gray, 1, 1);
@@ -92,9 +94,9 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                     Utility.DrawCircle(Player.Position, W.Range, System.Drawing.Color.Gray, 1, 1);
             }
 
-            if (Config.Item("eRange", true).GetValue<bool>())
+            if (MainMenu.Item("eRange", true).GetValue<bool>())
             {
-                if (Config.Item("onlyRdy", true).GetValue<bool>())
+                if (MainMenu.Item("onlyRdy", true).GetValue<bool>())
                 {
                     if (E.IsReady())
                         Utility.DrawCircle(Player.Position, E.Range, System.Drawing.Color.Gray, 1, 1);
@@ -103,9 +105,9 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                     Utility.DrawCircle(Player.Position, E.Range, System.Drawing.Color.Gray, 1, 1);
             }
 
-            if (Config.Item("rRange", true).GetValue<bool>())
+            if (MainMenu.Item("rRange", true).GetValue<bool>())
             {
-                if (Config.Item("onlyRdy", true).GetValue<bool>())
+                if (MainMenu.Item("onlyRdy", true).GetValue<bool>())
                 {
                     if (R.IsReady())
                         Utility.DrawCircle(Player.Position, R.Range, System.Drawing.Color.Gray, 1, 1);
@@ -117,7 +119,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
         private void AntiGapcloser_OnEnemyGapcloser(ActiveGapcloser gapcloser)
         {
-            if (R.IsReady() && Config.Item("Gap", true).GetValue<bool>() && gapcloser.Sender.IsValidTarget(R.Range))
+            if (R.IsReady() && MainMenu.Item("Gap", true).GetValue<bool>() && gapcloser.Sender.IsValidTarget(R.Range))
             {
                 R.Cast();
             }
@@ -142,11 +144,11 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
         private void LogicQ()
         {
-            float maxGrab = Config.Item("maxGrab", true).GetValue<Slider>().Value;
-            float minGrab = Config.Item("minGrab", true).GetValue<Slider>().Value;
-            var ts = Config.Item("ts", true).GetValue<bool>();
-            var targetUnderAllyTurret = Player.UnderAllyTurret() && Config.Item("qTur", true).GetValue<bool>();
-            var qCC = Config.Item("qCC", true).GetValue<bool>();
+            float maxGrab = MainMenu.Item("maxGrab", true).GetValue<Slider>().Value;
+            float minGrab = MainMenu.Item("minGrab", true).GetValue<Slider>().Value;
+            var ts = MainMenu.Item("ts", true).GetValue<bool>();
+            var targetUnderAllyTurret = Player.UnderAllyTurret() && MainMenu.Item("qTur", true).GetValue<bool>();
+            var qCC = MainMenu.Item("qCC", true).GetValue<bool>();
 
             if (Q.IsReady())
             {
@@ -156,7 +158,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
                     if (target.IsValidTarget(maxGrab) && !target.HasBuffOfType(BuffType.SpellImmunity) &&
                         !target.HasBuffOfType(BuffType.SpellShield) &&
-                        Config.Item("grab" + target.ChampionName).GetValue<bool>() &&
+                        MainMenu.Item("grab" + target.ChampionName).GetValue<bool>() &&
                         Player.Distance(target.ServerPosition) > minGrab)
                         Program.CastSpell(Q, target);
                 }
@@ -173,7 +175,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 }
 
                 foreach (var t in HeroManager.Enemies.Where(t =>
-                    t.IsValidTarget(maxGrab) && (Config.Item("grab" + t.ChampionName).GetValue<bool>())))
+                    t.IsValidTarget(maxGrab) && (MainMenu.Item("grab" + t.ChampionName).GetValue<bool>())))
                 {
                     if (!t.HasBuffOfType(BuffType.SpellImmunity) && !t.HasBuffOfType(BuffType.SpellShield) &&
                         Player.Distance(t.ServerPosition) > minGrab)
@@ -207,11 +209,11 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             {
                 if (target != null)
                 {
-                    enoughMana = Player.ManaPercent >= Config.Item("wComboUntil", true).GetValue<Slider>().Value;
+                    enoughMana = Player.ManaPercent >= MainMenu.Item("wComboUntil", true).GetValue<Slider>().Value;
                 }
                 else
                 {
-                    enoughMana = Player.ManaPercent >= Config.Item("wFarmUntil", true).GetValue<Slider>().Value;
+                    enoughMana = Player.ManaPercent >= MainMenu.Item("wFarmUntil", true).GetValue<Slider>().Value;
                 }
 
                 if (IsWTurnedOff() && enoughMana)
@@ -241,11 +243,11 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             {
                 if (target != null)
                 {
-                    enoughMana = Player.ManaPercent >= Config.Item("eComboUntil", true).GetValue<Slider>().Value;
+                    enoughMana = Player.ManaPercent >= MainMenu.Item("eComboUntil", true).GetValue<Slider>().Value;
                 }
                 else
                 {
-                    enoughMana = Player.ManaPercent >= Config.Item("eFarmUntil", true).GetValue<Slider>().Value;
+                    enoughMana = Player.ManaPercent >= MainMenu.Item("eFarmUntil", true).GetValue<Slider>().Value;
                 }
 
                 if (enoughMana)
@@ -255,7 +257,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
         private void LogicR()
         {
-            bool rKs = Config.Item("rKs", true).GetValue<bool>();
+            bool rKs = MainMenu.Item("rKs", true).GetValue<bool>();
 
             if (R.IsReady())
             {
@@ -267,8 +269,8 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                     }
                 }
 
-                if (Player.CountEnemiesInRange(R.Range) >= Config.Item("rCount", true).GetValue<Slider>().Value &&
-                    Config.Item("rCount", true).GetValue<Slider>().Value > 0)
+                if (Player.CountEnemiesInRange(R.Range) >= MainMenu.Item("rCount", true).GetValue<Slider>().Value &&
+                    MainMenu.Item("rCount", true).GetValue<Slider>().Value > 0)
                 {
                     R.Cast();
                 }
@@ -306,65 +308,65 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
         private void QConfig()
         {
-            Config.SubMenu(Player.ChampionName).SubMenu("Q option")
+            HeroMenu.SubMenu("Q option")
                 .AddItem(new MenuItem("ts", "Use common TargetSelector", true).SetValue(true));
-            Config.SubMenu(Player.ChampionName).SubMenu("Q option")
+            HeroMenu.SubMenu("Q option")
                 .AddItem(new MenuItem("ts1", "ON - only one target"));
-            Config.SubMenu(Player.ChampionName).SubMenu("Q option")
+            HeroMenu.SubMenu("Q option")
                 .AddItem(new MenuItem("ts2", "OFF - all grab-able targets"));
-            Config.SubMenu(Player.ChampionName).SubMenu("Q option")
+            HeroMenu.SubMenu("Q option")
                 .AddItem(new MenuItem("qTur", "Auto Q under turret", true).SetValue(true));
-            Config.SubMenu(Player.ChampionName).SubMenu("Q option")
+            HeroMenu.SubMenu("Q option")
                 .AddItem(new MenuItem("qCC", "Auto Q cc & dash enemy", true).SetValue(true));
-            Config.SubMenu(Player.ChampionName).SubMenu("Q option").AddItem(
+            HeroMenu.SubMenu("Q option").AddItem(
                 new MenuItem("minGrab", "Min range grab", true).SetValue(new Slider(300, 125, (int) Q.Range)));
-            Config.SubMenu(Player.ChampionName).SubMenu("Q option").AddItem(
+            HeroMenu.SubMenu("Q option").AddItem(
                 new MenuItem("maxGrab", "Max range grab", true).SetValue(new Slider((int) Q.Range, 125,
                     (int) Q.Range)));
             foreach (var enemy in HeroManager.Enemies)
-                Config.SubMenu(Player.ChampionName).SubMenu("Q option").SubMenu("Grab")
+                HeroMenu.SubMenu("Q option").SubMenu("Grab")
                     .AddItem(new MenuItem("grab" + enemy.ChampionName, enemy.ChampionName).SetValue(true));
         }
 
         private void WConfig()
         {
-            Config.SubMenu(Player.ChampionName).SubMenu("W option")
+            HeroMenu.SubMenu("W option")
                 .AddItem(new MenuItem("wFarmUntil", "[Farm] Use W until Mana %", true)).SetValue(new Slider(20));
-            Config.SubMenu(Player.ChampionName).SubMenu("W option")
+            HeroMenu.SubMenu("W option")
                 .AddItem(new MenuItem("wComboUntil", "[Combo] Use W until Mana %", true)).SetValue(new Slider(10));
         }
 
         private void EConfig()
         {
-            Config.SubMenu(Player.ChampionName).SubMenu("E option")
+            HeroMenu.SubMenu("E option")
                 .AddItem(new MenuItem("eFarmUntil", "[Farm] Use E until Mana %", true)).SetValue(new Slider(20));
-            Config.SubMenu(Player.ChampionName).SubMenu("E option")
+            HeroMenu.SubMenu("E option")
                 .AddItem(new MenuItem("eComboUntil", "[Combo] Use E until Mana %", true)).SetValue(new Slider(10));
         }
 
         private void RConfig()
         {
-            Config.SubMenu(Player.ChampionName).SubMenu("R option")
+            HeroMenu.SubMenu("R option")
                 .AddItem(new MenuItem("rCount", "Auto R if enemies in range", true).SetValue(new Slider(3, 0, 5)));
-            Config.SubMenu(Player.ChampionName).SubMenu("R option")
+            HeroMenu.SubMenu("R option")
                 .AddItem(new MenuItem("rKs", "R ks", true).SetValue(true));
-            Config.SubMenu(Player.ChampionName).SubMenu("R option")
+            HeroMenu.SubMenu("R option")
                 .AddItem(new MenuItem("inter", "OnPossibleToInterrupt", true)).SetValue(true);
-            Config.SubMenu(Player.ChampionName).SubMenu("R option")
+            HeroMenu.SubMenu("R option")
                 .AddItem(new MenuItem("Gap", "OnEnemyGapcloser", true)).SetValue(true);
         }
 
         private void DrawConfig()
         {
-            Config.SubMenu(Player.ChampionName).SubMenu("Draw")
+            HeroMenu.SubMenu("Draw")
                 .AddItem(new MenuItem("qRange", "Q range", true).SetValue(false));
-            Config.SubMenu(Player.ChampionName).SubMenu("Draw")
+            HeroMenu.SubMenu("Draw")
                 .AddItem(new MenuItem("wRange", "W range", true).SetValue(false));
-            Config.SubMenu(Player.ChampionName).SubMenu("Draw")
+            HeroMenu.SubMenu("Draw")
                 .AddItem(new MenuItem("eRange", "E range", true).SetValue(false));
-            Config.SubMenu(Player.ChampionName).SubMenu("Draw")
+            HeroMenu.SubMenu("Draw")
                 .AddItem(new MenuItem("rRange", "R range", true).SetValue(false));
-            Config.SubMenu(Player.ChampionName).SubMenu("Draw")
+            HeroMenu.SubMenu("Draw")
                 .AddItem(new MenuItem("onlyRdy", "Draw when skill rdy", true).SetValue(true));
         }
     }

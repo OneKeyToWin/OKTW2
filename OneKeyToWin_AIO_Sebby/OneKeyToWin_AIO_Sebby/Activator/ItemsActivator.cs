@@ -43,68 +43,70 @@ class ItemsActivator : Program
 
     public ItemsActivator()
     {
-        Config.SubMenu("Activator OKTW©").AddItem(new MenuItem("pots", "Potion, Flask, Biscuit").SetValue(true));
+        var activatorMenu = MainMenu.SubMenu("Activator OKTW©");
 
-        Config.SubMenu("Activator OKTW©").SubMenu("Offensives").SubMenu("Botrk").AddItem(new MenuItem("Botrk", "Botrk").SetValue(true));
-        Config.SubMenu("Activator OKTW©").SubMenu("Offensives").SubMenu("Botrk").AddItem(new MenuItem("BotrkKS", "Botrk KS").SetValue(true));
-        Config.SubMenu("Activator OKTW©").SubMenu("Offensives").SubMenu("Botrk").AddItem(new MenuItem("BotrkLS", "Botrk LifeSaver").SetValue(true));
-        Config.SubMenu("Activator OKTW©").SubMenu("Offensives").SubMenu("Botrk").AddItem(new MenuItem("BotrkCombo", "Botrk always in combo").SetValue(false));
+        activatorMenu.AddItem(new MenuItem("pots", "Potion, Flask, Biscuit").SetValue(true));
 
-        Config.SubMenu("Activator OKTW©").SubMenu("Offensives").SubMenu("Cutlass").AddItem(new MenuItem("Cutlass", "Cutlass").SetValue(true));
-        Config.SubMenu("Activator OKTW©").SubMenu("Offensives").SubMenu("Cutlass").AddItem(new MenuItem("CutlassKS", "Cutlass KS").SetValue(true));
-        Config.SubMenu("Activator OKTW©").SubMenu("Offensives").SubMenu("Cutlass").AddItem(new MenuItem("CutlassCombo", "Cutlass always in combo").SetValue(true));
+        activatorMenu.SubMenu("Offensives").SubMenu("Botrk").AddItem(new MenuItem("Botrk", "Botrk").SetValue(true));
+        activatorMenu.SubMenu("Offensives").SubMenu("Botrk").AddItem(new MenuItem("BotrkKS", "Botrk KS").SetValue(true));
+        activatorMenu.SubMenu("Offensives").SubMenu("Botrk").AddItem(new MenuItem("BotrkLS", "Botrk LifeSaver").SetValue(true));
+        activatorMenu.SubMenu("Offensives").SubMenu("Botrk").AddItem(new MenuItem("BotrkCombo", "Botrk always in combo").SetValue(false));
 
-        Config.SubMenu("Activator OKTW©").SubMenu("Offensives").SubMenu("Hextech").AddItem(new MenuItem("Hextech", "Hextech").SetValue(true));
-        Config.SubMenu("Activator OKTW©").SubMenu("Offensives").SubMenu("Hextech").AddItem(new MenuItem("HextechKS", "Hextech KS").SetValue(true));
-        Config.SubMenu("Activator OKTW©").SubMenu("Offensives").SubMenu("Hextech").AddItem(new MenuItem("HextechCombo", "Hextech always in combo").SetValue(true));
+        activatorMenu.SubMenu("Offensives").SubMenu("Cutlass").AddItem(new MenuItem("Cutlass", "Cutlass").SetValue(true));
+        activatorMenu.SubMenu("Offensives").SubMenu("Cutlass").AddItem(new MenuItem("CutlassKS", "Cutlass KS").SetValue(true));
+        activatorMenu.SubMenu("Offensives").SubMenu("Cutlass").AddItem(new MenuItem("CutlassCombo", "Cutlass always in combo").SetValue(true));
 
-        Config.SubMenu("Activator OKTW©").SubMenu("Offensives").SubMenu("Protobelt").AddItem(new MenuItem("Protobelt", "Protobelt").SetValue(true));
-        Config.SubMenu("Activator OKTW©").SubMenu("Offensives").SubMenu("Protobelt").AddItem(new MenuItem("ProtobeltKS", "Protobelt KS").SetValue(true));
-        Config.SubMenu("Activator OKTW©").SubMenu("Offensives").SubMenu("Protobelt").AddItem(new MenuItem("ProtobeltCombo", "Protobelt always in combo").SetValue(true));
+        activatorMenu.SubMenu("Offensives").SubMenu("Hextech").AddItem(new MenuItem("Hextech", "Hextech").SetValue(true));
+        activatorMenu.SubMenu("Offensives").SubMenu("Hextech").AddItem(new MenuItem("HextechKS", "Hextech KS").SetValue(true));
+        activatorMenu.SubMenu("Offensives").SubMenu("Hextech").AddItem(new MenuItem("HextechCombo", "Hextech always in combo").SetValue(true));
 
-        Config.SubMenu("Activator OKTW©").SubMenu("Offensives").SubMenu("GLP800").AddItem(new MenuItem("GLP800", "GLP800").SetValue(true));
-        Config.SubMenu("Activator OKTW©").SubMenu("Offensives").SubMenu("GLP800").AddItem(new MenuItem("GLP800KS", "GLP800 KS").SetValue(true));
-        Config.SubMenu("Activator OKTW©").SubMenu("Offensives").SubMenu("GLP800").AddItem(new MenuItem("GLP800Combo", "GLP800 always in combo").SetValue(true));
+        activatorMenu.SubMenu("Offensives").SubMenu("Protobelt").AddItem(new MenuItem("Protobelt", "Protobelt").SetValue(true));
+        activatorMenu.SubMenu("Offensives").SubMenu("Protobelt").AddItem(new MenuItem("ProtobeltKS", "Protobelt KS").SetValue(true));
+        activatorMenu.SubMenu("Offensives").SubMenu("Protobelt").AddItem(new MenuItem("ProtobeltCombo", "Protobelt always in combo").SetValue(true));
 
-        Config.SubMenu("Activator OKTW©").SubMenu("Offensives").SubMenu("Youmuus").AddItem(new MenuItem("Youmuus", "Youmuus").SetValue(true));
-        Config.SubMenu("Activator OKTW©").SubMenu("Offensives").SubMenu("Youmuus").AddItem(new MenuItem("YoumuusR", "TwitchR, AsheQ").SetValue(true));
-        Config.SubMenu("Activator OKTW©").SubMenu("Offensives").SubMenu("Youmuus").AddItem(new MenuItem("YoumuusKS", "Youmuus KS").SetValue(true));
-        Config.SubMenu("Activator OKTW©").SubMenu("Offensives").SubMenu("Youmuus").AddItem(new MenuItem("YoumuusCombo", "Youmuus always in combo").SetValue(false));
+        activatorMenu.SubMenu("Offensives").SubMenu("GLP800").AddItem(new MenuItem("GLP800", "GLP800").SetValue(true));
+        activatorMenu.SubMenu("Offensives").SubMenu("GLP800").AddItem(new MenuItem("GLP800KS", "GLP800 KS").SetValue(true));
+        activatorMenu.SubMenu("Offensives").SubMenu("GLP800").AddItem(new MenuItem("GLP800Combo", "GLP800 always in combo").SetValue(true));
 
-        Config.SubMenu("Activator OKTW©").SubMenu("Offensives").SubMenu("Hydra").AddItem(new MenuItem("Hydra", "Hydra").SetValue(true));
-        Config.SubMenu("Activator OKTW©").SubMenu("Offensives").SubMenu("HydraTitanic").AddItem(new MenuItem("HydraTitanic", "Hydra Titanic").SetValue(true));
-        Config.SubMenu("Activator OKTW©").SubMenu("Offensives").SubMenu("FrostQueen").AddItem(new MenuItem("FrostQueen", "FrostQueen").SetValue(true));
+        activatorMenu.SubMenu("Offensives").SubMenu("Youmuus").AddItem(new MenuItem("Youmuus", "Youmuus").SetValue(true));
+        activatorMenu.SubMenu("Offensives").SubMenu("Youmuus").AddItem(new MenuItem("YoumuusR", "TwitchR, AsheQ").SetValue(true));
+        activatorMenu.SubMenu("Offensives").SubMenu("Youmuus").AddItem(new MenuItem("YoumuusKS", "Youmuus KS").SetValue(true));
+        activatorMenu.SubMenu("Offensives").SubMenu("Youmuus").AddItem(new MenuItem("YoumuusCombo", "Youmuus always in combo").SetValue(false));
+
+        activatorMenu.SubMenu("Offensives").SubMenu("Hydra").AddItem(new MenuItem("Hydra", "Hydra").SetValue(true));
+        activatorMenu.SubMenu("Offensives").SubMenu("HydraTitanic").AddItem(new MenuItem("HydraTitanic", "Hydra Titanic").SetValue(true));
+        activatorMenu.SubMenu("Offensives").SubMenu("FrostQueen").AddItem(new MenuItem("FrostQueen", "FrostQueen").SetValue(true));
 
         // DEF
-        Config.SubMenu("Activator OKTW©").SubMenu("Defensives").AddItem(new MenuItem("Randuin", "Randuin").SetValue(true));
-        Config.SubMenu("Activator OKTW©").SubMenu("Defensives").AddItem(new MenuItem("FaceOfTheMountain", "FaceOfTheMountain").SetValue(true));
-        Config.SubMenu("Activator OKTW©").SubMenu("Defensives").SubMenu("Zhonya").AddItem(new MenuItem("Zhonya", "Zhonya").SetValue(true));
+        activatorMenu.SubMenu("Defensives").AddItem(new MenuItem("Randuin", "Randuin").SetValue(true));
+        activatorMenu.SubMenu("Defensives").AddItem(new MenuItem("FaceOfTheMountain", "FaceOfTheMountain").SetValue(true));
+        activatorMenu.SubMenu("Defensives").SubMenu("Zhonya").AddItem(new MenuItem("Zhonya", "Zhonya").SetValue(true));
 
         foreach (var enemy in HeroManager.Enemies)
         {
             var spell = enemy.Spellbook.Spells[3];
-            Config.SubMenu("Activator OKTW©").SubMenu("Defensives").SubMenu("Zhonya").AddItem(new MenuItem("spellZ" + spell.SData.Name, enemy.ChampionName + ": " + spell.Name).SetValue(spell.SData.TargettingType == SpellDataTargetType.Unit));
+            activatorMenu.SubMenu("Defensives").SubMenu("Zhonya").AddItem(new MenuItem("spellZ" + spell.SData.Name, enemy.ChampionName + ": " + spell.Name).SetValue(spell.SData.TargettingType == SpellDataTargetType.Unit));
         }
 
-        Config.SubMenu("Activator OKTW©").SubMenu("Defensives").AddItem(new MenuItem("Seraph", "Seraph").SetValue(true));
-        Config.SubMenu("Activator OKTW©").SubMenu("Defensives").AddItem(new MenuItem("Solari", "Solari").SetValue(true));
+        activatorMenu.SubMenu("Defensives").AddItem(new MenuItem("Seraph", "Seraph").SetValue(true));
+        activatorMenu.SubMenu("Defensives").AddItem(new MenuItem("Solari", "Solari").SetValue(true));
         // CLEANSERS 
 
-        Config.SubMenu("Activator OKTW©").SubMenu("Cleansers").AddItem(new MenuItem("Clean", "Quicksilver, Mikaels, Mercurial, Dervish").SetValue(true));
+        activatorMenu.SubMenu("Cleansers").AddItem(new MenuItem("Clean", "Quicksilver, Mikaels, Mercurial, Dervish").SetValue(true));
 
         foreach (var ally in HeroManager.Allies)
-            Config.SubMenu("Activator OKTW©").SubMenu("Cleansers").SubMenu("Mikaels allys").AddItem(new MenuItem("MikaelsAlly" + ally.ChampionName, ally.ChampionName).SetValue(true));
+            activatorMenu.SubMenu("Cleansers").SubMenu("Mikaels allys").AddItem(new MenuItem("MikaelsAlly" + ally.ChampionName, ally.ChampionName).SetValue(true));
 
-        Config.SubMenu("Activator OKTW©").SubMenu("Cleansers").AddItem(new MenuItem("CSSdelay", "Delay x ms").SetValue(new Slider(0, 1000, 0)));
-        Config.SubMenu("Activator OKTW©").SubMenu("Cleansers").AddItem(new MenuItem("cleanHP", "Use only under % HP").SetValue(new Slider(80, 100, 0)));
+        activatorMenu.SubMenu("Cleansers").AddItem(new MenuItem("CSSdelay", "Delay x ms").SetValue(new Slider(0, 1000, 0)));
+        activatorMenu.SubMenu("Cleansers").AddItem(new MenuItem("cleanHP", "Use only under % HP").SetValue(new Slider(80, 100, 0)));
         //Config.SubMenu("Activator OKTW©").SubMenu("Cleansers").SubMenu("Buff type").AddItem(new MenuItem("CleanSpells", "ZedR FizzR MordekaiserR PoppyR VladimirR").SetValue(true));
-        Config.SubMenu("Activator OKTW©").SubMenu("Cleansers").SubMenu("Buff type").AddItem(new MenuItem("Stun", "Stun").SetValue(true));
-        Config.SubMenu("Activator OKTW©").SubMenu("Cleansers").SubMenu("Buff type").AddItem(new MenuItem("Snare", "Snare").SetValue(true));
-        Config.SubMenu("Activator OKTW©").SubMenu("Cleansers").SubMenu("Buff type").AddItem(new MenuItem("Charm", "Charm").SetValue(true));
-        Config.SubMenu("Activator OKTW©").SubMenu("Cleansers").SubMenu("Buff type").AddItem(new MenuItem("Fear", "Fear").SetValue(true));
-        Config.SubMenu("Activator OKTW©").SubMenu("Cleansers").SubMenu("Buff type").AddItem(new MenuItem("Suppression", "Suppression").SetValue(true));
-        Config.SubMenu("Activator OKTW©").SubMenu("Cleansers").SubMenu("Buff type").AddItem(new MenuItem("Taunt", "Taunt").SetValue(true));
-        Config.SubMenu("Activator OKTW©").SubMenu("Cleansers").SubMenu("Buff type").AddItem(new MenuItem("Blind", "Blind").SetValue(true));
+        activatorMenu.SubMenu("Cleansers").SubMenu("Buff type").AddItem(new MenuItem("Stun", "Stun").SetValue(true));
+        activatorMenu.SubMenu("Cleansers").SubMenu("Buff type").AddItem(new MenuItem("Snare", "Snare").SetValue(true));
+        activatorMenu.SubMenu("Cleansers").SubMenu("Buff type").AddItem(new MenuItem("Charm", "Charm").SetValue(true));
+        activatorMenu.SubMenu("Cleansers").SubMenu("Buff type").AddItem(new MenuItem("Fear", "Fear").SetValue(true));
+        activatorMenu.SubMenu("Cleansers").SubMenu("Buff type").AddItem(new MenuItem("Suppression", "Suppression").SetValue(true));
+        activatorMenu.SubMenu("Cleansers").SubMenu("Buff type").AddItem(new MenuItem("Taunt", "Taunt").SetValue(true));
+        activatorMenu.SubMenu("Cleansers").SubMenu("Buff type").AddItem(new MenuItem("Blind", "Blind").SetValue(true));
         Game.OnUpdate += Game_OnGameUpdate;
         Orbwalking.AfterAttack += Orbwalking_AfterAttack;
         Spellbook.OnCastSpell += Spellbook_OnCastSpell;
@@ -114,7 +116,7 @@ class ItemsActivator : Program
 
     private void Orbwalking_AfterAttack(AttackableUnit unit, AttackableUnit target)
     {
-        if (target is Obj_AI_Hero && Config.Item("HydraTitanic").GetValue<bool>() && HydraTitanic.IsReady() && target.IsValid<Obj_AI_Hero>())
+        if (target is Obj_AI_Hero && MainMenu.Item("HydraTitanic").GetValue<bool>() && HydraTitanic.IsReady() && target.IsValid<Obj_AI_Hero>())
         {
             HydraTitanic.Cast();
         }
@@ -128,9 +130,9 @@ class ItemsActivator : Program
         if (sender.Distance(Player.Position) > 1600)
             return;
 
-        if (Zhonya.IsReady() && Config.Item("Zhonya").GetValue<bool>())
+        if (Zhonya.IsReady() && MainMenu.Item("Zhonya").GetValue<bool>())
         {
-            if (Config.Item("spellZ" + args.SData.Name) != null && Config.Item("spellZ" + args.SData.Name).GetValue<bool>())
+            if (MainMenu.Item("spellZ" + args.SData.Name) != null && MainMenu.Item("spellZ" + args.SData.Name).GetValue<bool>())
             {
                 if (args.Target != null)
                 {
@@ -169,7 +171,7 @@ class ItemsActivator : Program
             var enemys = Player.CountEnemiesInRange(800);
             if (dmg > 0 || enemys > 0)
             {
-                if (Seraph.IsReady() && Config.Item("Seraph").GetValue<bool>())
+                if (Seraph.IsReady() && MainMenu.Item("Seraph").GetValue<bool>())
                 {
                     var value = Player.Mana * 0.2 + 150;
                     if (dmg > value && Player.HealthPercent < 50)
@@ -180,7 +182,7 @@ class ItemsActivator : Program
                         Seraph.Cast();
                 }
 
-                if (Zhonya.IsReady() && Config.Item("Zhonya").GetValue<bool>())
+                if (Zhonya.IsReady() && MainMenu.Item("Zhonya").GetValue<bool>())
                 {
                     if (dmg > Player.Level * 35)
                     {
@@ -211,7 +213,7 @@ class ItemsActivator : Program
             if (dmg == 0)
                 continue;
 
-            if (Config.Item("Solari").GetValue<bool>() && Solari.IsReady() && Player.Distance(ally.ServerPosition) < Solari.Range)
+            if (MainMenu.Item("Solari").GetValue<bool>() && Solari.IsReady() && Player.Distance(ally.ServerPosition) < Solari.Range)
             {
                 var value = 75 + (15 * Player.Level);
                 if (dmg > value && Player.HealthPercent < 50)
@@ -222,7 +224,7 @@ class ItemsActivator : Program
                     Solari.Cast();
             }
 
-            if (Config.Item("FaceOfTheMountain").GetValue<bool>() && FaceOfTheMountain.IsReady() && Player.Distance(ally.ServerPosition) < FaceOfTheMountain.Range)
+            if (MainMenu.Item("FaceOfTheMountain").GetValue<bool>() && FaceOfTheMountain.IsReady() && Player.Distance(ally.ServerPosition) < FaceOfTheMountain.Range)
             {
                 var value = 0.1 * Player.MaxHealth;
                 if (dmg > value && Player.HealthPercent < 50)
@@ -238,7 +240,7 @@ class ItemsActivator : Program
 
     private void Spellbook_OnCastSpell(Spellbook sender, SpellbookCastSpellEventArgs args)
     {
-        if (!Youmuus.IsReady() || !Config.Item("YoumuusR").GetValue<bool>())
+        if (!Youmuus.IsReady() || !MainMenu.Item("YoumuusR").GetValue<bool>())
             return;
         if (args.Slot == SpellSlot.R && (Player.ChampionName == "Twitch"))
         {
@@ -263,7 +265,7 @@ class ItemsActivator : Program
         if (!Program.LagFree(0))
             return;
 
-        if (Config.Item("pots").GetValue<bool>())
+        if (MainMenu.Item("pots").GetValue<bool>())
             PotionManagement();
 
 
@@ -275,7 +277,7 @@ class ItemsActivator : Program
 
     private void ZhonyaCast()
     {
-        if (Config.Item("Zhonya").GetValue<bool>() && Zhonya.IsReady())
+        if (MainMenu.Item("Zhonya").GetValue<bool>() && Zhonya.IsReady())
         {
             float time = 10;
             if (Player.HasBuff("zedrdeathmark"))
@@ -304,67 +306,67 @@ class ItemsActivator : Program
         if (!Quicksilver.IsReady() && !Mikaels.IsReady() && !Mercurial.IsReady() && !Dervish.IsReady())
             return;
 
-        if (Player.HealthPercent >= (float)Config.Item("cleanHP").GetValue<Slider>().Value || !Config.Item("Clean").GetValue<bool>())
+        if (Player.HealthPercent >= (float)MainMenu.Item("cleanHP").GetValue<Slider>().Value || !MainMenu.Item("Clean").GetValue<bool>())
             return;
 
         if (Mikaels.IsReady())
         {
             foreach (var ally in HeroManager.Allies.Where(
-                ally => ally.IsValid && !ally.IsDead && Config.Item("MikaelsAlly" + ally.ChampionName).GetValue<bool>() && Player.Distance(ally.Position) < Mikaels.Range
-                && ally.HealthPercent < (float)Config.Item("cleanHP").GetValue<Slider>().Value))
+                ally => ally.IsValid && !ally.IsDead && MainMenu.Item("MikaelsAlly" + ally.ChampionName).GetValue<bool>() && Player.Distance(ally.Position) < Mikaels.Range
+                && ally.HealthPercent < (float)MainMenu.Item("cleanHP").GetValue<Slider>().Value))
             {
                 if (ally.HasBuff("zedrdeathmark") || ally.HasBuff("FizzMarinerDoom") || ally.HasBuff("MordekaiserChildrenOfTheGrave") || ally.HasBuff("PoppyDiplomaticImmunity") || ally.HasBuff("VladimirHemoplague"))
                     Mikaels.Cast(ally);
-                if (ally.HasBuffOfType(BuffType.Stun) && Config.Item("Stun").GetValue<bool>())
+                if (ally.HasBuffOfType(BuffType.Stun) && MainMenu.Item("Stun").GetValue<bool>())
                     Mikaels.Cast(ally);
-                if (ally.HasBuffOfType(BuffType.Snare) && Config.Item("Snare").GetValue<bool>())
+                if (ally.HasBuffOfType(BuffType.Snare) && MainMenu.Item("Snare").GetValue<bool>())
                     Mikaels.Cast(ally);
-                if (ally.HasBuffOfType(BuffType.Charm) && Config.Item("Charm").GetValue<bool>())
+                if (ally.HasBuffOfType(BuffType.Charm) && MainMenu.Item("Charm").GetValue<bool>())
                     Mikaels.Cast(ally);
-                if (ally.HasBuffOfType(BuffType.Fear) && Config.Item("Fear").GetValue<bool>())
+                if (ally.HasBuffOfType(BuffType.Fear) && MainMenu.Item("Fear").GetValue<bool>())
                     Mikaels.Cast(ally);
-                if (ally.HasBuffOfType(BuffType.Stun) && Config.Item("Stun").GetValue<bool>())
+                if (ally.HasBuffOfType(BuffType.Stun) && MainMenu.Item("Stun").GetValue<bool>())
                     Mikaels.Cast(ally);
-                if (ally.HasBuffOfType(BuffType.Taunt) && Config.Item("Taunt").GetValue<bool>())
+                if (ally.HasBuffOfType(BuffType.Taunt) && MainMenu.Item("Taunt").GetValue<bool>())
                     Mikaels.Cast(ally);
-                if (ally.HasBuffOfType(BuffType.Suppression) && Config.Item("Suppression").GetValue<bool>())
+                if (ally.HasBuffOfType(BuffType.Suppression) && MainMenu.Item("Suppression").GetValue<bool>())
                     Mikaels.Cast(ally);
-                if (ally.HasBuffOfType(BuffType.Blind) && Config.Item("Blind").GetValue<bool>())
+                if (ally.HasBuffOfType(BuffType.Blind) && MainMenu.Item("Blind").GetValue<bool>())
                     Mikaels.Cast(ally);
             }
         }
 
-        if (Player.HasBuffOfType(BuffType.Stun) && Config.Item("Stun").GetValue<bool>())
+        if (Player.HasBuffOfType(BuffType.Stun) && MainMenu.Item("Stun").GetValue<bool>())
             Clean();
-        if (Player.HasBuffOfType(BuffType.Snare) && Config.Item("Snare").GetValue<bool>())
+        if (Player.HasBuffOfType(BuffType.Snare) && MainMenu.Item("Snare").GetValue<bool>())
             Clean();
-        if (Player.HasBuffOfType(BuffType.Charm) && Config.Item("Charm").GetValue<bool>())
+        if (Player.HasBuffOfType(BuffType.Charm) && MainMenu.Item("Charm").GetValue<bool>())
             Clean();
-        if (Player.HasBuffOfType(BuffType.Fear) && Config.Item("Fear").GetValue<bool>())
+        if (Player.HasBuffOfType(BuffType.Fear) && MainMenu.Item("Fear").GetValue<bool>())
             Clean();
-        if (Player.HasBuffOfType(BuffType.Stun) && Config.Item("Stun").GetValue<bool>())
+        if (Player.HasBuffOfType(BuffType.Stun) && MainMenu.Item("Stun").GetValue<bool>())
             Clean();
-        if (Player.HasBuffOfType(BuffType.Taunt) && Config.Item("Taunt").GetValue<bool>())
+        if (Player.HasBuffOfType(BuffType.Taunt) && MainMenu.Item("Taunt").GetValue<bool>())
             Clean();
-        if (Player.HasBuffOfType(BuffType.Suppression) && Config.Item("Suppression").GetValue<bool>())
+        if (Player.HasBuffOfType(BuffType.Suppression) && MainMenu.Item("Suppression").GetValue<bool>())
             Clean();
-        if (Player.HasBuffOfType(BuffType.Blind) && Config.Item("Blind").GetValue<bool>())
+        if (Player.HasBuffOfType(BuffType.Blind) && MainMenu.Item("Blind").GetValue<bool>())
             Clean();
     }
 
     private void Clean()
     {
         if (Quicksilver.IsReady())
-            Utility.DelayAction.Add(Config.Item("CSSdelay").GetValue<Slider>().Value, () => Quicksilver.Cast());
+            Utility.DelayAction.Add(MainMenu.Item("CSSdelay").GetValue<Slider>().Value, () => Quicksilver.Cast());
         else if (Mercurial.IsReady())
-            Utility.DelayAction.Add(Config.Item("CSSdelay").GetValue<Slider>().Value, () => Mercurial.Cast());
+            Utility.DelayAction.Add(MainMenu.Item("CSSdelay").GetValue<Slider>().Value, () => Mercurial.Cast());
         else if (Dervish.IsReady())
-            Utility.DelayAction.Add(Config.Item("CSSdelay").GetValue<Slider>().Value, () => Dervish.Cast());
+            Utility.DelayAction.Add(MainMenu.Item("CSSdelay").GetValue<Slider>().Value, () => Dervish.Cast());
     }
 
     private void Defensive()
     {
-        if (Randuin.IsReady() && Config.Item("Randuin").GetValue<bool>() && Player.CountEnemiesInRange(Randuin.Range) > 0)
+        if (Randuin.IsReady() && MainMenu.Item("Randuin").GetValue<bool>() && Player.CountEnemiesInRange(Randuin.Range) > 0)
         {
             Randuin.Cast();
         }
@@ -372,28 +374,28 @@ class ItemsActivator : Program
 
     private void Offensive()
     {
-        if (Botrk.IsReady() && Config.Item("Botrk").GetValue<bool>())
+        if (Botrk.IsReady() && MainMenu.Item("Botrk").GetValue<bool>())
         {
             var t = TargetSelector.GetTarget(Botrk.Range, TargetSelector.DamageType.Physical);
             if (t.IsValidTarget())
             {
-                if (Config.Item("BotrkKS").GetValue<bool>() && Player.CalcDamage(t, Damage.DamageType.Physical, t.MaxHealth * 0.1) > t.Health - OktwCommon.GetIncomingDamage(t))
+                if (MainMenu.Item("BotrkKS").GetValue<bool>() && Player.CalcDamage(t, Damage.DamageType.Physical, t.MaxHealth * 0.1) > t.Health - OktwCommon.GetIncomingDamage(t))
                     Botrk.Cast(t);
-                if (Config.Item("BotrkLS").GetValue<bool>() && Player.Health < Player.MaxHealth * 0.5 - OktwCommon.GetIncomingDamage(Player))
+                if (MainMenu.Item("BotrkLS").GetValue<bool>() && Player.Health < Player.MaxHealth * 0.5 - OktwCommon.GetIncomingDamage(Player))
                     Botrk.Cast(t);
-                if (Config.Item("BotrkCombo").GetValue<bool>() && Program.Combo)
+                if (MainMenu.Item("BotrkCombo").GetValue<bool>() && Program.Combo)
                     Botrk.Cast(t);
             }
         }
 
-        if (GLP800.IsReady() && Config.Item("GLP800").GetValue<bool>())
+        if (GLP800.IsReady() && MainMenu.Item("GLP800").GetValue<bool>())
         {
             var t = TargetSelector.GetTarget(GLP800.Range, TargetSelector.DamageType.Magical);
             if (t.IsValidTarget())
             {
-                if (Config.Item("GLP800KS").GetValue<bool>() && Player.CalcDamage(t, Damage.DamageType.Magical, 200 + Player.FlatMagicDamageMod * 0.35) > t.Health - OktwCommon.GetIncomingDamage(t))
+                if (MainMenu.Item("GLP800KS").GetValue<bool>() && Player.CalcDamage(t, Damage.DamageType.Magical, 200 + Player.FlatMagicDamageMod * 0.35) > t.Health - OktwCommon.GetIncomingDamage(t))
                     GLP800.Cast(Prediction.GetPrediction(t, 0.5f).CastPosition);
-                if (Config.Item("GLP800Combo").GetValue<bool>() && Program.Combo)
+                if (MainMenu.Item("GLP800Combo").GetValue<bool>() && Program.Combo)
                 {
                     Program.debug("PRO");
                     GLP800.Cast(Prediction.GetPrediction(t, 0.5f).CastPosition);
@@ -401,14 +403,14 @@ class ItemsActivator : Program
             }
         }
 
-        if (Protobelt.IsReady() && Config.Item("Protobelt").GetValue<bool>())
+        if (Protobelt.IsReady() && MainMenu.Item("Protobelt").GetValue<bool>())
         {
             var t = TargetSelector.GetTarget(Protobelt.Range, TargetSelector.DamageType.Magical);
             if (t.IsValidTarget())
             {
-                if (Config.Item("ProtobeltKS").GetValue<bool>() && Player.CalcDamage(t, Damage.DamageType.Magical, 150 + Player.FlatMagicDamageMod * 0.35) > t.Health - OktwCommon.GetIncomingDamage(t))
+                if (MainMenu.Item("ProtobeltKS").GetValue<bool>() && Player.CalcDamage(t, Damage.DamageType.Magical, 150 + Player.FlatMagicDamageMod * 0.35) > t.Health - OktwCommon.GetIncomingDamage(t))
                     Protobelt.Cast(Prediction.GetPrediction(t, 0.5f).CastPosition);
-                if (Config.Item("ProtobeltCombo").GetValue<bool>() && Program.Combo)
+                if (MainMenu.Item("ProtobeltCombo").GetValue<bool>() && Program.Combo)
                 {
                     Program.debug("PRO");
                     Protobelt.Cast(Prediction.GetPrediction(t, 0.5f).CastPosition);
@@ -416,49 +418,49 @@ class ItemsActivator : Program
             }
         }
 
-        if (Hextech.IsReady() && Config.Item("Hextech").GetValue<bool>())
+        if (Hextech.IsReady() && MainMenu.Item("Hextech").GetValue<bool>())
         {
             var t = TargetSelector.GetTarget(Hextech.Range, TargetSelector.DamageType.Magical);
             if (t.IsValidTarget())
             {
-                if (Config.Item("HextechKS").GetValue<bool>() && Player.CalcDamage(t, Damage.DamageType.Magical, 150 + Player.FlatMagicDamageMod * 0.4) > t.Health - OktwCommon.GetIncomingDamage(t))
+                if (MainMenu.Item("HextechKS").GetValue<bool>() && Player.CalcDamage(t, Damage.DamageType.Magical, 150 + Player.FlatMagicDamageMod * 0.4) > t.Health - OktwCommon.GetIncomingDamage(t))
                     Hextech.Cast(t);
-                if (Config.Item("HextechCombo").GetValue<bool>() && Program.Combo)
+                if (MainMenu.Item("HextechCombo").GetValue<bool>() && Program.Combo)
                     Hextech.Cast(t);
             }
         }
 
-        if (Program.Combo && FrostQueen.IsReady() && Config.Item("FrostQueen").GetValue<bool>() && Player.CountEnemiesInRange(800) > 0)
+        if (Program.Combo && FrostQueen.IsReady() && MainMenu.Item("FrostQueen").GetValue<bool>() && Player.CountEnemiesInRange(800) > 0)
         {
             FrostQueen.Cast();
         }
 
-        if (Cutlass.IsReady() && Config.Item("Cutlass").GetValue<bool>())
+        if (Cutlass.IsReady() && MainMenu.Item("Cutlass").GetValue<bool>())
         {
             var t = TargetSelector.GetTarget(Cutlass.Range, TargetSelector.DamageType.Magical);
             if (t.IsValidTarget())
             {
-                if (Config.Item("CutlassKS").GetValue<bool>() && Player.CalcDamage(t, Damage.DamageType.Magical, 100) > t.Health - OktwCommon.GetIncomingDamage(t))
+                if (MainMenu.Item("CutlassKS").GetValue<bool>() && Player.CalcDamage(t, Damage.DamageType.Magical, 100) > t.Health - OktwCommon.GetIncomingDamage(t))
                     Cutlass.Cast(t);
-                if (Config.Item("CutlassCombo").GetValue<bool>() && Program.Combo)
+                if (MainMenu.Item("CutlassCombo").GetValue<bool>() && Program.Combo)
                     Cutlass.Cast(t);
             }
         }
 
-        if (Youmuus.IsReady() && Config.Item("Youmuus").GetValue<bool>() && Program.Combo)
+        if (Youmuus.IsReady() && MainMenu.Item("Youmuus").GetValue<bool>() && Program.Combo)
         {
             var t = Orbwalker.GetTarget();
 
             if (t.IsValidTarget() && t is Obj_AI_Hero)
             {
-                if (Config.Item("YoumuusKS").GetValue<bool>() && t.Health < Player.MaxHealth)
+                if (MainMenu.Item("YoumuusKS").GetValue<bool>() && t.Health < Player.MaxHealth)
                     Youmuus.Cast();
-                if (Config.Item("YoumuusCombo").GetValue<bool>())
+                if (MainMenu.Item("YoumuusCombo").GetValue<bool>())
                     Youmuus.Cast();
             }
         }
 
-        if (Config.Item("Hydra").GetValue<bool>())
+        if (MainMenu.Item("Hydra").GetValue<bool>())
         {
             if (Hydra.IsReady() && Player.CountEnemiesInRange(Hydra.Range) > 0)
                 Hydra.Cast();

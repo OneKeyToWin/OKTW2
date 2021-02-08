@@ -15,28 +15,28 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             E = new Spell(SpellSlot.E, 325);
             R = new Spell(SpellSlot.R, 400);
 
-            Config.SubMenu(Player.ChampionName).SubMenu("Draw")
+            HeroMenu.SubMenu("Draw")
                 .AddItem(new MenuItem("qRange", "Q range", true).SetValue(false));
-            Config.SubMenu(Player.ChampionName).SubMenu("Draw")
+            HeroMenu.SubMenu("Draw")
                 .AddItem(new MenuItem("eRange", "E range", true).SetValue(false));
-            Config.SubMenu(Player.ChampionName).SubMenu("Draw")
+            HeroMenu.SubMenu("Draw")
                 .AddItem(new MenuItem("rRange", "R range", true).SetValue(false));
-            Config.SubMenu(Player.ChampionName).SubMenu("Draw")
+            HeroMenu.SubMenu("Draw")
                 .AddItem(new MenuItem("onlyRdy", "Draw when skill rdy", true).SetValue(true));
 
             foreach (var enemy in HeroManager.Enemies)
-                Config.SubMenu(Player.ChampionName).SubMenu("E Config").SubMenu("Use E on")
+                HeroMenu.SubMenu("E Config").SubMenu("Use E on")
                     .AddItem(new MenuItem("Eon" + enemy.ChampionName, enemy.ChampionName, true).SetValue(true));
 
-            Config.SubMenu(Player.ChampionName).SubMenu("R option")
+            HeroMenu.SubMenu("R option")
                 .AddItem(new MenuItem("autoR", "Auto R", true).SetValue(true));
-            Config.SubMenu(Player.ChampionName).SubMenu("R option").AddItem(
+            HeroMenu.SubMenu("R option").AddItem(
                 new MenuItem("useR", "Semi-manual cast R key", true).SetValue(new KeyBind("T".ToCharArray()[0],
                     KeyBindType.Press))); //32 == space
 
-            Config.SubMenu(Player.ChampionName).SubMenu("Farm")
+            HeroMenu.SubMenu("Farm")
                 .AddItem(new MenuItem("farmE", "Farm W", true).SetValue(true));
-            Config.SubMenu(Player.ChampionName).SubMenu("Farm")
+            HeroMenu.SubMenu("Farm")
                 .AddItem(new MenuItem("farmQ", "Farm Q", true).SetValue(true));
 
             Game.OnUpdate += Game_OnGameUpdate;
@@ -68,7 +68,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
         private void Game_OnGameUpdate(EventArgs args)
         {
-            if (R.IsReady() && Config.Item("useR", true).GetValue<KeyBind>().Active)
+            if (R.IsReady() && MainMenu.Item("useR", true).GetValue<KeyBind>().Active)
             {
                 var targetR = TargetSelector.GetTarget(R.Range, TargetSelector.DamageType.True);
                 if (targetR.IsValidTarget())
@@ -77,7 +77,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 }
             }
 
-            if (Config.Item("autoR", true).GetValue<bool>())
+            if (MainMenu.Item("autoR", true).GetValue<bool>())
                 LogicR();
 
             if (Program.LagFree(2) && Q.IsReady())
@@ -155,27 +155,27 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
         private void Drawing_OnDraw(EventArgs args)
         {
-            if (Config.Item("qRange", true).GetValue<bool>())
+            if (MainMenu.Item("qRange", true).GetValue<bool>())
             {
-                if (Config.Item("onlyRdy", true).GetValue<bool>() && Q.IsReady())
+                if (MainMenu.Item("onlyRdy", true).GetValue<bool>() && Q.IsReady())
                     if (Q.IsReady())
                         Utility.DrawCircle(ObjectManager.Player.Position, Q.Range, System.Drawing.Color.Cyan, 1, 1);
                     else
                         Utility.DrawCircle(ObjectManager.Player.Position, Q.Range, System.Drawing.Color.Cyan, 1, 1);
             }
 
-            if (Config.Item("eRange", true).GetValue<bool>())
+            if (MainMenu.Item("eRange", true).GetValue<bool>())
             {
-                if (Config.Item("onlyRdy", true).GetValue<bool>() && E.IsReady())
+                if (MainMenu.Item("onlyRdy", true).GetValue<bool>() && E.IsReady())
                     if (E.IsReady())
                         Utility.DrawCircle(ObjectManager.Player.Position, E.Range, System.Drawing.Color.Orange, 1, 1);
                     else
                         Utility.DrawCircle(ObjectManager.Player.Position, E.Range, System.Drawing.Color.Orange, 1, 1);
             }
 
-            if (Config.Item("rRange", true).GetValue<bool>())
+            if (MainMenu.Item("rRange", true).GetValue<bool>())
             {
-                if (Config.Item("onlyRdy", true).GetValue<bool>() && R.IsReady())
+                if (MainMenu.Item("onlyRdy", true).GetValue<bool>() && R.IsReady())
                     if (R.IsReady())
                         Utility.DrawCircle(ObjectManager.Player.Position, R.Range, System.Drawing.Color.Red, 1, 1);
                     else

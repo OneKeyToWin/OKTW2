@@ -117,6 +117,7 @@
     <Compile Include="Champions\Jinx.cs" />
     <Compile Include="Champions\Kalista.cs" />
     <Compile Include="Champions\KogMaw.cs" />
+    <Compile Include="Core\BaseUlt.cs" />
     <Compile Include="Core\AutoLvlUp.cs" />
     <Compile Include="Base.cs" />
     <Compile Include="Core\ImageLoader.cs" />
@@ -125,7 +126,7 @@
     <Compile Include="Core\OKTWdraws.cs" />
     <Compile Include="Core\OKTWlab.cs" />
     <Compile Include="Core\OKTWward.cs" />
-    <Compile Include="Core\OKTWtracker.cs" />
+    <Compile Include="Trackers\TrackerCore.cs" />
     <Compile Include="Champions\MissFortune.cs" />
     <Compile Include="Champions\Orianna.cs" />
     <Compile Include="Champions\Lucian.cs" />

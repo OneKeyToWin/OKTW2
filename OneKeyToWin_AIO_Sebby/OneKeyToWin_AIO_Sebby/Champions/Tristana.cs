@@ -18,39 +18,39 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
             W.SetSkillshot(0.35f, 250f, 1400f, false, SkillshotType.SkillshotCircle);
 
-            Config.SubMenu(Player.ChampionName).SubMenu("Draw").AddItem(new MenuItem("onlyRdy", "Draw only ready spells", true).SetValue(true));
-            Config.SubMenu(Player.ChampionName).SubMenu("Draw").AddItem(new MenuItem("wRange", "W range", true).SetValue(false));
-            Config.SubMenu(Player.ChampionName).SubMenu("Draw").AddItem(new MenuItem("eRange", "E range", true).SetValue(false));
-            Config.SubMenu(Player.ChampionName).SubMenu("Draw").AddItem(new MenuItem("rRange", "R range", true).SetValue(false));
-            Config.SubMenu(Player.ChampionName).SubMenu("Draw").AddItem(new MenuItem("eInfo", "E info", true).SetValue(true));
+            HeroMenu.SubMenu("Draw").AddItem(new MenuItem("onlyRdy", "Draw only ready spells", true).SetValue(true));
+            HeroMenu.SubMenu("Draw").AddItem(new MenuItem("wRange", "W range", true).SetValue(false));
+            HeroMenu.SubMenu("Draw").AddItem(new MenuItem("eRange", "E range", true).SetValue(false));
+            HeroMenu.SubMenu("Draw").AddItem(new MenuItem("rRange", "R range", true).SetValue(false));
+            HeroMenu.SubMenu("Draw").AddItem(new MenuItem("eInfo", "E info", true).SetValue(true));
 
-            Config.SubMenu(Player.ChampionName).SubMenu("Q Config").AddItem(new MenuItem("harassQ", "Harass Q", true).SetValue(true));
+            HeroMenu.SubMenu("Q Config").AddItem(new MenuItem("harassQ", "Harass Q", true).SetValue(true));
 
-            Config.SubMenu(Player.ChampionName).SubMenu("W Config").AddItem(new MenuItem("nktdE", "NoKeyToDash", true).SetValue(true));
-            Config.SubMenu(Player.ChampionName).SubMenu("W Config").AddItem(new MenuItem("Wks", "W KS logic (W+E+R calculation)", true).SetValue(true));
-            Config.SubMenu(Player.ChampionName).SubMenu("W Config").AddItem(new MenuItem("smartW", "SmartCast W key", true).SetValue(new KeyBind("T".ToCharArray()[0], KeyBindType.Press))); //32 == space
+            HeroMenu.SubMenu("W Config").AddItem(new MenuItem("nktdE", "NoKeyToDash", true).SetValue(true));
+            HeroMenu.SubMenu("W Config").AddItem(new MenuItem("Wks", "W KS logic (W+E+R calculation)", true).SetValue(true));
+            HeroMenu.SubMenu("W Config").AddItem(new MenuItem("smartW", "SmartCast W key", true).SetValue(new KeyBind("T".ToCharArray()[0], KeyBindType.Press))); //32 == space
 
-            Config.SubMenu(Player.ChampionName).SubMenu("E Config").AddItem(new MenuItem("harassE", "Harass E", true).SetValue(true));
-            Config.SubMenu(Player.ChampionName).SubMenu("E Config").AddItem(new MenuItem("Eturet", "E on turrent laneclear", true).SetValue(true));
-            Config.SubMenu(Player.ChampionName).SubMenu("E Config").AddItem(new MenuItem("focusE", "Focus target with E", true).SetValue(true));
-
-            foreach (var enemy in HeroManager.Enemies)
-                Config.SubMenu(Player.ChampionName).SubMenu("E Config").SubMenu("Use E on").AddItem(new MenuItem("useEon" + enemy.ChampionName, enemy.ChampionName).SetValue(true));
-
-            Config.SubMenu(Player.ChampionName).SubMenu("R Config").AddItem(new MenuItem("autoR", "Auto R KS (E+R calculation)", true).SetValue(true));
-            Config.SubMenu(Player.ChampionName).SubMenu("R Config").AddItem(new MenuItem("turrentR", "Try R under turrent", true).SetValue(true));
-            Config.SubMenu(Player.ChampionName).SubMenu("R Config").AddItem(new MenuItem("allyR", "Try R under ally", true).SetValue(true));
-            Config.SubMenu(Player.ChampionName).SubMenu("R Config").AddItem(new MenuItem("OnInterruptableSpell", "OnInterruptableSpell", true).SetValue(true));
-            Config.SubMenu(Player.ChampionName).SubMenu("R Config").AddItem(new MenuItem("useR", "OneKeyToCast R closest person", true).SetValue(new KeyBind("T".ToCharArray()[0], KeyBindType.Press))); //32 == space
+            HeroMenu.SubMenu("E Config").AddItem(new MenuItem("harassE", "Harass E", true).SetValue(true));
+            HeroMenu.SubMenu("E Config").AddItem(new MenuItem("Eturet", "E on turrent laneclear", true).SetValue(true));
+            HeroMenu.SubMenu("E Config").AddItem(new MenuItem("focusE", "Focus target with E", true).SetValue(true));
 
             foreach (var enemy in HeroManager.Enemies)
-                Config.SubMenu(Player.ChampionName).SubMenu("R Config").SubMenu("GapCloser & anti-meele").AddItem(new MenuItem("GapCloser" + enemy.ChampionName, enemy.ChampionName).SetValue(true));
+                HeroMenu.SubMenu("E Config").SubMenu("Use E on").AddItem(new MenuItem("useEon" + enemy.ChampionName, enemy.ChampionName).SetValue(true));
 
-            Config.SubMenu(Player.ChampionName).SubMenu("R Config").SubMenu("GapCloser & anti-meele").AddItem(new MenuItem("RgapHP", " use gapcloser only under % hp", true).SetValue(new Slider(40, 100, 0)));
+            HeroMenu.SubMenu("R Config").AddItem(new MenuItem("autoR", "Auto R KS (E+R calculation)", true).SetValue(true));
+            HeroMenu.SubMenu("R Config").AddItem(new MenuItem("turrentR", "Try R under turrent", true).SetValue(true));
+            HeroMenu.SubMenu("R Config").AddItem(new MenuItem("allyR", "Try R under ally", true).SetValue(true));
+            HeroMenu.SubMenu("R Config").AddItem(new MenuItem("OnInterruptableSpell", "OnInterruptableSpell", true).SetValue(true));
+            HeroMenu.SubMenu("R Config").AddItem(new MenuItem("useR", "OneKeyToCast R closest person", true).SetValue(new KeyBind("T".ToCharArray()[0], KeyBindType.Press))); //32 == space
 
-            Config.SubMenu(Player.ChampionName).SubMenu("Farm").AddItem(new MenuItem("farmQ", "Lane clear Q", true).SetValue(true));
+            foreach (var enemy in HeroManager.Enemies)
+                HeroMenu.SubMenu("R Config").SubMenu("GapCloser & anti-meele").AddItem(new MenuItem("GapCloser" + enemy.ChampionName, enemy.ChampionName).SetValue(true));
 
-            Config.SubMenu(Player.ChampionName).SubMenu("Farm").AddItem(new MenuItem("jungle", "Jungle Farm", true).SetValue(true));
+            HeroMenu.SubMenu("R Config").SubMenu("GapCloser & anti-meele").AddItem(new MenuItem("RgapHP", " use gapcloser only under % hp", true).SetValue(new Slider(40, 100, 0)));
+
+            HeroMenu.SubMenu("Farm").AddItem(new MenuItem("farmQ", "Lane clear Q", true).SetValue(true));
+
+            HeroMenu.SubMenu("Farm").AddItem(new MenuItem("jungle", "Jungle Farm", true).SetValue(true));
             Game.OnUpdate += Game_OnUpdate;
             Drawing.OnDraw += Drawing_OnDraw;
             Orbwalking.BeforeAttack += BeforeAttack;
@@ -68,11 +68,11 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 {
                     if (Program.Combo)
                         Q.Cast();
-                    else if (Program.Harass && Config.Item("harassQ", true).GetValue<bool>() && Config.Item("Harass" + t.ChampionName).GetValue<bool>())
+                    else if (Program.Harass && MainMenu.Item("harassQ", true).GetValue<bool>() && MainMenu.Item("Harass" + t.ChampionName).GetValue<bool>())
                         Q.Cast();
                 }
             }
-            else if (target is Obj_AI_Minion && FarmSpells && Config.Item("farmQ", true).GetValue<bool>() && OktwCommon.CountEnemyMinions(Player, 700) > 2)
+            else if (target is Obj_AI_Minion && FarmSpells && MainMenu.Item("farmQ", true).GetValue<bool>() && OktwCommon.CountEnemyMinions(Player, 700) > 2)
                 Q.Cast();
         }
 
@@ -99,13 +99,13 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                         if (!Player.HasBuff("itemstatikshankcharge"))
                             args.Process = false;
                     }
-                    else if (Program.Combo && Player.Mana > RMANA + EMANA && Config.Item("useEon" + t.ChampionName).GetValue<bool>())
+                    else if (Program.Combo && Player.Mana > RMANA + EMANA && MainMenu.Item("useEon" + t.ChampionName).GetValue<bool>())
                     {
                         E.Cast(t);
                         if (!Player.HasBuff("itemstatikshankcharge"))
                             args.Process = false;
                     }
-                    else if (Program.Harass && Player.Mana > RMANA + EMANA + WMANA + RMANA && Config.Item("harassE", true).GetValue<bool>() && Config.Item("Harass" + t.ChampionName).GetValue<bool>())
+                    else if (Program.Harass && Player.Mana > RMANA + EMANA + WMANA + RMANA && MainMenu.Item("harassE", true).GetValue<bool>() && MainMenu.Item("Harass" + t.ChampionName).GetValue<bool>())
                     {
                         E.Cast(t);
                         if (!Player.HasBuff("itemstatikshankcharge"))
@@ -124,7 +124,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
         private void Game_OnUpdate(EventArgs args)
         {
 
-            if (Config.Item("focusE", true).GetValue<bool>())
+            if (MainMenu.Item("focusE", true).GetValue<bool>())
             {
                 var eTarget = HeroManager.Enemies.FirstOrDefault(target => target.IsValidTarget() && Orbwalking.InAutoAttackRange(target) && target.HasBuff("tristanaechargesound"));
                 if(eTarget != null)
@@ -133,7 +133,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 }
             }
 
-            if (W.IsReady() && Config.Item("smartW", true).GetValue<KeyBind>().Active)
+            if (W.IsReady() && MainMenu.Item("smartW", true).GetValue<KeyBind>().Active)
             {
                 W.Cast(Game.CursorPos);
             }
@@ -157,7 +157,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
         private void LogicW()
         {
-            if (Config.Item("Wks", true).GetValue<bool>() && Player.Mana > RMANA + WMANA)
+            if (MainMenu.Item("Wks", true).GetValue<bool>() && Player.Mana > RMANA + WMANA)
             {
                 foreach (var enemy in HeroManager.Enemies.Where(enemy => enemy.IsValidTarget(W.Range) && OktwCommon.ValidUlt(enemy) && enemy.CountEnemiesInRange(800) < 2 && enemy.CountAlliesInRange(400) == 0  && enemy.Health > enemy.Level * 2))
                 {
@@ -194,7 +194,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 else if (Player.Distance(enemy.Position) < Player.Distance(bestEnemy.Position))
                     bestEnemy = enemy;
 
-                if (OktwCommon.GetKsDamage(enemy,R) + GetEDmg(enemy) > enemy.Health  && GetEDmg(enemy) < enemy.Health && Config.Item("autoR", true).GetValue<bool>())
+                if (OktwCommon.GetKsDamage(enemy,R) + GetEDmg(enemy) > enemy.Health  && GetEDmg(enemy) < enemy.Health && MainMenu.Item("autoR", true).GetValue<bool>())
                 {
                     R.Cast(enemy);
                     Program.debug("R ks");
@@ -203,7 +203,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 var prepos = Prediction.GetPrediction(enemy, 0.4f);
                 var finalPosition = prepos.CastPosition.Extend(Player.Position, -pushDistance);
 
-                if (Config.Item("turrentR", true).GetValue<bool>())
+                if (MainMenu.Item("turrentR", true).GetValue<bool>())
                 {
                     if (!finalPosition.UnderTurret(true) && finalPosition.UnderTurret(false) && !Player.UnderTurret(false))
                     {
@@ -212,21 +212,21 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                     }
                 }
 
-                if (Config.Item("allyR", true).GetValue<bool>() && finalPosition.CountAlliesInRange(500) > 1 && enemy.CountAlliesInRange(350) == 0)
+                if (MainMenu.Item("allyR", true).GetValue<bool>() && finalPosition.CountAlliesInRange(500) > 1 && enemy.CountAlliesInRange(350) == 0)
                 {
                     Program.debug("R ally");
 
                     R.Cast(enemy);
                 }
 
-                if (Player.HealthPercent < Config.Item("RgapHP", true).GetValue<Slider>().Value && enemy.IsValidTarget(270) && enemy.IsMelee && Config.Item("GapCloser" + enemy.ChampionName).GetValue<bool>())
+                if (Player.HealthPercent < MainMenu.Item("RgapHP", true).GetValue<Slider>().Value && enemy.IsValidTarget(270) && enemy.IsMelee && MainMenu.Item("GapCloser" + enemy.ChampionName).GetValue<bool>())
                 {
                     R.Cast(enemy);
                     Program.debug("R Meele");
                 }
 
             }
-            if (Config.Item("useR", true).GetValue<KeyBind>().Active && bestEnemy!=null)
+            if (MainMenu.Item("useR", true).GetValue<KeyBind>().Active && bestEnemy!=null)
             {
                 R.Cast(bestEnemy);
             }
@@ -234,7 +234,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
         private void Jungle()
         {
-            if (!Config.Item("jungle", true).GetValue<bool>() || !Program.LaneClear)
+            if (!MainMenu.Item("jungle", true).GetValue<bool>() || !Program.LaneClear)
                 return;
             var mobs = Cache.GetMinions(Player.ServerPosition, E.Range, MinionTeam.Neutral);
             if (mobs.Count > 0)
@@ -249,7 +249,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
         private void Interrupter2_OnInterruptableTarget(Obj_AI_Hero sender, Interrupter2.InterruptableTargetEventArgs args)
         {
-            if (R.IsReady() && Config.Item("OnInterruptableSpell", true).GetValue<bool>())
+            if (R.IsReady() && MainMenu.Item("OnInterruptableSpell", true).GetValue<bool>())
             {
                 if (sender.IsValidTarget(R.Range))
                 {
@@ -260,10 +260,10 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
         private void AntiGapcloser_OnEnemyGapcloser(ActiveGapcloser gapcloser)
         {
-            if (R.IsReady() && Player.HealthPercent < Config.Item("RgapHP", true).GetValue<Slider>().Value)
+            if (R.IsReady() && Player.HealthPercent < MainMenu.Item("RgapHP", true).GetValue<Slider>().Value)
             {
                 var t = gapcloser.Sender;
-                if (t.IsValidTarget(R.Range) && Config.Item("GapCloser" + t.ChampionName).GetValue<bool>())
+                if (t.IsValidTarget(R.Range) && MainMenu.Item("GapCloser" + t.ChampionName).GetValue<bool>())
                 {
                     R.Cast(t);
                 }
@@ -282,7 +282,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
         private void SetMana()
         {
-            if ((Config.Item("manaDisable", true).GetValue<bool>() && Program.Combo) || Player.HealthPercent < 20)
+            if ((MainMenu.Item("manaDisable", true).GetValue<bool>() && Program.Combo) || Player.HealthPercent < 20)
             {
                 QMANA = 0;
                 WMANA = 0;
@@ -316,7 +316,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
         private void Drawing_OnDraw(EventArgs args)
         {
 
-            if (Config.Item("eInfo", true).GetValue<bool>())
+            if (MainMenu.Item("eInfo", true).GetValue<bool>())
             {
                 foreach (var enemy in HeroManager.Enemies.Where(enemy => enemy.IsValidTarget(2000)))
                 {
@@ -327,9 +327,9 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 }
             }
 
-            if (Config.Item("wRange", true).GetValue<bool>())
+            if (MainMenu.Item("wRange", true).GetValue<bool>())
             {
-                if (Config.Item("onlyRdy", true).GetValue<bool>())
+                if (MainMenu.Item("onlyRdy", true).GetValue<bool>())
                 {
                     if (W.IsReady())
                         Utility.DrawCircle(ObjectManager.Player.Position, W.Range, System.Drawing.Color.Orange, 1, 1);
@@ -337,9 +337,9 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 else
                     Utility.DrawCircle(ObjectManager.Player.Position, W.Range, System.Drawing.Color.Orange, 1, 1);
             }
-            if (Config.Item("eRange", true).GetValue<bool>())
+            if (MainMenu.Item("eRange", true).GetValue<bool>())
             {
-                if (Config.Item("onlyRdy", true).GetValue<bool>())
+                if (MainMenu.Item("onlyRdy", true).GetValue<bool>())
                 {
                     if (E.IsReady())
                         Utility.DrawCircle(ObjectManager.Player.Position, E.Range, System.Drawing.Color.Yellow, 1, 1);
@@ -347,9 +347,9 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 else
                     Utility.DrawCircle(ObjectManager.Player.Position, E.Range, System.Drawing.Color.Yellow, 1, 1);
             }
-            if (Config.Item("rRange", true).GetValue<bool>())
+            if (MainMenu.Item("rRange", true).GetValue<bool>())
             {
-                if (Config.Item("onlyRdy", true).GetValue<bool>())
+                if (MainMenu.Item("onlyRdy", true).GetValue<bool>())
                 {
                     if (R.IsReady())
                         Utility.DrawCircle(ObjectManager.Player.Position, R.Range, System.Drawing.Color.Gray, 1, 1);

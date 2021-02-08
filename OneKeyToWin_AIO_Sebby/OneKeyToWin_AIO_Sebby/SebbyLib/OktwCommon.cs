@@ -4,16 +4,53 @@ using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
+using static LeagueSharp.Common.Packet;
 
 namespace SebbyLib
 {
+  
+
+    public enum TeleportStatus
+    {
+        Recall = 0,
+        Teleport = 1,
+        TwistedFate = 2,
+        Shen = 3,
+        Unknown = 4
+    }
+
+    public class HeroInfo
+    {
+        public Obj_AI_Hero org;
+        public int last_visible_tick = 0;
+        public Vector3 last_visible_position = new Vector3();
+        public Vector3 last_position = new Vector3();
+        public float last_visible_real = 0;
+        public float teleport_start_tick = 0;
+        public float teleport_end_tick = 0;
+        public float teleport_abort_tick = 0;
+        public float teleport_finish_tick = 0;
+        public S2C.Teleport.Type teleport_type = S2C.Teleport.Type.Recall;
+        public float respawn_time = 0;
+        public bool killable_with_baseult = false;
+        public float travel_baseult_time = 0;
+        public float exp = 0;
+        public int invisible_allies = 0;
+        public int visible_allies = 0;
+        public bool is_jungler = false;
+        public int detected_changes_in_row = 0;
+        public bool is_fogofwar = false;
+        public bool old_dead = false;
+        public HeroInfo() { }
+    };
+
     public class OktwCommon
     {
         private static Obj_AI_Hero Player { get { return ObjectManager.Player; } }
 
         private static int LastAATick = Utils.GameTimeTickCount;
         public static bool YasuoInGame = false;
-        public static bool Thunderlord = false;
+        public static Obj_SpawnPoint EnemySpawnPoint;
 
         public static bool
             blockMove = false,
@@ -32,6 +69,7 @@ namespace SebbyLib
                 if (hero.IsEnemy && hero.ChampionName == "Yasuo")
                     YasuoInGame = true;
             }
+            EnemySpawnPoint = ObjectManager.Get<Obj_SpawnPoint>().FirstOrDefault(x => x.IsEnemy);
             Obj_AI_Base.OnProcessSpellCast += Obj_AI_Base_OnProcessSpellCast;
             Obj_AI_Base.OnIssueOrder += Obj_AI_Base_OnIssueOrder;
             Spellbook.OnCastSpell += Spellbook_OnCastSpell;

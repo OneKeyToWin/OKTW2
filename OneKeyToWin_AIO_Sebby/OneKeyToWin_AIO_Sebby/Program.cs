@@ -6,7 +6,6 @@ using LeagueSharp.Common;
 using PROdiction;
 using SharpDX;
 using SebbyLib;
-using Collision = LeagueSharp.Common.Collision;
 
 namespace OneKeyToWin_AIO_Sebby
 {
@@ -23,12 +22,11 @@ namespace OneKeyToWin_AIO_Sebby
                                                     "Graves", "Jayce", "Jhin", "Jinx", "Kalista", "Karthus", "Kayle", "Kindred", "KogMaw", "Lucian", "Lux", "Malzahar", "MissFortune", "Morgana" ,
                                                     "Orianna", "Quinn", "Sivir", "Swain", "Syndra", "Thresh", "Tristana", "TwistedFate", "Twitch", "Urgot", "Varus", "Vayne", "Velkoz", "Xerath" };
 
+        public static Menu MainMenu;
+        public static Menu HeroMenu;
+
         public static Spell Q, W, E, R, Q1, W1, E1, R1;
-
-        private static string OktNews = "Prediction collision fixed, prediction improve";
-
         public static AioMode AioModeSet = AioMode.All;
-        public static Menu Config;
         public static Obj_AI_Hero Player { get { return ObjectManager.Player; } }
         public static Orbwalking.Orbwalker Orbwalker;
         public static Spell DrawSpell;
@@ -37,26 +35,23 @@ namespace OneKeyToWin_AIO_Sebby
         public static PredictionOutput DrawSpellPos;
         public static bool LaneClear = false, None = false, Harass = false, Combo = false, Farm = false;
         private static float dodgeTime = Game.Time;
+
         static void Main(string[] args) { CustomEvents.Game.OnGameLoad += GameOnOnGameLoad; }
 
         private static void GameOnOnGameLoad(EventArgs args)
         {
-
-            Config = new Menu("OneKeyToWin AIO", "OneKeyToWin_AIO" + ObjectManager.Player.ChampionName, true).SetFontStyle(System.Drawing.FontStyle.Bold, Color.DeepSkyBlue);
+            MainMenu = new Menu("OneKeyToWin AIO", "OneKeyToWin_AIO" + ObjectManager.Player.ChampionName, true).SetFontStyle(System.Drawing.FontStyle.Bold, Color.DeepSkyBlue);
 
             #region MENU ABOUT OKTW
-            Config.SubMenu("About OKTW©").AddItem(new MenuItem("debug", "Debug").SetValue(false));
-            Config.SubMenu("About OKTW©").AddItem(new MenuItem("debugOrb", "Debug orbwalker").SetValue(false));
-            Config.SubMenu("About OKTW©").AddItem(new MenuItem("debugChat", "Debug Chat").SetValue(false));
-            Config.SubMenu("About OKTW©").AddItem(new MenuItem("0", "OneKeyToWin© by Sebby"));
-            Config.SubMenu("About OKTW©").AddItem(new MenuItem("1", "visit joduska.me"));
-            Config.SubMenu("About OKTW©").AddItem(new MenuItem("2", "DONATE: kaczor.sebastian@gmail.com"));
-            Config.SubMenu("About OKTW©").AddItem(new MenuItem("print", "OKTW NEWS in chat").SetValue(true));
+            MainMenu.SubMenu("About OKTW©").AddItem(new MenuItem("debug", "Debug").SetValue(false));
+            MainMenu.SubMenu("About OKTW©").AddItem(new MenuItem("debugOrb", "Debug orbwalker").SetValue(false));
+            MainMenu.SubMenu("About OKTW©").AddItem(new MenuItem("debugChat", "Debug Chat").SetValue(false));
+            MainMenu.SubMenu("About OKTW©").AddItem(new MenuItem("print", "OKTW NEWS in chat").SetValue(true));
             #endregion
 
-            Config.AddItem(new MenuItem("AIOmode", "AIO mode", true).SetValue(new StringList(new[] { "Utility and champion", "Only Champion", "Only Utility" }, 0))).ValueChanged += Program_ValueChanged;
+            MainMenu.AddItem(new MenuItem("AIOmode", "AIO mode", true).SetValue(new StringList(new[] { "Utility and champion", "Only Champion", "Only Utility" }, 0))).ValueChanged += Program_ValueChanged;
            
-            var aioModeMenu = Config.Item("AIOmode", true).GetValue<StringList>().SelectedIndex;
+            var aioModeMenu = MainMenu.Item("AIOmode", true).GetValue<StringList>().SelectedIndex;
 
             if (aioModeMenu == 0)
                 AioModeSet = AioMode.All;
@@ -67,8 +62,9 @@ namespace OneKeyToWin_AIO_Sebby
 
             if (AioModeSet != AioMode.UtilityOnly)
             {
-                Config.AddSubMenu(new Menu("Orbwalking", "Orbwalking"));
-                Orbwalker = new Orbwalking.Orbwalker(Config.SubMenu("Orbwalking"));
+                Orbwalker = new Orbwalking.Orbwalker(MainMenu.AddSubMenu(new Menu("Orbwalking", "Orbwalking")));
+                HeroMenu = MainMenu.SubMenu(Player.ChampionName).SetFontStyle(System.Drawing.FontStyle.Bold, Color.OrangeRed);
+
                 #region LOAD CHAMPIONS
                 switch (Player.ChampionName)
                 {
@@ -221,10 +217,10 @@ namespace OneKeyToWin_AIO_Sebby
                 AddPredictionSpellMenuItem("E");
                 AddPredictionSpellMenuItem("R");
                 
-                Config.SubMenu("Prediction MODE").AddItem(new MenuItem("debugPred", "Draw Aiming OKTW© PREDICTION").SetValue(false));
+                MainMenu.SubMenu("Prediction MODE").AddItem(new MenuItem("debugPred", "Draw Aiming OKTW© PREDICTION").SetValue(false));
             }
 
-            if (Config.Item("debug").GetValue<bool>())
+            if (MainMenu.Item("debug").GetValue<bool>())
             {
                 new Core.OKTWlab().LoadOKTW();
             }
@@ -233,38 +229,36 @@ namespace OneKeyToWin_AIO_Sebby
             {
                 Summoners summonners = new Summoners();
                 ItemsActivator itemsActivator = new ItemsActivator();
-
+                TrackerCore trackerCore = new TrackerCore();
+                BaseUlt baseUlt = new BaseUlt();
+                AutoLvlUp autoLvlUp = new AutoLvlUp();
                 new Core.OKTWward().LoadOKTW();
-                new Core.AutoLvlUp().LoadOKTW();
-                new Core.OKTWdraws().LoadOKTW();
+                //new Core.OKTWdraws().LoadOKTW();
             }
 
-            new Core.OKTWtracker().LoadOKTW();
-
-            Config.AddItem(new MenuItem("aiomodes", "!!! PRESS F5 TO RELOAD MODE !!!"));
-            Config.Item("aiomodes").Show(false);
-            Config.AddToMainMenu();
+            MainMenu.AddItem(new MenuItem("aiomodes", "!!! PRESS F5 TO RELOAD MODE !!!"));
+            MainMenu.Item("aiomodes").Show(false);
+            MainMenu.AddToMainMenu();
             Game.OnUpdate += OnUpdate;
             Drawing.OnDraw += OnDraw;
 
-            if (Config.Item("print").GetValue<bool>())
+            if (MainMenu.Item("print").GetValue<bool>())
             {
                 Game.PrintChat("<font size='30'>OneKeyToWin</font> <font color='#b756c5'>by Sebby</font>");
-                Game.PrintChat("<font color='#b756c5'>OKTW NEWS: </font>" + OktNews);
             }
         }
 
         private static void AddPredictionSpellMenuItem(string spellSlot)
         {
-            var predType = Config.SubMenu("Prediction MODE")
+            var predType = MainMenu.SubMenu("Prediction MODE")
                 .AddItem(new MenuItem($"{spellSlot}pred", $"{spellSlot} Prediction MODE", true).SetValue(
                     new StringList(new[] {"Common prediction", "PROdiction"}, 1)));
                 
             var isAiPrediction = predType.GetValue<StringList>().SelectedIndex == 1;
-            var regularPredictionMenu = Config.SubMenu("Prediction MODE")
+            var regularPredictionMenu = MainMenu.SubMenu("Prediction MODE")
                 .AddItem(new MenuItem($"{spellSlot}HitChance", $"{spellSlot} Hit Chance", true)
                     .SetValue(new StringList(new[] {"Very High", "High", "Medium"}, 0))).Show(!isAiPrediction);
-            var aiPredictionMenu = Config.SubMenu("Prediction MODE")
+            var aiPredictionMenu = MainMenu.SubMenu("Prediction MODE")
                 .AddItem(new MenuItem($"{spellSlot}HitChanceAI", $"{spellSlot} Hit Chance AI", true).SetValue(new Slider(50, 0, 100)))
                 .Show(isAiPrediction);
 
@@ -285,7 +279,7 @@ namespace OneKeyToWin_AIO_Sebby
         
         private static void Program_ValueChanged(object sender, OnValueChangeEventArgs e)
         {
-            Config.Item("aiomodes").Show(true);
+            MainMenu.Item("aiomodes").Show(true);
         }
 
         private static void OnUpdate(EventArgs args)
@@ -301,7 +295,7 @@ namespace OneKeyToWin_AIO_Sebby
             {
                 Combo = Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo;
 
-                if(Config.Item("harassMixed") != null && Config.Item("harassMixed").GetValue<bool>())
+                if(MainMenu.Item("harassMixed") != null && MainMenu.Item("harassMixed").GetValue<bool>())
                     Harass = Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed;
                 else
                     Harass = Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear || Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed || Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Freeze;
@@ -331,42 +325,42 @@ namespace OneKeyToWin_AIO_Sebby
 
             if (QWER.Slot == SpellSlot.Q)
             {
-                predIndex = Config.Item("Qpred", true).GetValue<StringList>().SelectedIndex;
-                if (Config.Item("QHitChance", true).GetValue<StringList>().SelectedIndex == 0)
+                predIndex = MainMenu.Item("Qpred", true).GetValue<StringList>().SelectedIndex;
+                if (MainMenu.Item("QHitChance", true).GetValue<StringList>().SelectedIndex == 0)
                     hitchance = HitChance.VeryHigh;
-                else if (Config.Item("QHitChance", true).GetValue<StringList>().SelectedIndex == 1)
+                else if (MainMenu.Item("QHitChance", true).GetValue<StringList>().SelectedIndex == 1)
                     hitchance = HitChance.High;
-                else if (Config.Item("QHitChance", true).GetValue<StringList>().SelectedIndex == 2)
+                else if (MainMenu.Item("QHitChance", true).GetValue<StringList>().SelectedIndex == 2)
                     hitchance = HitChance.Medium;
             }
             else if (QWER.Slot == SpellSlot.W)
             {
-                predIndex = Config.Item("Wpred", true).GetValue<StringList>().SelectedIndex;
-                if (Config.Item("WHitChance", true).GetValue<StringList>().SelectedIndex == 0)
+                predIndex = MainMenu.Item("Wpred", true).GetValue<StringList>().SelectedIndex;
+                if (MainMenu.Item("WHitChance", true).GetValue<StringList>().SelectedIndex == 0)
                     hitchance = HitChance.VeryHigh;
-                else if (Config.Item("WHitChance", true).GetValue<StringList>().SelectedIndex == 1)
+                else if (MainMenu.Item("WHitChance", true).GetValue<StringList>().SelectedIndex == 1)
                     hitchance = HitChance.High;
-                else if (Config.Item("WHitChance", true).GetValue<StringList>().SelectedIndex == 2)
+                else if (MainMenu.Item("WHitChance", true).GetValue<StringList>().SelectedIndex == 2)
                     hitchance = HitChance.Medium;
             }
             else if (QWER.Slot == SpellSlot.E)
             {
-                predIndex = Config.Item("Epred", true).GetValue<StringList>().SelectedIndex;
-                if (Config.Item("EHitChance", true).GetValue<StringList>().SelectedIndex == 0)
+                predIndex = MainMenu.Item("Epred", true).GetValue<StringList>().SelectedIndex;
+                if (MainMenu.Item("EHitChance", true).GetValue<StringList>().SelectedIndex == 0)
                     hitchance = HitChance.VeryHigh;
-                else if (Config.Item("EHitChance", true).GetValue<StringList>().SelectedIndex == 1)
+                else if (MainMenu.Item("EHitChance", true).GetValue<StringList>().SelectedIndex == 1)
                     hitchance = HitChance.High;
-                else if (Config.Item("EHitChance", true).GetValue<StringList>().SelectedIndex == 2)
+                else if (MainMenu.Item("EHitChance", true).GetValue<StringList>().SelectedIndex == 2)
                     hitchance = HitChance.Medium;
             }
             else if (QWER.Slot == SpellSlot.R)
             {
-                predIndex = Config.Item("Rpred", true).GetValue<StringList>().SelectedIndex;
-                if (Config.Item("RHitChance", true).GetValue<StringList>().SelectedIndex == 0)
+                predIndex = MainMenu.Item("Rpred", true).GetValue<StringList>().SelectedIndex;
+                if (MainMenu.Item("RHitChance", true).GetValue<StringList>().SelectedIndex == 0)
                     hitchance = HitChance.VeryHigh;
-                else if (Config.Item("RHitChance", true).GetValue<StringList>().SelectedIndex == 1)
+                else if (MainMenu.Item("RHitChance", true).GetValue<StringList>().SelectedIndex == 1)
                     hitchance = HitChance.High;
-                else if (Config.Item("RHitChance", true).GetValue<StringList>().SelectedIndex == 2)
+                else if (MainMenu.Item("RHitChance", true).GetValue<StringList>().SelectedIndex == 2)
                     hitchance = HitChance.Medium;
             }
 
@@ -459,7 +453,7 @@ namespace OneKeyToWin_AIO_Sebby
                     {
                         case SpellSlot.Q:
                         {
-                            var targetPrediction = Config.Item("QHitChanceAI", true).GetValue<Slider>().Value / 100.0f;
+                            var targetPrediction = MainMenu.Item("QHitChanceAI", true).GetValue<Slider>().Value / 100.0f;
                             if (prediction.HitchanceFloat > targetPrediction)
                             {
                                 QWER.Cast(prediction.CastPosition);
@@ -471,7 +465,7 @@ namespace OneKeyToWin_AIO_Sebby
 
                         case SpellSlot.W:
                         {
-                            var targetPrediction = Config.Item("WHitChanceAI", true).GetValue<Slider>().Value / 100.0f;
+                            var targetPrediction = MainMenu.Item("WHitChanceAI", true).GetValue<Slider>().Value / 100.0f;
                             if (prediction.HitchanceFloat > targetPrediction)
                             {
                                 QWER.Cast(prediction.CastPosition);
@@ -483,7 +477,7 @@ namespace OneKeyToWin_AIO_Sebby
 
                         case SpellSlot.E:
                         {
-                            var targetPrediction = Config.Item("EHitChanceAI", true).GetValue<Slider>().Value / 100.0f;
+                            var targetPrediction = MainMenu.Item("EHitChanceAI", true).GetValue<Slider>().Value / 100.0f;
                             if (prediction.HitchanceFloat > targetPrediction)
                             {
                                 QWER.Cast(prediction.CastPosition);
@@ -495,7 +489,7 @@ namespace OneKeyToWin_AIO_Sebby
 
                         case SpellSlot.R:
                         {
-                            var targetPrediction = Config.Item("RHitChanceAI", true).GetValue<Slider>().Value / 100.0f;
+                            var targetPrediction = MainMenu.Item("RHitChanceAI", true).GetValue<Slider>().Value / 100.0f;
                             if (prediction.HitchanceFloat > targetPrediction)
                             {
                                 QWER.Cast(prediction.CastPosition);
@@ -513,8 +507,7 @@ namespace OneKeyToWin_AIO_Sebby
 
                 }
 
-                if (poutput2.Hitchance == HitChance.Immobile ||
-                    poutput2.Hitchance == HitChance.Dashing)
+                if (poutput2.Hitchance == HitChance.Immobile || poutput2.Hitchance == HitChance.Dashing)
                 {
                     QWER.Cast(poutput2.CastPosition);
                 }
@@ -529,11 +522,11 @@ namespace OneKeyToWin_AIO_Sebby
 
         public static void debug(string msg)
         {
-            if (Config.Item("debug").GetValue<bool>())
+            if (MainMenu.Item("debug").GetValue<bool>())
             {
                 Console.WriteLine(msg);
             }
-            if (Config.Item("debugChat").GetValue<bool>())
+            if (MainMenu.Item("debugChat").GetValue<bool>())
             {
                 Game.PrintChat(msg);
             }
@@ -541,8 +534,8 @@ namespace OneKeyToWin_AIO_Sebby
 
         private static void OnDraw(EventArgs args)
         {
-            if (AioModeSet != AioMode.UtilityOnly && (int)Game.Time % 2 == 0 && (Config.Item("Qpred", true).GetValue<StringList>().SelectedIndex == 2 || Config.Item("Wpred", true).GetValue<StringList>().SelectedIndex == 2
-            || Config.Item("Epred", true).GetValue<StringList>().SelectedIndex == 2 || Config.Item("Rpred", true).GetValue<StringList>().SelectedIndex == 2))
+            if (AioModeSet != AioMode.UtilityOnly && (int)Game.Time % 2 == 0 && (MainMenu.Item("Qpred", true).GetValue<StringList>().SelectedIndex == 2 || MainMenu.Item("Wpred", true).GetValue<StringList>().SelectedIndex == 2
+            || MainMenu.Item("Epred", true).GetValue<StringList>().SelectedIndex == 2 || MainMenu.Item("Rpred", true).GetValue<StringList>().SelectedIndex == 2))
             drawText("PRESS F5 TO LOAD SPREDICTION", Player.Position, System.Drawing.Color.Yellow, -300);
         }
     }

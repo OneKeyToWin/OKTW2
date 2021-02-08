@@ -648,7 +648,7 @@ namespace Evade
                     DangerValue = 4,
                     IsDangerous = true,
                     MissileSpellName = "RocketGrabMissile",
-                    
+                    TakeClosestPath = true,
                     CanBeRemoved = true,
                     CollisionObjects =
                         new[]
