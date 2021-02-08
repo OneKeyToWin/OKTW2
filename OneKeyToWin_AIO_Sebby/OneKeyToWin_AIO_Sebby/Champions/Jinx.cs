@@ -74,9 +74,13 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             {
                 var realDistance = GetRealDistance(t) - 40;
                 if (Program.Combo && (realDistance < GetRealPowPowRange(t) || (Player.Mana < RMANA + 20 && Player.GetAutoAttackDamage(t) * 3 < t.Health)))
+                {
                     Q.Cast();
+                }
                 else if (Program.Harass && MainMenu.Item("Qharras", true).GetValue<bool>() && (realDistance > bonusRange() || realDistance < GetRealPowPowRange(t) || Player.Mana < RMANA + EMANA + WMANA + WMANA))
+                {
                     Q.Cast();
+                }
             }
             else if(!Program.Combo || Program.LaneClear)
             {
@@ -151,13 +155,13 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             if (Program.LagFree(0))
                 SetMana();
 
-            if (E.IsReady())
+            if (E.IsReady() && Orbwalking.CanMove(40))
                 LogicE();
 
             if (Program.LagFree(2) && Q.IsReady() && MainMenu.Item("autoQ", true).GetValue<bool>())
                 LogicQ();
 
-            if (Program.LagFree(3) && W.IsReady() && !Player.IsWindingUp && MainMenu.Item("autoW", true).GetValue<bool>())
+            if (Program.LagFree(3) && W.IsReady() && MainMenu.Item("autoW", true).GetValue<bool>() && Orbwalking.CanMove(40))
                 LogicW();
 
             if (Program.LagFree(4) && R.IsReady())
@@ -305,7 +309,6 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             var t = TargetSelector.GetTarget(W.Range, TargetSelector.DamageType.Physical);
             if (t.IsValidTarget())
             {
- 
                 foreach (var enemy in HeroManager.Enemies.Where(enemy => enemy.IsValidTarget(W.Range) && enemy.Distance(Player) > bonusRange()))
                 {
                     var comboDmg = OktwCommon.GetKsDamage(enemy, W);
@@ -393,38 +396,13 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                     {
                         if ( GetRealDistance(target) > bonusRange() + 300 + target.BoundingRadius && target.CountAlliesInRange(500) == 0 && Player.CountEnemiesInRange(400) == 0)
                         {
-                            castR(target);
+                            Program.CastSpell(R, target);
                         }
                         else if (target.CountEnemiesInRange(200) > 2)
                         {
                             R.Cast(target, true, true);
                         }
                     }
-                }
-            }
-        }
-
-        private void castR(Obj_AI_Hero target)
-        {
-            var inx = MainMenu.Item("hitchanceR", true).GetValue<Slider>().Value;
-            if (inx == 0)
-            {
-                R.Cast(R.GetPrediction(target).CastPosition);
-            }
-            else if (inx == 1)
-            {
-                R.Cast(target);
-            }
-            else if (inx == 2)
-            {
-                Program.CastSpell(R, target);
-            }
-            else if (inx == 3)
-            {
-                List<Vector2> waypoints = target.GetWaypoints();
-                if ((Player.Distance(waypoints.Last<Vector2>().To3D()) - Player.Distance(target.Position)) > 400)
-                {
-                    Program.CastSpell(R, target);
                 }
             }
         }
@@ -441,7 +419,6 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
         private float GetRealDistance(Obj_AI_Base target)
         {
-            
             return Player.ServerPosition.Distance(Prediction.GetPrediction(target, 0.05f).CastPosition) + Player.BoundingRadius + target.BoundingRadius;
         }
 
