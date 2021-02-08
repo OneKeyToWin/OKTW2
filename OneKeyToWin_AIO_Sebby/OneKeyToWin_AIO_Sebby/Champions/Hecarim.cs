@@ -207,19 +207,19 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 var predictionCircle = R.GetPrediction(target, true);
                 var predictionLine = R1.GetPrediction(target, true);
 
-                if(predictionLine.AoeTargetsHitCount > 0 && aoeCount > predictionLine.AoeTargetsHitCount && predictionLine.Hitchance >= HitChance.High)
+                if(predictionLine.AoeTargetsHitCount > 0 && aoeCount > predictionLine.AoeTargetsHitCount && predictionLine.Hitchance >= HitChance.Medium)
                 {
                     bestRposition = predictionLine.CastPosition;
                     aoeCount = predictionLine.AoeTargetsHitCount;
                 }
-                if (predictionCircle.AoeTargetsHitCount > 0 && aoeCount >= predictionLine.AoeTargetsHitCount && predictionCircle.Hitchance >= HitChance.High)
+                if (predictionCircle.AoeTargetsHitCount > 0 && aoeCount >= predictionLine.AoeTargetsHitCount && predictionCircle.Hitchance >= HitChance.Medium)
                 {
                     bestRposition = predictionCircle.CastPosition;
                     aoeCount = predictionCircle.AoeTargetsHitCount;
                 }
             }
 
-            if (aoeCount + 1 >= HeroMenu.Item("Raoe", true).GetValue<int>())
+            if (aoeCount > 0 && aoeCount + 1 >= HeroMenu.Item("Raoe", true).GetValue<int>())
             {
                 if(bestRposition.CountAlliesInRange(1000) > 0)
                     R.Cast(bestRposition);
