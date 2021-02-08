@@ -88,121 +88,124 @@ namespace OneKeyToWin_AIO_Sebby.Core
 
         private void AutoWardLogic()
         {
-            //foreach (var need in OKTWtracker.ChampionInfoList.Where(x => x.Hero.IsValid && x.PredictedPos != null && !x.Hero.IsVisible && !x.Hero.IsDead))
-            //{
-            //    //var need = OKTWtracker.ChampionInfoList.Find(x => x.NetworkId == enemy.NetworkId);
+            foreach (var hero in HeroManager.Enemies.Where(x => x.IsValid  && !x.IsVisible && !x.IsDead))
+            {
+                //var need = OKTWtracker.ChampionInfoList.Find(x => x.NetworkId == enemy.NetworkId);
+                var info = TrackerCore.heroes_info[hero.NetworkId];
 
-            //    var PPDistance = need.PredictedPos.Distance(Player.Position);
+                //var PredictedPos != null;
+                //var PPDistance = need.PredictedPos.Distance(Player.Position);
 
-            //    if(PPDistance > 1400)
-            //        continue;
+                //if (PPDistance > 1400)
+                //    continue;
 
-            //    var timer = Game.Time - need.LastVisableTime;
+                //var timer = Game.Time - need.LastVisableTime;
 
-            //    if (timer > 1 && timer < 3 && AioModeSet != AioMode.UtilityOnly)
-            //    {
-            //        if (Program.Combo && PPDistance < 1500 && Player.ChampionName == "Quinn" && W.IsReady() && Config.Item("autoW", true).GetValue<bool>())
-            //        {
-            //            W.Cast();
-            //        }
+                //if (timer > 1 && timer < 3 && AioModeSet != AioMode.UtilityOnly)
+                //{
+                //    if (Program.Combo && PPDistance < 1500 && Player.ChampionName == "Quinn" && W.IsReady() && Config.Item("autoW", true).GetValue<bool>())
+                //    {
+                //        W.Cast();
+                //    }
 
-            //        if (Program.Combo && PPDistance < 900 && Player.ChampionName == "Karhus" && Q.IsReady() && Player.CountEnemiesInRange(900) == 0)
-            //        {
-            //            Q.Cast(need.PredictedPos);
-            //        }
+                //    if (Program.Combo && PPDistance < 900 && Player.ChampionName == "Karhus" && Q.IsReady() && Player.CountEnemiesInRange(900) == 0)
+                //    {
+                //        Q.Cast(need.PredictedPos);
+                //    }
 
-            //        if (Program.Combo && PPDistance < 1400 && Player.ChampionName == "Ashe" && E.IsReady() && Player.CountEnemiesInRange(800) == 0 && Config.Item("autoE", true).GetValue<bool>())
-            //        {
-            //            E.Cast(Player.Position.Extend(need.PredictedPos, 5000));
-            //        }
+                //    if (Program.Combo && PPDistance < 1400 && Player.ChampionName == "Ashe" && E.IsReady() && Player.CountEnemiesInRange(800) == 0 && Config.Item("autoE", true).GetValue<bool>())
+                //    {
+                //        E.Cast(Player.Position.Extend(need.PredictedPos, 5000));
+                //    }
 
-            //        if (PPDistance < 800 && Player.ChampionName == "MissFortune" && E.IsReady() && Program.Combo && Player.Mana > 200)
-            //        {
-            //            E.Cast(Player.Position.Extend(need.PredictedPos, 800));
-            //        }
+                //    if (PPDistance < 800 && Player.ChampionName == "MissFortune" && E.IsReady() && Program.Combo && Player.Mana > 200)
+                //    {
+                //        E.Cast(Player.Position.Extend(need.PredictedPos, 800));
+                //    }
 
-            //        if (Player.ChampionName == "Caitlyn" && !Player.IsWindingUp && PPDistance < 800 && W.IsReady() && Player.Mana > 200f && Config.Item("bushW", true).GetValue<bool>() && Utils.TickCount - W.LastCastAttemptT > 2000)
-            //        {
-            //            W.Cast(need.PredictedPos);
-            //        }
-            //        if (Player.ChampionName == "Teemo" && !Player.IsWindingUp &&  PPDistance < 150 + R.Level * 250 && R.IsReady() && Player.Mana > 200f && Config.Item("bushR", true).GetValue<bool>() && Utils.TickCount - W.LastCastAttemptT > 2000)
-            //        {
-            //            R.Cast(need.PredictedPos);
-            //        }
-            //        if (Player.ChampionName == "Jhin" && !Player.IsWindingUp && PPDistance < 760 && E.IsReady() && Player.Mana > 200f && Config.Item("bushE", true).GetValue<bool>() && Utils.TickCount - E.LastCastAttemptT > 2000)
-            //        {
-            //            E.Cast(need.PredictedPos);
-            //        }
-            //    }
+                //    if (Player.ChampionName == "Caitlyn" && !Player.IsWindingUp && PPDistance < 800 && W.IsReady() && Player.Mana > 200f && Config.Item("bushW", true).GetValue<bool>() && Utils.TickCount - W.LastCastAttemptT > 2000)
+                //    {
+                //        W.Cast(need.PredictedPos);
+                //    }
+                //    if (Player.ChampionName == "Teemo" && !Player.IsWindingUp && PPDistance < 150 + R.Level * 250 && R.IsReady() && Player.Mana > 200f && Config.Item("bushR", true).GetValue<bool>() && Utils.TickCount - W.LastCastAttemptT > 2000)
+                //    {
+                //        R.Cast(need.PredictedPos);
+                //    }
+                //    if (Player.ChampionName == "Jhin" && !Player.IsWindingUp && PPDistance < 760 && E.IsReady() && Player.Mana > 200f && Config.Item("bushE", true).GetValue<bool>() && Utils.TickCount - E.LastCastAttemptT > 2000)
+                //    {
+                //        E.Cast(need.PredictedPos);
+                //    }
+                //}
 
-            //    if (timer < 4)
-            //    {
-            //        if (Config.Item("AutoWardCombo").GetValue<bool>() && Program.AioModeSet != Program.AioMode.ChampionOnly && !Program.Combo)
-            //            return;
+                //if (timer < 4)
+                //{
+                //    if (Config.Item("AutoWardCombo").GetValue<bool>() && Program.AioModeSet != Program.AioMode.ChampionOnly && !Program.Combo)
+                //        return;
 
-            //        if (NavMesh.IsWallOfGrass(need.PredictedPos, 0) ||
-            //            NavMesh.IsWallOfGrass(need.Hero.Position, 0))
-            //        {
-            //            if (PPDistance < 600 && Config.Item("AutoWard").GetValue<bool>())
-            //            {
-            //                if (TrinketN.IsReady())
-            //                {
-            //                    TrinketN.Cast(need.PredictedPos);
-            //                    need.LastVisableTime = Game.Time - 5;
-            //                }
-            //                else if (SightStone.IsReady())
-            //                {
-            //                    SightStone.Cast(need.PredictedPos);
-            //                    need.LastVisableTime = Game.Time - 5;
-            //                }
-            //                else if (WardN.IsReady())
-            //                {
-            //                    WardN.Cast(need.PredictedPos);
-            //                    need.LastVisableTime = Game.Time - 5;
-            //                }
-            //                else if (EOTOasis.IsReady())
-            //                {
-            //                    EOTOasis.Cast(need.PredictedPos);
-            //                    need.LastVisableTime = Game.Time - 5;
-            //                }
-            //                else if (EOTEquinox.IsReady())
-            //                {
-            //                    EOTEquinox.Cast(need.PredictedPos);
-            //                    need.LastVisableTime = Game.Time - 5;
-            //                }
-            //                else if (RunesteelSpaulders.IsReady())
-            //                {
-            //                    RunesteelSpaulders.Cast(need.PredictedPos);
-            //                    need.LastVisableTime = Game.Time - 5;
-            //                }
-            //                else if (PauldronsofWhiterock.IsReady())
-            //                {
-            //                    PauldronsofWhiterock.Cast(need.PredictedPos);
-            //                    need.LastVisableTime = Game.Time - 5;
-            //                }
-            //                else if (HarrowingCrescent.IsReady())
-            //                {
-            //                    HarrowingCrescent.Cast(need.PredictedPos);
-            //                    need.LastVisableTime = Game.Time - 5;
-            //                }
-            //                else if (BlackMistScythe.IsReady())
-            //                {
-            //                    BlackMistScythe.Cast(need.PredictedPos);
-            //                    need.LastVisableTime = Game.Time - 5;
-            //                }
-            //            }
+                //    if (NavMesh.IsWallOfGrass(need.PredictedPos, 0) ||
+                //        NavMesh.IsWallOfGrass(need.Hero.Position, 0))
+                //    {
+                //        if (PPDistance < 600 && Config.Item("AutoWard").GetValue<bool>())
+                //        {
+                //            if (TrinketN.IsReady())
+                //            {
+                //                TrinketN.Cast(need.PredictedPos);
+                //                need.LastVisableTime = Game.Time - 5;
+                //            }
+                //            else if (SightStone.IsReady())
+                //            {
+                //                SightStone.Cast(need.PredictedPos);
+                //                need.LastVisableTime = Game.Time - 5;
+                //            }
+                //            else if (WardN.IsReady())
+                //            {
+                //                WardN.Cast(need.PredictedPos);
+                //                need.LastVisableTime = Game.Time - 5;
+                //            }
+                //            else if (EOTOasis.IsReady())
+                //            {
+                //                EOTOasis.Cast(need.PredictedPos);
+                //                need.LastVisableTime = Game.Time - 5;
+                //            }
+                //            else if (EOTEquinox.IsReady())
+                //            {
+                //                EOTEquinox.Cast(need.PredictedPos);
+                //                need.LastVisableTime = Game.Time - 5;
+                //            }
+                //            else if (RunesteelSpaulders.IsReady())
+                //            {
+                //                RunesteelSpaulders.Cast(need.PredictedPos);
+                //                need.LastVisableTime = Game.Time - 5;
+                //            }
+                //            else if (PauldronsofWhiterock.IsReady())
+                //            {
+                //                PauldronsofWhiterock.Cast(need.PredictedPos);
+                //                need.LastVisableTime = Game.Time - 5;
+                //            }
+                //            else if (HarrowingCrescent.IsReady())
+                //            {
+                //                HarrowingCrescent.Cast(need.PredictedPos);
+                //                need.LastVisableTime = Game.Time - 5;
+                //            }
+                //            else if (BlackMistScythe.IsReady())
+                //            {
+                //                BlackMistScythe.Cast(need.PredictedPos);
+                //                need.LastVisableTime = Game.Time - 5;
+                //            }
+                //        }
 
-            //            if (Config.Item("AutoWardBlue").GetValue<bool>())
-            //            {
-            //                if (FarsightOrb.IsReady())
-            //                {
-            //                    FarsightOrb.Cast(need.PredictedPos);
-            //                    need.LastVisableTime = Game.Time - 5;
-            //                }
-            //            }
-            //        }
-            //    }
-            //} 
+                //        if (Config.Item("AutoWardBlue").GetValue<bool>())
+                //        {
+                //            if (FarsightOrb.IsReady())
+                //            {
+                //                FarsightOrb.Cast(need.PredictedPos);
+                //                need.LastVisableTime = Game.Time - 5;
+                //            }
+                //        }
+                //    }
+                //}
+
+            }
         }
 
         private void GameObject_OnCreate(GameObject sender, EventArgs args)
