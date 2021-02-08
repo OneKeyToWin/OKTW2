@@ -219,7 +219,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 }
             }
 
-            if (aoeCount > 0 && aoeCount + 1 >= HeroMenu.Item("Raoe", true).GetValue<int>())
+            if (aoeCount > 0 && aoeCount + 1 >= HeroMenu.Item("Raoe", true).GetValue<Slider>().Value)
             {
                 if(bestRposition.CountAlliesInRange(1000) > 0)
                     R.Cast(bestRposition);
@@ -273,7 +273,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             HeroMenu.SubMenu("R option")
                 .AddItem(new MenuItem("rKs", "R ks", true).SetValue(true));
             HeroMenu.SubMenu("R option").
-                AddItem(new MenuItem("Raoe", "R aoe", true).SetValue(new Slider(0, 5, 2)));
+                AddItem(new MenuItem("Raoe", "R aoe", true).SetValue(new Slider(2, 0, 5)));
         }
 
         private void DrawHeroMenu()
