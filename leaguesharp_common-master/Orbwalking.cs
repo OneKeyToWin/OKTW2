@@ -207,6 +207,7 @@ namespace LeagueSharp.Common
         public static event OnNonKillableMinionH OnNonKillableMinion;
         public static event OnTargetChangeH OnTargetChange;
         private static IDictionary<Vector3, float> minionsWithBounding = new Dictionary<Vector3, float>();
+
         public enum OrbwalkingMode
         {
             LastHit,
@@ -774,7 +775,6 @@ namespace LeagueSharp.Common
             private Obj_AI_Base _forcedTarget;
             private OrbwalkingMode _mode = OrbwalkingMode.None;
             private Vector3 _orbwalkingPoint;
-            private Obj_AI_Minion _prevMinion;
             private string CustomModeName;
 
             public Orbwalker(Menu attachToMenu)
@@ -786,21 +786,17 @@ namespace LeagueSharp.Common
                 drawings.AddItem(new MenuItem("AACircle2", "Enemy AA circle").SetShared().SetValue(new Circle(false, Color.FromArgb(155, 255, 255, 0))));
                 drawings.AddItem(new MenuItem("HoldZone", "HoldZone").SetShared().SetValue(new Circle(false, Color.FromArgb(155, 255, 255, 0))));
                 drawings.AddItem(new MenuItem("AALineWidth", "Line Width")).SetShared().SetValue(new Slider(2, 1, 6));
-                drawings.AddItem(new MenuItem("LastHitHelper", "Last Hit Helper").SetShared().SetValue(true));
-
-
+                drawings.AddItem(new MenuItem("LastHitHelper", "Last Hit GLOW").SetShared().SetValue(true));
                 _config.AddSubMenu(drawings);
 
                 /* Misc options */
                 var misc = new Menu("Misc", "Misc");
                 misc.AddItem(new MenuItem("HoldPosRadius", "Hold Position Radius").SetShared().SetValue(new Slider(0, 50, 250)));
                 misc.AddItem(new MenuItem("PriorizeFarm", "Prioritize farm over harass").SetShared().SetValue(true));
-                misc.AddItem(new MenuItem("PrioritizeCasters", "Attack caster minions first").SetShared().SetValue(false));
                 misc.AddItem(new MenuItem("AttackWards", "Auto attack wards").SetShared().SetValue(false));
                 misc.AddItem(new MenuItem("AttackPetsnTraps", "Auto attack pets & traps").SetShared().SetValue(true));
                 misc.AddItem(new MenuItem("AttackGPBarrel", "Auto attack gangplank barrel").SetShared().SetValue(new StringList(new[] { "Combo and Farming", "Farming", "No" }, 1)));
                 misc.AddItem(new MenuItem("Smallminionsprio", "Jungle clear small first").SetShared().SetValue(false));
-                misc.AddItem(new MenuItem("FocusMinionsOverTurrets", "Focus minions over objectives").SetShared().SetValue(new KeyBind('M', KeyBindType.Toggle)));
                 _config.AddSubMenu(misc);
 
                 /* Delay sliders */
@@ -1039,14 +1035,11 @@ namespace LeagueSharp.Common
 
                 if (mode == OrbwalkingMode.LaneClear || mode == OrbwalkingMode.Mixed)
                 {
-                    //if (!_config.Item("FocusMinionsOverTurrets").GetValue<KeyBind>().Active)
-                    {
                         foreach (var turret in ObjectManager.Get<Obj_AI_Turret>().Where(t => t.IsValidTarget() && this.InAutoAttackRange(t)))
                             return turret;
 
                         foreach (var inhi in ObjectManager.Get<Obj_BarracksDampener>().Where(t => t.IsValidTarget() && this.InAutoAttackRange(t)))
                             return inhi;
-                    }
                 }
 
                 /*Champions*/
@@ -1270,8 +1263,6 @@ namespace LeagueSharp.Common
                         _config.Item("AALineWidth").GetValue<Slider>().Value,
                         true);
                 }
-                _config.Item("FocusMinionsOverTurrets")
-                    .Permashow(_config.Item("FocusMinionsOverTurrets").GetValue<KeyBind>().Active);
 
                 if (_config.Item("LastHitHelper").GetValue<bool>())
                 {
@@ -1280,7 +1271,7 @@ namespace LeagueSharp.Common
 
                     double dmg = 0;
 
-                    foreach (var x in ObjectManager.Get<Obj_AI_Minion>().Where(x => x.IsValidTarget(1500) && x.IsVisibleOnScreen))
+                    foreach (var x in ObjectManager.Get<Obj_AI_Minion>().Where(x => x.IsValidTarget(1500) && x.IsVisibleOnScreen && x.Name.Contains("Minion")))
                     {
                         if (dmg == 0)
                             dmg = Player.GetAutoAttackDamage(x);
