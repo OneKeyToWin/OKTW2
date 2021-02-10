@@ -75,6 +75,11 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             if (Player.HasBuff("Recall"))
                 return;
 
+            if(Q.IsReady() || W.IsReady() || R.IsReady())
+                Orbwalking.Attack = false;
+            else
+                Orbwalking.Attack = true;
+
             HaveStun = Player.HasBuff("pyromania_particle");
 
             SetMana();
