@@ -28,6 +28,7 @@ namespace LeagueSharp.Common
         private static int _LastAATick;
         private static YasuoWall yasuoWall = new YasuoWall();
         public static bool YasuoInGame = false;
+        private static bool Debug = false;
         public static int LastAATick
         {
             get
@@ -275,6 +276,7 @@ namespace LeagueSharp.Common
 
             if (Player.Spellbook.IsAutoAttacking)
                 return false;
+
             if (!Player.CanAttack)
             {
                 if (_championName == "Aphelios" || Player.Spellbook.IsChanneling)
@@ -480,10 +482,12 @@ namespace LeagueSharp.Common
 
             var playerPosition = Player.ServerPosition;
 
-            if (playerPosition.Distance(position, true) < holdAreaRadius * holdAreaRadius)
+            if (holdAreaRadius > 0 && playerPosition.Distance(position, true) < holdAreaRadius * holdAreaRadius)
             {
                 if (Player.Path.Length > 0)
                 {
+                    if(Debug) Console.WriteLine("Stop", Console.ForegroundColor = ConsoleColor.Red); Console.ForegroundColor = ConsoleColor.Gray;
+
                     Player.ForceIssueOrder(GameObjectOrder.Stop, playerPosition);
                     LastMoveCommandPosition = playerPosition;
                     LastMoveCommandT = Utils.GameTimeTickCount - 70;
@@ -521,6 +525,8 @@ namespace LeagueSharp.Common
                 return;
 
             Player.ForceIssueOrder(GameObjectOrder.MoveTo, point);
+            if(Debug) Console.WriteLine("MoveTo", Console.ForegroundColor = ConsoleColor.Green);  Console.ForegroundColor = ConsoleColor.Gray;
+
             LastMoveCommandPosition = movePath[1];
             LastMoveCommandT = Utils.GameTimeTickCount;
         }
@@ -547,6 +553,9 @@ namespace LeagueSharp.Common
                             {
                                 LastAttackCommandT = Utils.GameTimeTickCount;
                                 _lastTarget = target;
+
+                                if (Debug) Console.WriteLine("AttackUnit", Console.ForegroundColor = ConsoleColor.Yellow); Console.ForegroundColor = ConsoleColor.Gray;
+
                             }
                             return;
                         }
@@ -564,7 +573,7 @@ namespace LeagueSharp.Common
 
                 if (CanMove(extraWindup) && Move)
                 {
-                    MoveTo(position, Math.Max(holdAreaRadius, 30), false, useFixedDistance, randomizeMinDistance);
+                    MoveTo(position, holdAreaRadius, false, useFixedDistance, randomizeMinDistance);
                 }
             }
             catch (Exception e)
@@ -642,7 +651,8 @@ namespace LeagueSharp.Common
         private static void Obj_AI_Base_OnDoCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
             if (sender.IsMe)
-            {
+            {   
+                //Console.WriteLine("AA RESET " + args.SData.Name);
                 var ping = Game.Ping;
                 if (ping <= 30) //First world problems kappa
                 {
@@ -674,9 +684,13 @@ namespace LeagueSharp.Common
                 if (unit.IsMe)
                 {
                     var spellName = Spell.SData.Name;
-
-                    if (IsAutoAttackReset(spellName) && Spell.SData.SpellCastTime == 0)
+                    if (Debug) Console.WriteLine("OPS Name " + spellName, Console.ForegroundColor = ConsoleColor.Magenta); Console.ForegroundColor = ConsoleColor.Gray;
+                    if (IsAutoAttackReset(spellName))
+                    {
+                        if (Debug) Console.WriteLine("OPS Spell Reset", Console.ForegroundColor = ConsoleColor.Magenta); Console.ForegroundColor = ConsoleColor.Gray;
                         ResetAutoAttackTimer();
+                    }
+
 
                     if (!IsAutoAttack(spellName))
                         return;
@@ -697,6 +711,8 @@ namespace LeagueSharp.Common
 
                         if (Spell.Target is Obj_AI_Base)
                         {
+                            if (Debug) Console.WriteLine("OPS target " + Spell.Target.Name);
+
                             var target = (Obj_AI_Base)Spell.Target;
                             if (target.IsValid)
                             {
@@ -743,7 +759,7 @@ namespace LeagueSharp.Common
             if (spellbook.Owner.IsValid && spellbook.Owner.IsMe && args.DestroyMissile && args.StopAnimation)
             {
                 ResetAutoAttackTimer();
-                Console.WriteLine("Basic Attack was cancelled!");
+                if (Debug) Console.WriteLine("Basic Attack was cancelled!", Console.ForegroundColor = ConsoleColor.Red); Console.ForegroundColor = ConsoleColor.Gray;
             }
         }
 
@@ -791,9 +807,9 @@ namespace LeagueSharp.Common
 
                 /* Misc options */
                 var misc = new Menu("Misc", "Misc");
-                misc.AddItem(new MenuItem("HoldPosRadius", "Hold Position Radius").SetShared().SetValue(new Slider(0, 50, 250)));
+                misc.AddItem(new MenuItem("HoldPosRadius", "Hold Position Radius").SetShared().SetValue(new Slider(0, 0, 250)));
                 misc.AddItem(new MenuItem("PriorizeFarm", "Prioritize farm over harass").SetShared().SetValue(true));
-                misc.AddItem(new MenuItem("AttackWards", "Auto attack wards").SetShared().SetValue(false));
+                misc.AddItem(new MenuItem("AttackWards", "Auto attack wards").SetShared().SetValue(true));
                 misc.AddItem(new MenuItem("AttackPetsnTraps", "Auto attack pets & traps").SetShared().SetValue(true));
                 misc.AddItem(new MenuItem("AttackGPBarrel", "Auto attack gangplank barrel").SetShared().SetValue(new StringList(new[] { "Combo and Farming", "Farming", "No" }, 1)));
                 misc.AddItem(new MenuItem("Smallminionsprio", "Jungle clear small first").SetShared().SetValue(false));
@@ -1318,7 +1334,7 @@ namespace LeagueSharp.Common
 
                     Orbwalk(target, this._orbwalkingPoint.To2D().IsValid() ? this._orbwalkingPoint : Game.CursorPos,
                         _config.Item("ExtraWindup").GetValue<Slider>().Value,
-                        Math.Max(_config.Item("HoldPosRadius").GetValue<Slider>().Value, 30));
+                        _config.Item("HoldPosRadius").GetValue<Slider>().Value);
                 }
                 catch (Exception e)
                 {
