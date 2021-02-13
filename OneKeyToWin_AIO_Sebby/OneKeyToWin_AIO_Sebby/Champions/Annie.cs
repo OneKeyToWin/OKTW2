@@ -20,7 +20,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             W = new Spell(SpellSlot.W, 550f);
             E = new Spell(SpellSlot.E);
             R = new Spell(SpellSlot.R, 625f);
-            FR = new Spell(SpellSlot.R, 1000f );
+            FR = new Spell(SpellSlot.R, 1000f);
 
             Q.SetTargetted(0.25f, 1400f);
             W.SetSkillshot(0.3f, 80f, float.MaxValue, false, SkillshotType.SkillshotLine);
@@ -64,7 +64,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
         private void Obj_AI_Base_OnCreate(GameObject obj, EventArgs args)
         {
-            if (obj.IsValid && obj.IsAlly && obj is Obj_AI_Minion && obj.Name.ToLower() == "tibbers")
+            if (obj.IsValid && obj.IsAlly && obj is Obj_AI_Minion && obj.Name == "Tibbers")
             {
                 Tibbers = obj as Obj_AI_Base ;
             }
@@ -74,6 +74,17 @@ namespace OneKeyToWin_AIO_Sebby.Champions
         {
             if (Player.HasBuff("Recall"))
                 return;
+
+            var orbTarget = Orbwalker.GetTarget();
+            if (Combo)
+            {
+                if (Q.IsReady() || W.IsReady() || (R.IsReady() && Tibbers == null))
+                    Orbwalking.Attack = false;
+                else
+                    Orbwalking.Attack = true;
+            }
+            else
+                Orbwalking.Attack = true;
 
             HaveStun = Player.HasBuff("pyromania_particle");
 
@@ -202,31 +213,35 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 }
                 if (R.IsReady())
                 {
-                    if (MainMenu.Item("tibers", true).GetValue<bool>() && HaveTibers && Tibbers != null && Tibbers.IsValid)
-                    {
-                        var enemy = HeroManager.Enemies.Where(x => x.IsValidTarget() && Tibbers.Distance(x.Position) < 1000 && !x.UnderTurret(true)).OrderBy(x => x.Distance(Tibbers)).FirstOrDefault();
-                        if(enemy != null)
-                        {
 
-                            if (Tibbers.Distance(enemy.Position) > 200)
-                                R.Cast(enemy);
-                            else
-                                R.Cast(enemy);
-                        }
-                        else
+                    if (MainMenu.Item("tibers", true).GetValue<bool>() && HaveTibers && Tibbers != null && Tibbers.IsValid )
+                    {
+                        if (Utils.TickCount - TibbersTimer > 1000)
                         {
-                            var annieTarget = Orbwalker.GetTarget() as Obj_AI_Base;
-                            if (annieTarget != null)
+                            TibbersTimer = Utils.TickCount;
+                            var enemy = HeroManager.Enemies.Where(x => x.IsValidTarget() && Tibbers.Distance(x.Position) < 1000 && !x.UnderTurret(true)).OrderBy(x => x.Distance(Tibbers)).FirstOrDefault();
+                            if (enemy != null)
                             {
-                                if (Tibbers.Distance(annieTarget.Position) > 200)
-                                    R.Cast(annieTarget);
-                               
+                                if (Tibbers.Distance(enemy.Position) > 200)
+                                    R.Cast(enemy);
                                 else
-                                    R.Cast(annieTarget);
+                                    R.Cast(enemy);
                             }
-                            else if (Tibbers.UnderTurret(true))
+                            else
                             {
-                                R.Cast(Player);
+                                var annieTarget = Orbwalker.GetTarget() as Obj_AI_Base;
+                                if (annieTarget != null)
+                                {
+                                    if (Tibbers.Distance(annieTarget.Position) > 200)
+                                        R.Cast(annieTarget);
+
+                                    else
+                                        R.Cast(annieTarget);
+                                }
+                                else if (Tibbers.UnderTurret(true))
+                                {
+                                    R.Cast(Player);
+                                }
                             }
                         }
                     }
@@ -269,7 +284,8 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
         private bool HaveTibers
         {
-            get { return Player.HasBuff("infernalguardiantimer"); }
+
+            get { return Player.HasBuff("AnnieRController"); }
         }
 
         private void SetMana()

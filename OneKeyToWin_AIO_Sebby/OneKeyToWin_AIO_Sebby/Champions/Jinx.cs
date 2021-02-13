@@ -82,7 +82,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                     Q.Cast();
                 }
             }
-            else if(!Program.Combo || Program.LaneClear)
+            else if (!Program.Combo || Program.LaneClear)
             {
                 var minion = args.Target as Obj_AI_Minion;
                 if (Program.LaneClear && minion != null && FarmSpells)
@@ -125,7 +125,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             }
             if (E.IsReady())
             {
-                if (unit.IsEnemy && MainMenu.Item("opsE", true).GetValue<bool>() &&  unit.IsValidTarget(E.Range) && ShouldUseE(args.SData.Name))
+                if (unit.IsEnemy && MainMenu.Item("opsE", true).GetValue<bool>() && unit.IsValidTarget(E.Range) && ShouldUseE(args.SData.Name))
                 {
                     E.Cast(unit.ServerPosition, true);
                 }
@@ -204,9 +204,10 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 Q.Cast();
             else if (FishBoneActive && Program.Combo && Player.CountEnemiesInRange(2000) == 0)
                 Q.Cast();
-            else if (FishBoneActive && Program.Harass && !Program.LaneClear )
+            else if (FishBoneActive && Program.Harass && !Program.LaneClear)
                 Q.Cast();
-            else if (Program.LaneClear)
+
+            if (Program.LaneClear && Orbwalking.CanMove(50))
             {
                 var tOrb = Orbwalker.GetTarget();
                 if (!FarmSpells || !MainMenu.Item("farmQ", true).GetValue<bool>())
@@ -216,7 +217,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 }
                 else if (!FishBoneActive)
                 {
-                   
+
                     if (tOrb != null && tOrb.Type == GameObjectType.obj_AI_Minion)
                     {
                         var minions = MinionManager.GetMinions(tOrb.Position, 300);
@@ -226,16 +227,13 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                     else if (laneMinions.Count > 2)
                         Q.Cast();
                 }
-                else
+                else if (tOrb != null && tOrb.Type == GameObjectType.obj_AI_Minion)
                 {
-
-                    if (tOrb != null && tOrb.Type == GameObjectType.obj_AI_Minion)
-                    {
-                        var minions = MinionManager.GetMinions(tOrb.Position, 300);
-                        if (minions.Count < 2)
-                            Q.Cast();
-                    }
+                    var minions = MinionManager.GetMinions(tOrb.Position, 300);
+                    if (minions.Count < 2)
+                        Q.Cast();
                 }
+
             }
             else if (Program.Harass)
             {
@@ -327,7 +325,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 {
                     if (Program.Combo && Player.Mana > RMANA + WMANA + 10)
                     {
-                        foreach (var enemy in HeroManager.Enemies.Where(enemy => enemy.IsValidTarget(W.Range) && GetRealDistance(enemy) > bonusRange() ).OrderBy(enemy => enemy.Health))
+                        foreach (var enemy in HeroManager.Enemies.Where(enemy => enemy.IsValidTarget(W.Range) && GetRealDistance(enemy) > bonusRange()).OrderBy(enemy => enemy.Health))
                             Program.CastSpell(W, enemy);
                     }
                     else if (Program.Harass && Player.Mana > RMANA + EMANA + WMANA + WMANA + 40 && OktwCommon.CanHarras() && MainMenu.Item("Wharras", true).GetValue<bool>())
@@ -359,14 +357,14 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 if (MainMenu.Item("telE", true).GetValue<bool>())
                 {
                     var trapPos = OktwCommon.GetTrapPos(E.Range);
-                    if(!trapPos.IsZero)
+                    if (!trapPos.IsZero)
                         E.Cast(trapPos);
                 }
 
                 if (Program.Combo && Player.IsMoving && MainMenu.Item("comboE", true).GetValue<bool>() && Player.Mana > RMANA + EMANA + WMANA)
                 {
                     foreach (var t in HeroManager.Enemies.Where(enemy => enemy.IsValidTarget(E.Range + 50)))
-                     {
+                    {
                         if (t.IsValidTarget(E.Range) && E.GetPrediction(t).CastPosition.Distance(t.Position) > 200)
                         {
                             if (E.CastIfWillHit(t, 2))
@@ -394,7 +392,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
                     if (Rdmg > predictedHealth && !OktwCommon.IsSpellHeroCollision(target, R) && GetRealDistance(target) > bonusRange() + 200)
                     {
-                        if ( GetRealDistance(target) > bonusRange() + 300 + target.BoundingRadius && target.CountAlliesInRange(500) == 0 && Player.CountEnemiesInRange(400) == 0)
+                        if (GetRealDistance(target) > bonusRange() + 300 + target.BoundingRadius && target.CountAlliesInRange(500) == 0 && Player.CountEnemiesInRange(400) == 0)
                         {
                             Program.CastSpell(R, target);
                         }
@@ -414,7 +412,6 @@ namespace OneKeyToWin_AIO_Sebby.Champions
         private float GetRealPowPowRange(GameObject target)
         {
             return 590f + Player.BoundingRadius + target.BoundingRadius;
-
         }
 
         private float GetRealDistance(Obj_AI_Base target)
@@ -551,7 +548,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 if (FishBoneActive)
                     Utility.DrawCircle(Player.Position, 590f + Player.BoundingRadius, System.Drawing.Color.DeepPink, 1, 1);
                 else
-                    Utility.DrawCircle(Player.Position, bonusRange() -29, System.Drawing.Color.DeepPink, 1, 1);
+                    Utility.DrawCircle(Player.Position, bonusRange() - 29, System.Drawing.Color.DeepPink, 1, 1);
             }
             if (MainMenu.Item("wRange", true).GetValue<bool>())
             {
@@ -590,4 +587,4 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             }
         }
     }
-} 
+}
