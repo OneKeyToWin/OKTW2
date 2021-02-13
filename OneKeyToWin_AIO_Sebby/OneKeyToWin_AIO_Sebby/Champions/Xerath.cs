@@ -167,7 +167,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
         private void Game_OnGameUpdate(EventArgs args)
         {
-            if (Program.LagFree(3) && R.IsReady())
+            if (R.IsReady())
                 LogicR();
 
             //Program.debug(""+OktwCommon.GetPassiveTime(Player, "XerathArcanopulseChargeUp"));
@@ -191,8 +191,6 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 Orbwalking.Move = true;
             }
 
-            if (Program.LagFree(1))
-            {
                 SetMana();
                 Jungle();
                 int[] mana = new int[] { 0, 30, 33, 36, 42, 48, 54, 63, 72, 81, 90, 102, 114, 126, 138, 150, 165, 180, 195 };
@@ -205,13 +203,12 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                     if(minion != null && OktwCommon.CanHarras())
                         Orbwalker.ForceTarget(minion);
                 }
-            }
 
             if (E.IsReady() && MainMenu.Item("autoE", true).GetValue<bool>())
                 LogicE();
-            if (Program.LagFree(2) && W.IsReady() && !Player.IsWindingUp && MainMenu.Item("autoW", true).GetValue<bool>())
+            if (W.IsReady() && !Player.IsWindingUp && MainMenu.Item("autoW", true).GetValue<bool>())
                 LogicW();
-            if (Program.LagFree(4) && Q.IsReady() && !Player.IsWindingUp && MainMenu.Item("autoQ", true).GetValue<bool>())
+            if (Q.IsReady() && !Player.IsWindingUp && MainMenu.Item("autoQ", true).GetValue<bool>())
                 LogicQ();
         }
 
