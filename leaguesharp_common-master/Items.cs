@@ -29,6 +29,16 @@
         }
 
         /// <summary>
+        ///     Returns Item slot of given item
+        /// </summary>
+        /// <param name="itemId">The item identifier.</param>
+        /// <returns></returns>
+        public static InventorySlot GetItemSlot(int itemId)
+        {
+            return ObjectManager.Player.InventoryItems.FirstOrDefault(slot => slot.Id == (ItemId) itemId);
+        }
+
+        /// <summary>
         ///     Returns true if the player has the item and its not on cooldown.
         /// </summary>
         /// <param name="id">The identifier.</param>
