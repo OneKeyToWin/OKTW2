@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using LeagueSharp;
 using LeagueSharp.Common;
 using OneKeyToWin_AIO_Sebby;
+using OneKeyToWin_AIO_Sebby.SebbyLib;
 using SebbyLib;
 using SharpDX;
 using SharpDX.Direct3D9;

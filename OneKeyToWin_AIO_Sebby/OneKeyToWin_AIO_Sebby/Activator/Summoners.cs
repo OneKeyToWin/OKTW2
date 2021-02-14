@@ -4,6 +4,7 @@ using LeagueSharp.Common;
 using LeagueSharp;
 using SebbyLib;
 using OneKeyToWin_AIO_Sebby;
+using OneKeyToWin_AIO_Sebby.SebbyLib;
 
 class Summoners : Program
 {

@@ -128,6 +128,7 @@
     <Compile Include="Core\OKTWdraws.cs" />
     <Compile Include="Core\OKTWlab.cs" />
     <Compile Include="Core\OKTWward.cs" />
+    <Compile Include="SebbyLib\WardCommon.cs" />
     <Compile Include="Trackers\ModernUtlity.cs" />
     <Compile Include="Trackers\TrackerCore.cs" />
     <Compile Include="Champions\MissFortune.cs" />
