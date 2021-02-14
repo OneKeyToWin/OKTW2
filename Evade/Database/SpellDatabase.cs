@@ -2123,12 +2123,12 @@ namespace Evade
                 new SpellData
                 {
                     ChampionName = "Jayce",
-                    SpellName = "jayceshockblast",
+                    SpellName = "JayceShockBlast",
                     Slot = SpellSlot.Q,
                     Type = SkillShotType.SkillshotMissileLine,
                     Delay = 250,
                     Range = 1050,
-                    Radius = 70,
+                    Radius = 80,
                     MissileSpeed = 1450,
                     FixedRange = true,
                     AddHitbox = true,
