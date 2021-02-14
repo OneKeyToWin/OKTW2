@@ -19,13 +19,10 @@
         /// <returns></returns>
         public static bool CanUseItem(string name)
         {
-            foreach (var slot in ObjectManager.Player.InventoryItems.Where(slot => slot.Name == name))
-            {
-                return ObjectManager.Player.Spellbook.CanUseSpell((SpellSlot)(slot.Slot + (int)SpellSlot.Item1))
-                       == SpellState.Ready;
-            }
-
-            return false;
+            return ObjectManager.Player.InventoryItems
+                .Where(slot => slot.Name == name)
+                .Select(slot => ObjectManager.Player.Spellbook.CanUseSpell((SpellSlot) (slot.Slot + (int) SpellSlot.Item1)) == SpellState.Ready)
+                .FirstOrDefault();
         }
 
         /// <summary>
