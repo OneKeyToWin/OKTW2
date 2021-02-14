@@ -74,96 +74,99 @@ namespace OneKeyToWin_AIO_Sebby.Core
             AutoWardLogic();
         }
 
+        private static float LastVisibleTime = Game.Time;
+        
         private void AutoWardLogic()
         {
-            // foreach (var hero in HeroManager.Enemies.Where(x => x.IsValid && !x.IsVisible && !x.IsDead))
-            // {
-            //     var need = OKTWtracker.ChampionInfoList.Find(x => x.NetworkId == enemy.NetworkId);
-            //     var info = TrackerCore.heroes_info[hero.NetworkId];
-            //
-            //     var PPDistance = need.PredictedPos.Distance(Player.Position);
-            //
-            //     if (PPDistance > 1400)
-            //         continue;
-            //
-            //     var timer = Game.Time - need.LastVisableTime;
-            //
-            //     if (timer > 1 && timer < 3 && AioModeSet != AioMode.UtilityOnly)
-            //     {
-            //         if (Program.Combo && PPDistance < 1500 && Player.ChampionName == "Quinn" && W.IsReady() &&
-            //             MainMenu.Item("autoW", true).GetValue<bool>())
-            //         {
-            //             W.Cast();
-            //         }
-            //
-            //         if (Program.Combo && PPDistance < 900 && Player.ChampionName == "Karhus" && Q.IsReady() &&
-            //             Player.CountEnemiesInRange(900) == 0)
-            //         {
-            //             Q.Cast(need.PredictedPos);
-            //         }
-            //
-            //         if (Program.Combo && PPDistance < 1400 && Player.ChampionName == "Ashe" && E.IsReady() &&
-            //             Player.CountEnemiesInRange(800) == 0 && MainMenu.Item("autoE", true).GetValue<bool>())
-            //         {
-            //             E.Cast(Player.Position.Extend(need.PredictedPos, 5000));
-            //         }
-            //
-            //         if (PPDistance < 800 && Player.ChampionName == "MissFortune" && E.IsReady() && Program.Combo &&
-            //             Player.Mana > 200)
-            //         {
-            //             E.Cast(Player.Position.Extend(need.PredictedPos, 800));
-            //         }
-            //
-            //         if (Player.ChampionName == "Caitlyn" && !Player.IsWindingUp && PPDistance < 800 && W.IsReady() &&
-            //             Player.Mana > 200f && MainMenu.Item("bushW", true).GetValue<bool>() &&
-            //             Utils.TickCount - W.LastCastAttemptT > 2000)
-            //         {
-            //             W.Cast(need.PredictedPos);
-            //         }
-            //
-            //         if (Player.ChampionName == "Teemo" && !Player.IsWindingUp && PPDistance < 150 + R.Level * 250 &&
-            //             R.IsReady() && Player.Mana > 200f && MainMenu.Item("bushR", true).GetValue<bool>() &&
-            //             Utils.TickCount - W.LastCastAttemptT > 2000)
-            //         {
-            //             R.Cast(need.PredictedPos);
-            //         }
-            //
-            //         if (Player.ChampionName == "Jhin" && !Player.IsWindingUp && PPDistance < 760 && E.IsReady() &&
-            //             Player.Mana > 200f && MainMenu.Item("bushE", true).GetValue<bool>() &&
-            //             Utils.TickCount - E.LastCastAttemptT > 2000)
-            //         {
-            //             E.Cast(need.PredictedPos);
-            //         }
-            //     }
-            //
-            //     if (timer < 4)
-            //     {
-            //         if (MainMenu.Item("AutoWardCombo").GetValue<bool>() &&
-            //             AioModeSet != AioMode.ChampionOnly && !Combo)
-            //             return;
-            //
-            //         if (NavMesh.IsWallOfGrass(need.PredictedPos, 0) ||
-            //             NavMesh.IsWallOfGrass(need.Hero.Position, 0))
-            //         {
-            //             if (PPDistance < 600 && MainMenu.Item("AutoWard").GetValue<bool>())
-            //             {
-            //                 if (WardCommon.CastWard(need.PredictedPos))
-            //                 {
-            //                     need.LastVisableTime = Game.Time - 5;
-            //                 }
-            //             }
-            //
-            //             if (MainMenu.Item("AutoWardBlue").GetValue<bool>())
-            //             {
-            //                 if (FarsightOrb.IsReady())
-            //                 {
-            //                     FarsightOrb.Cast(need.PredictedPos);
-            //                     need.LastVisableTime = Game.Time - 5;
-            //                 }
-            //             }
-            //         }
-            //     }
-            // }
+            foreach (var hero in HeroManager.Enemies.Where(x => x.IsValid && !x.IsVisible && !x.IsDead))
+            {
+                var info = TrackerCore.heroes_info[hero.NetworkId];
+
+                var predictedPos = info.last_position + hero.Direction * 50.0f;
+            
+                var PPDistance = predictedPos.Distance(Player.Position);
+            
+                if (PPDistance > 1400)
+                    continue;
+            
+                var timer = Game.Time - LastVisibleTime;
+            
+                if (timer > 1 && timer < 3 && AioModeSet != AioMode.UtilityOnly)
+                {
+                    if (Program.Combo && PPDistance < 1500 && Player.ChampionName == "Quinn" && W.IsReady() &&
+                        MainMenu.Item("autoW", true).GetValue<bool>())
+                    {
+                        W.Cast();
+                    }
+            
+                    if (Program.Combo && PPDistance < 900 && Player.ChampionName == "Karhus" && Q.IsReady() &&
+                        Player.CountEnemiesInRange(900) == 0)
+                    {
+                        Q.Cast(predictedPos);
+                    }
+            
+                    if (Program.Combo && PPDistance < 1400 && Player.ChampionName == "Ashe" && E.IsReady() &&
+                        Player.CountEnemiesInRange(800) == 0 && MainMenu.Item("autoE", true).GetValue<bool>())
+                    {
+                        E.Cast(Player.Position.Extend(predictedPos, 5000));
+                    }
+            
+                    if (PPDistance < 800 && Player.ChampionName == "MissFortune" && E.IsReady() && Program.Combo &&
+                        Player.Mana > 200)
+                    {
+                        E.Cast(Player.Position.Extend(predictedPos, 800));
+                    }
+            
+                    if (Player.ChampionName == "Caitlyn" && !Player.IsWindingUp && PPDistance < 800 && W.IsReady() &&
+                        Player.Mana > 200f && MainMenu.Item("bushW", true).GetValue<bool>() &&
+                        Utils.TickCount - W.LastCastAttemptT > 2000)
+                    {
+                        W.Cast(predictedPos);
+                    }
+            
+                    if (Player.ChampionName == "Teemo" && !Player.IsWindingUp && PPDistance < 150 + R.Level * 250 &&
+                        R.IsReady() && Player.Mana > 200f && MainMenu.Item("bushR", true).GetValue<bool>() &&
+                        Utils.TickCount - W.LastCastAttemptT > 2000)
+                    {
+                        R.Cast(predictedPos);
+                    }
+            
+                    if (Player.ChampionName == "Jhin" && !Player.IsWindingUp && PPDistance < 760 && E.IsReady() &&
+                        Player.Mana > 200f && MainMenu.Item("bushE", true).GetValue<bool>() &&
+                        Utils.TickCount - E.LastCastAttemptT > 2000)
+                    {
+                        E.Cast(predictedPos);
+                    }
+                }
+            
+                if (timer < 4)
+                {
+                    if (MainMenu.Item("AutoWardCombo").GetValue<bool>() &&
+                        AioModeSet != AioMode.ChampionOnly && !Combo)
+                        return;
+            
+                    if (NavMesh.IsWallOfGrass(predictedPos, 0) ||
+                        NavMesh.IsWallOfGrass(info.last_position, 0))
+                    {
+                        if (PPDistance < 600 && MainMenu.Item("AutoWard").GetValue<bool>())
+                        {
+                            if (WardCommon.CastWard(predictedPos))
+                            {
+                                LastVisibleTime = Game.Time - 5;
+                            }
+                        }
+            
+                        if (MainMenu.Item("AutoWardBlue").GetValue<bool>())
+                        {
+                            if (FarsightOrb.IsReady())
+                            {
+                                FarsightOrb.Cast(predictedPos);
+                                LastVisibleTime = Game.Time - 5;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         private void GameObject_OnCreate(GameObject sender, EventArgs args)
