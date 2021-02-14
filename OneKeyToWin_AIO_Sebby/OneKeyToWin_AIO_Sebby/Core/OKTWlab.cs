@@ -25,6 +25,13 @@ namespace OneKeyToWin_AIO_Sebby.Core
             Drawing.OnDraw += Drawing_OnDraw;
             Spellbook.OnCastSpell += Spellbook_OnCastSpell;
             Game.OnUpdate += Game_OnGameUpdate;
+            Obj_AI_Base.OnBuffAdd += OnBuffAdd;
+        }
+
+        private void OnBuffAdd(Obj_AI_Base sender, Obj_AI_BaseBuffAddEventArgs args)
+        {
+            if(sender.IsMe)
+            Console.WriteLine("sender " + args.Buff.Name );
         }
 
         private void Spellbook_OnCastSpell(Spellbook sender, SpellbookCastSpellEventArgs args)
