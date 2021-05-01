@@ -6476,7 +6476,7 @@ namespace Evade
                new SpellData
                {
                    ChampionName = "Viego",
-                   SpellName = "ViegorR",
+                   SpellName = "ViegoR",
                    Slot = SpellSlot.R,
                    Type = SkillShotType.SkillshotCircle,
                    Delay = 600,
